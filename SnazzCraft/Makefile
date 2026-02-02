@@ -40,7 +40,5 @@ all:
 
 	$(CPPC) build/*.o -o bin/executable $(LDFLAGS)
 
-	./bin/executable
-
 clean:
 	rm -f build/*.o bin/executable
