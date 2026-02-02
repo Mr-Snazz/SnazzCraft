@@ -1,0 +1,33 @@
+#pragma once
+
+#include "../../../includes/glm/glm.hpp"
+
+#include "../mesh/mesh.hpp"
+#include "../utilities/math.hpp"
+
+namespace SnazzCraft
+{
+    class Entity
+    {
+    public:
+        glm::vec3 Position;
+        glm::vec3 Rotation;
+        glm::vec3 Front;
+
+        SnazzCraft::Mesh* EntityMesh = nullptr;
+
+        Entity(glm::vec3 Position, glm::vec3 Rotation);
+        virtual ~Entity();
+
+        virtual void Move(const glm::vec3& Rotation, float Distance);
+
+        virtual void Rotate(const glm::vec3& Rotation);
+
+    private:
+
+
+    };
+
+    
+}
+

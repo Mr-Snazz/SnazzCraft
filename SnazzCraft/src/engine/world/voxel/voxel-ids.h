@@ -1,0 +1,17 @@
+#pragma once
+
+#define ID_VOXEL_STONE (0)
+#define ID_VOXEL_WOOD (1)
+#define ID_VOXEL_GRASS (2)
+#define ID_VOXEL_DIRT (3)
+#define ID_VOXEL_ABOVE_GRASS (4)
+#define ID_VOXEL_DIRT_GRASS_MIX (5)
+#define ID_VOXEL_OAK_LOG (6)
+#define ID_VOXEL_OAK_LEAVES (7)
+#define ID_VOXEL_ORE_COAL (8)
+#define ID_VOXEL_ORE_IRON (9)
+#define ID_VOXEL_ORE_GOLD (10)
+#define ID_VOXEL_ORE_REDSTONE (11)
+#define ID_VOXEL_ORE_DIAMOND (12)
+#define ID_VOXEL_ORE_EMERALD (13)
+#define ID_VOXEL_BARRIER (14)
