@@ -3,7 +3,7 @@
 #include "../../../includes/glm/glm.hpp"
 #include "../../../includes/glm/gtc/matrix_transform.hpp"
 
-#include "../utilities/math.hpp"
+#include "../utilities/math/math.hpp"
 #include "../mesh/mesh.hpp"
 
 #define SNAZZCRAFT_HITBOX_TYPE_SIMPLE  (0x00)

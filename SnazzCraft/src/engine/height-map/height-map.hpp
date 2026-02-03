@@ -3,7 +3,7 @@
 #include <unordered_map>
 
 #include "../perlin-noise/noise-module.hpp"
-#include "../utilities/math.hpp"
+#include "../utilities/math/math.hpp"
 
 namespace SnazzCraft
 {

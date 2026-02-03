@@ -12,7 +12,7 @@
 
 #include "chunk/chunk.hpp"
 #include "../height-map/height-map.hpp"
-#include "../utilities/math.hpp"
+#include "../utilities/math/math.hpp"
 #include "../utilities/file-handling/text-file-handling/text-file-handling.hpp"
 
 #define WORLD_SAVE_FILE_DESCRIPTOR_NAME            ('0')

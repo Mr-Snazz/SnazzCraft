@@ -2,7 +2,7 @@
 
 #include "../../../../../includes/glad.h"
 
-#include "../../../utilities/math.hpp"
+#include "../../../utilities/math/math.hpp"
 #include "../../../texture/texture.hpp"
 
 #define SNAZZCRAFT_PANEL_LONG_WIDTH   (275)

@@ -11,7 +11,7 @@
 #include "../voxel/voxel-ids.h"
 #include "../../texture/atlas/atlas.hpp"
 #include "../../height-map/height-map.hpp"
-#include "../../utilities/math.hpp"
+#include "../../utilities/math/math.hpp"
 
 namespace SnazzCraft
 {

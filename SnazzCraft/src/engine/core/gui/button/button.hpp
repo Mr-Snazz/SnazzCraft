@@ -6,7 +6,7 @@
 #include "../../../../../includes/glfw3.h"
 #include "../../../../../includes/glm/glm.hpp"
 
-#include "../../../utilities/math.hpp"
+#include "../../../utilities/math/math.hpp"
 #include "../panel/panel.hpp"
 #include "../../input-handler/event/event.hpp"
 #include "../../input-handler/event/data/data-types.h"

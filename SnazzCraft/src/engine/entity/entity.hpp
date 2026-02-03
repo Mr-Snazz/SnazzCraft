@@ -3,7 +3,7 @@
 #include "../../../includes/glm/glm.hpp"
 
 #include "../mesh/mesh.hpp"
-#include "../utilities/math.hpp"
+#include "../utilities/math/math.hpp"
 
 namespace SnazzCraft
 {

@@ -33,7 +33,7 @@ all:
 	$(CPPC) $(CPPFLAGS) src/engine/core/input-handler/core-callback/core-callback.cpp -o build/callback.o
 	$(CPPC) $(CPPFLAGS) src/engine/vertice/vertice-3d/vertice-3d.cpp -o build/vertice-3d.o
 	$(CPPC) $(CPPFLAGS) src/engine/fps-tracker/fps-tracker.cpp -o build/fps-tracker.o
-	$(CPPC) $(CPPFLAGS) src/engine/utilities/math.cpp -o build/math.o
+	$(CPPC) $(CPPFLAGS) src/engine/utilities/math/math.cpp -o build/math.o
 	$(CPPC) $(CPPFLAGS) src/engine/core/gui/main-menu-gui/main-menu-gui.cpp -o build/main-menu-gui.o
 	$(CPPC) $(CPPFLAGS) src/engine/core/gui/world-gui/world-gui.cpp -o build/world-gui.o
 	$(CPPC) $(CPPFLAGS) src/engine/core/window/window.cpp -o build/window.o
