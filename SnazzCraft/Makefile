@@ -37,9 +37,11 @@ all:
 	$(CPPC) $(CPPFLAGS) src/engine/core/gui/main-menu-gui/main-menu-gui.cpp -o build/main-menu-gui.o
 	$(CPPC) $(CPPFLAGS) src/engine/core/gui/world-gui/world-gui.cpp -o build/world-gui.o
 	$(CPPC) $(CPPFLAGS) src/engine/core/window/window.cpp -o build/window.o
-	$(CPPC) $(CPPFLAGS) src/engine/hitbox/hitbox.cpp -o build/hitbox-base.o
+	$(CPPC) $(CPPFLAGS) src/engine/hitbox/hitbox.cpp -o build/hitbox.o
+	$(CPPC) $(CPPFLAGS) src/engine/texture/solid-colors/solid-colors.cpp -o build/solid-colors.o
 
 	$(CPPC) build/*.o -o bin/executable $(LDFLAGS)
 
 clean:
 	rm -f build/*.o bin/executable
+

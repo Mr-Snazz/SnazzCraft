@@ -124,12 +124,14 @@ bool SnazzCraft::Initiate()
     SnazzCraft::WorldGUI = new SnazzCraft::InWorldGUI(900, 900, SnazzCraft::Window);
     SnazzCraft::WorldGUI->GUIInputHandler->Callback = &WorldInputCallback;
 
+    SnazzCraft::TestHitbox = new SnazzCraft::Hitbox(glm::vec3(10.0f, 60.0f, 10.0f), glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+
     return true;
 }
 
 void SnazzCraft::MainLoop()
 {
-    //SnazzCraft::TestHitbox->SetMesh();
+    SnazzCraft::TestHitbox->SetMesh();
     while (!glfwWindowShouldClose(SnazzCraft::Window) && !SnazzCraft::CloseApplication)
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -143,8 +145,9 @@ void SnazzCraft::MainLoop()
             case SNAZZCRAFT_USER_MODE_WORLD:
                 if (SnazzCraft::CurrentWorld == nullptr) break;
 
+                SnazzCraft::TestHitbox->Draw();
                 SnazzCraft::RenderWorld();
-                //SnazzCraft::TestHitbox->Draw();
+
                 break;
 
             case SNAZZCRAFT_USER_MODE_MAIN_MENU:
@@ -177,6 +180,8 @@ void SnazzCraft::FreeResources()
     delete SnazzCraft::WorldGUI;
     delete SnazzCraft::VoxelTextureAtlas;
     delete SnazzCraft::GlobalFPSTracker;
+
+    delete SnazzCraft::TestHitbox;
     
     glfwTerminate();
 }

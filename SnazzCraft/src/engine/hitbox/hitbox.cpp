@@ -2,20 +2,14 @@
 
 SnazzCraft::Hitbox* SnazzCraft::TestHitbox = nullptr;
 
-std::vector<unsigned int> HitboxIndices = {
-    0, 1, 2, 2, 1, 3,
-    4, 6, 5, 5, 6, 7,
-    0, 2, 4, 4, 2, 6,
-    1, 5, 3, 3, 5, 7,
-    0, 4, 1, 1, 4, 5,
-    2, 3, 6, 6, 3, 7
-};
-
 SnazzCraft::Hitbox::Hitbox(glm::vec3 Position, glm::vec3 Dimensions)
 {
     this->Position = Position;
     this->HalfDimensions = Dimensions / 2.0f;
     this->UpdateRotation(this->Rotation);
+    this->UpdatePosition(this->Position);
+
+    this->UpdateColor(this->HitboxColor);
 }
 
 SnazzCraft::Hitbox::Hitbox(glm::vec3 Position, glm::vec3 Dimensions, glm::vec3 Rotation)
@@ -23,12 +17,16 @@ SnazzCraft::Hitbox::Hitbox(glm::vec3 Position, glm::vec3 Dimensions, glm::vec3 R
     this->Position = Position;
     this->HalfDimensions = Dimensions / 2.0f;
     this->UpdateRotation(Rotation);
+    this->UpdatePosition(this->Position);
+
+    this->UpdateColor(this->HitboxColor);
 }
 
 SnazzCraft::Hitbox::~Hitbox()
 {
     delete this->HitboxMesh;
     delete this->HitboxVertices;
+    delete this->HitboxTexture;
 }
 
 bool SnazzCraft::Hitbox::IsColliding(const SnazzCraft::Hitbox& CollideHitbox, bool YawOnly)

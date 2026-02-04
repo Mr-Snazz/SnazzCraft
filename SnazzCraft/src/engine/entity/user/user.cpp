@@ -1,6 +1,6 @@
 #include "user.hpp"
 
-SnazzCraft::User* SnazzCraft::Player = new SnazzCraft::User({ 20.0f, 50.0f, 20.0f }, { 0.0f, 0.0f, 0.0f });
+SnazzCraft::User* SnazzCraft::Player = new SnazzCraft::User({ 5.0f, 60.0f, 5.0f }, { 0.0f, 0.0f, 0.0f });
 
 SnazzCraft::User::User(glm::vec3 Position, glm::vec3 Rotation) : SnazzCraft::Entity({ 20.0f, 50.0f, 20.0f }, { 0.0f, 0.0f, 0.0f })
 {

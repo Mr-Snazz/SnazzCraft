@@ -1,17 +1,23 @@
 #pragma once
 
+#include "../../../includes/glad.h"
 #include "../../../includes/glm/glm.hpp"
 #include "../../../includes/glm/gtc/matrix_transform.hpp"
 
 #include "../utilities/math/math.hpp"
 #include "../mesh/mesh.hpp"
+#include "../texture/solid-colors/solid-colors.hpp"
 
-#define SNAZZCRAFT_HITBOX_TYPE_SIMPLE  (0x00)
-#define SNAZZCRAFT_HITBOX_TYPE_COMPLEX (0x01)
+const std::vector<unsigned int> HitboxIndices = {
+    0, 1, 2, 2, 1, 3,
+    4, 6, 5, 5, 6, 7,
+    0, 2, 4, 4, 2, 6,
+    1, 5, 3, 3, 5, 7,
+    0, 4, 1, 1, 4, 5,
+    2, 3, 6, 6, 3, 7
+};
 
 const glm::vec3 WorldUp = glm::vec3(0.0f, 1.0f, 0.0f);
-
-extern std::vector<unsigned int> HitboxIndices;
 
 namespace SnazzCraft
 {
@@ -21,7 +27,7 @@ namespace SnazzCraft
         glm::vec3 Position;
         glm::vec3 HalfDimensions;
         glm::vec3 Rotation = glm::vec3(0.0f, 0.0f, 0.0f);
-        unsigned char Type = SNAZZCRAFT_HITBOX_TYPE_SIMPLE;
+        std::string HitboxColor = SNAZZCRAFT_COLOR_WHITE;
 
         Hitbox(glm::vec3 Position, glm::vec3 Dimensions);
 
@@ -29,7 +35,7 @@ namespace SnazzCraft
 
         ~Hitbox();
 
-        bool IsColliding(const Hitbox& CollideHitbox, bool YawOnly = false);
+        bool IsColliding(const Hitbox& CollideHitbox, bool YawOnly);
 
         void SetMesh();
 
@@ -73,9 +79,10 @@ namespace SnazzCraft
 
         inline void UpdatePosition(const glm::vec3& NewPosition)
         {
-            if (this->HitboxVertices->empty()) { this->Position = NewPosition; return; }
+            if (this->HitboxVertices->empty() || this->HitboxMesh == nullptr) this->SetMesh(); 
 
             delete this->HitboxMesh;
+            this->HitboxMesh = nullptr;
 
             for (SnazzCraft::Vertice3D& Vertice : *this->HitboxVertices) {
                 Vertice.Position += NewPosition - this->Position;
@@ -87,18 +94,29 @@ namespace SnazzCraft
 
         inline void Draw()
         {
-            if (this->HitboxMesh == nullptr) return;
+            if (this->HitboxMesh == nullptr || this->HitboxTexture == nullptr) return;
 
+            //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            this->HitboxTexture->BindTexture();
             this->HitboxMesh->Draw();
         }
 
+        inline void UpdateColor(const std::string& NewColor)
+        {
+            this->HitboxColor = NewColor;
+
+            delete this->HitboxTexture;
+            this->HitboxTexture = SnazzCraft::GenerateSolidColorTexture(this->HitboxColor);
+        }
+
     private:
-        glm::mat4x4 RotationMatrix;
-        glm::mat4x4 AbsoluteRotationMatrix;
+        glm::mat4x4 RotationMatrix = glm::mat4x4(1.0f);
+        glm::mat4x4 AbsoluteRotationMatrix = glm::mat4x4(1.0f);
         glm::vec3 Axies[3];
 
         SnazzCraft::Mesh* HitboxMesh = nullptr;
         std::vector<SnazzCraft::Vertice3D>* HitboxVertices = new std::vector<SnazzCraft::Vertice3D>();
+        SnazzCraft::Texture* HitboxTexture = nullptr;
     };
 
     extern SnazzCraft::Hitbox* TestHitbox;

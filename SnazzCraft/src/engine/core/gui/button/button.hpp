@@ -49,8 +49,8 @@ namespace SnazzCraft
     };
 }
 
-#define SNAZZCRAFT_GENERATE_BUTTON_LONG(X, Y)  new SnazzCraft::Button(X, Y, 275, 50)
-#define SNAZZCRAFT_GENERATE_BUTTON_SHORT(X, Y) new SnazzCraft::Button(X, Y, 125, 50)
+#define SNAZZCRAFT_BUTTON_LONG(X, Y)  new SnazzCraft::Button(X, Y, 275, 50)
+#define SNAZZCRAFT_BUTTON_SHORT(X, Y) new SnazzCraft::Button(X, Y, 125, 50)
 
 void SetWorldModeButtonCallback(SnazzCraft::Event* Event);
 
