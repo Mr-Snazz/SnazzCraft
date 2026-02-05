@@ -47,9 +47,7 @@ namespace SnazzCraft
                 float DA = glm::dot(Delta, this->Axies[I]);
                 float RA = this->HalfDimensions[I];
 
-                if (glm::abs(DA) > RA) {
-                    return false;
-                }
+                if (glm::abs(DA) > RA) return false;
             }
 
             return true;
@@ -96,7 +94,12 @@ namespace SnazzCraft
         {
             if (this->HitboxMesh == nullptr || this->HitboxTexture == nullptr) return;
 
-            //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            glEnable(GL_DEPTH_TEST);
+            glCullFace(GL_FRONT); 
+            glFrontFace(GL_CW);  
+            glEnable(GL_CULL_FACE);
+
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
             this->HitboxTexture->BindTexture();
             this->HitboxMesh->Draw();
         }

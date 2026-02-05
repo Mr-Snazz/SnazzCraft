@@ -137,25 +137,40 @@ void SnazzCraft::MainLoop()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         SnazzCraft::GlobalFPSTracker->UpdateFPS();
-        system(CLEAR_COMMAND);
-        std::cout << "FPS| " << SnazzCraft::GlobalFPSTracker->FPS << "\n";
+        //system(CLEAR_COMMAND);
+        //std::cout << "FPS| " << SnazzCraft::GlobalFPSTracker->FPS << "\n";
 
         switch (SnazzCraft::UserMode)
         {
             case SNAZZCRAFT_USER_MODE_WORLD:
                 if (SnazzCraft::CurrentWorld == nullptr) break;
 
-                SnazzCraft::TestHitbox->Draw();
+                if (SnazzCraft::WorldGUI != nullptr) {
+                    SnazzCraft::WorldGUI->GUIInputHandler->PollEvents();
+                    SnazzCraft::WorldGUI->GUIInputHandler->HandleEvents();
+                    SnazzCraft::WorldGUI->Render();
+                }
+
+                SnazzCraft::VoxelShader->use(); 
+
+                glUniformMatrix4fv(SnazzCraft::ProjectionLock, 1, GL_FALSE, glm::value_ptr(ProjectionMatrix));
+
+                SnazzCraft::ViewMatrix = glm::lookAt(SnazzCraft::Player->Position, SnazzCraft::Player->Position + SnazzCraft::Player->Front, glm::vec3(0.0, 1.0, 0.0));
+                glUniformMatrix4fv(SnazzCraft::ViewLock, 1, GL_FALSE, glm::value_ptr(SnazzCraft::ViewMatrix));
+
+                
                 SnazzCraft::RenderWorld();
+
+                SnazzCraft::TestHitbox->Draw();
 
                 break;
 
             case SNAZZCRAFT_USER_MODE_MAIN_MENU:
-                if (SnazzCraft::MenuGUI != nullptr) {
-                    SnazzCraft::MenuGUI->GUIInputHandler->PollEvents();
-                    SnazzCraft::MenuGUI->GUIInputHandler->HandleEvents();
-                    SnazzCraft::MenuGUI->Render();
-                }
+                if (SnazzCraft::MenuGUI == nullptr) break;
+
+                SnazzCraft::MenuGUI->GUIInputHandler->PollEvents();
+                SnazzCraft::MenuGUI->GUIInputHandler->HandleEvents();
+                SnazzCraft::MenuGUI->Render();
 
                 break;
         }
@@ -192,11 +207,6 @@ void SnazzCraft::RenderWorld()
 
     SnazzCraft::VoxelShader->use(); 
 
-    glUniformMatrix4fv(SnazzCraft::ProjectionLock, 1, GL_FALSE, glm::value_ptr(ProjectionMatrix));
-
-    SnazzCraft::ViewMatrix = glm::lookAt(SnazzCraft::Player->Position, SnazzCraft::Player->Position + SnazzCraft::Player->Front, glm::vec3(0.0, 1.0, 0.0));
-    glUniformMatrix4fv(SnazzCraft::ViewLock, 1, GL_FALSE, glm::value_ptr(SnazzCraft::ViewMatrix));
-
     glEnable(GL_DEPTH_TEST);
     glCullFace(GL_FRONT); 
     glFrontFace(GL_CW);  
@@ -212,12 +222,6 @@ void SnazzCraft::RenderWorld()
     SnazzCraft::ModelMatrix = glm::mat4(1.0f); // Chunk vertices are stored in world space so no transformation is needed
 
     SnazzCraft::CurrentWorld->RenderChunks();
-
-    if (SnazzCraft::WorldGUI != nullptr) {
-        SnazzCraft::WorldGUI->GUIInputHandler->PollEvents();
-        SnazzCraft::WorldGUI->GUIInputHandler->HandleEvents();
-        SnazzCraft::WorldGUI->Render();
-    }
 }
 
 void WorldInputCallback(SnazzCraft::Event* Event)
