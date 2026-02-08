@@ -13,6 +13,8 @@ namespace SnazzCraft
 
         unsigned int Position[3]; // In Chunk Space
         unsigned int ID;
+        bool Cullable = true;
+        bool Collidable = true;
 
         /*  
             Front, Left, Right, Back, Top, Bottom
@@ -22,6 +24,10 @@ namespace SnazzCraft
         unsigned int Sides[6] = { 1, 1, 1, 1, 1, 1 }; 
 
         Voxel(unsigned int X, unsigned int Y, unsigned int Z, unsigned int ID);
+
+        Voxel(unsigned int X, unsigned int Y, unsigned int Z, unsigned int ID, bool Cullable);
+
+        Voxel(unsigned int X, unsigned int Y, unsigned int Z, unsigned int ID, bool Cullable, bool Collidable);
 
         inline unsigned int GetSideCount() const
         {

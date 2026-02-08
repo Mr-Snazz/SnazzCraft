@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SNAZZCRAFT_VOXEL_IDS_H
+#define SNAZZCRAFT_VOXEL_IDS_H
 
 #define ID_VOXEL_STONE (0)
 #define ID_VOXEL_WOOD (1)
@@ -15,3 +16,6 @@
 #define ID_VOXEL_ORE_DIAMOND (12)
 #define ID_VOXEL_ORE_EMERALD (13)
 #define ID_VOXEL_BARRIER (14)
+#define ID_VOXEL_TORCH (15)
+
+#endif // SNAZZCRAFT_VOXEL_IDS_H

@@ -50,6 +50,11 @@ void SnazzCraft::Chunk::Generate(SnazzCraft::HeightMap* HeightMap, unsigned int 
 
             this->Voxels->insert({ VOXEL_INDEX(X, Y, Z), SnazzCraft::Voxel(X, Y, Z, NewVoxelID) });
         }
+
+        // Testing Torches
+        if (X != 5 || Z != 5) continue;
+
+        this->Voxels->insert({ VOXEL_INDEX(X, HeightAtPositionIterator->second, Z), SnazzCraft::Voxel(X, HeightAtPositionIterator->second, Z, ID_VOXEL_TORCH, false, false) });
     }
     }
 }
@@ -95,6 +100,8 @@ void SnazzCraft::Chunk::CullVoxelFaces()
     this->OptimizedVoxels->clear();
 
     for (auto VoxelPair : *this->Voxels)  {
+        if (!VoxelPair.second.Cullable) { this->OptimizedVoxels->insert({ VoxelPair.first, VoxelPair.second }); continue; }
+
         for (int I = 5; I >= 0; I--) {
             int CheckPosition[3] = {
                 (int)(VoxelPair.second.Position[0]) + SnazzCraft::VoxelCheckPositions[I][0],
@@ -106,7 +113,9 @@ void SnazzCraft::Chunk::CullVoxelFaces()
 
             auto CurrentIterator = this->Voxels->find(VOXEL_INDEX(CheckPosition[0], CheckPosition[1], CheckPosition[2]));
             if (CurrentIterator == this->Voxels->end()) continue;
-     
+
+            if (!CurrentIterator->second.Cullable) continue;
+      
             VoxelPair.second.Sides[I] = 0;
         }
 
