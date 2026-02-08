@@ -61,31 +61,6 @@ void SnazzCraft::World::OptimizeChunks()
     }
 }
 
-bool SnazzCraft::World::IsCollidingVoxel(const SnazzCraft::Hitbox& Hitbox)
-{
-    glm::vec3 HitboxMin = Hitbox.Position - Hitbox.HalfDimensions;
-    glm::vec3 HitboxMax = Hitbox.Position + Hitbox.HalfDimensions;
-
-    if (HitboxMax.x < 0.0f || HitboxMax.y < 0.0f || HitboxMax.z < 0.0f)                                             return false;
-    if (HitboxMin.x > SnazzCraft::Chunk::Width * this->Size || HitboxMin.z > SnazzCraft::Chunk::Depth * this->Size) return false;
-
-    int ChunkX = static_cast<int>(Hitbox.Position.x / SnazzCraft::Chunk::Width);
-    int ChunkZ = static_cast<int>(Hitbox.Position.z / SnazzCraft::Chunk::Depth);
-
-    for (int X = ChunkX - 1; X <= ChunkX + 1; X++) {
-    for (int Z = ChunkZ - 1; Z <= ChunkZ + 1; Z++) {
-        if (X < 0 || Z < 0 || X >= static_cast<int>(this->Size) || Z >= static_cast<int>(this->Size)) continue;
-
-        auto ChunkIterator = this->Chunks->find(INDEX_2D(X, Z, this->Size));
-        if (ChunkIterator == this->Chunks->end()) continue;
-
-        if (ChunkIterator->second->IsCollidingVoxel(Hitbox)) return true;
-    }
-    }
-
-    return false;
-}
-
 SnazzCraft::World* SnazzCraft::CreateWorld(std::string Name, unsigned int Size, int Seed)
 {
     SnazzCraft::World* NewWorld = new SnazzCraft::World(Name, Size, Seed);
@@ -97,6 +72,61 @@ SnazzCraft::World* SnazzCraft::CreateWorld(std::string Name, unsigned int Size, 
     }
 
     return NewWorld;
+}
+
+SnazzCraft::Voxel* SnazzCraft::World::IsCollidingVoxel(const SnazzCraft::Hitbox* Hitbox)
+{
+    int ChunkX = static_cast<int>(Hitbox->Position.x) / (SnazzCraft::Chunk::Width * SnazzCraft::Voxel::Size);
+    int ChunkZ = static_cast<int>(Hitbox->Position.z) / (SnazzCraft::Chunk::Depth * SnazzCraft::Voxel::Size);
+
+    for (int X = ChunkX - 1; X <= ChunkX + 1; X++) {
+    for (int Z = ChunkZ - 1; Z <= ChunkZ + 1; Z++) {
+        if (X < 0 || Z < 0 || X >= static_cast<int>(this->Size) || Z >= static_cast<int>(this->Size)) continue;
+
+        auto ChunkIterator = this->Chunks->find(INDEX_2D(X, Z, this->Size));
+        if (ChunkIterator == this->Chunks->end()) continue;
+
+        SnazzCraft::Voxel* CollisionVoxel = ChunkIterator->second->IsCollidingVoxel(Hitbox);
+        if (CollisionVoxel != nullptr) return CollisionVoxel;
+    }
+    }
+
+    return nullptr;
+}
+
+bool SnazzCraft::World::MoveEntity(SnazzCraft::Entity* Entity, const glm::vec3& Rotation, float Distance)
+{
+    glm::vec3 PreviousPosition = Entity->Position;
+    Entity->Move(Rotation, Distance);
+
+    this->ResetPositionIfCollidingVoxel(PreviousPosition, Entity);
+    Entity->EntityHitbox->Position = Entity->Position;
+
+    return true;
+}
+
+bool SnazzCraft::World::MoveEntity(glm::vec3 Translation, SnazzCraft::Entity* Entity, const glm::vec3& Rotation)
+{
+    glm::vec3 PreviousPosition = Entity->Position;
+    Entity->Position += Translation;
+
+    this->ResetPositionIfCollidingVoxel(PreviousPosition, Entity); 
+    Entity->EntityHitbox->Position = Entity->Position;
+
+    return true;
+}
+
+SnazzCraft::Voxel* SnazzCraft::World::ResetPositionIfCollidingVoxel(const glm::vec3& PreviousPosition, SnazzCraft::Entity* Entity)
+{
+    SnazzCraft::Voxel* CollisionVoxel = this->IsCollidingVoxel(Entity->EntityHitbox);
+    if (CollisionVoxel != nullptr) {
+        Entity->Position = PreviousPosition;
+        Entity->EntityHitbox->Position = PreviousPosition;
+
+        return CollisionVoxel;
+    }
+
+    return nullptr;
 }
 
 SnazzCraft::World* SnazzCraft::LoadWorldFromSaveFile(std::string FilePath)

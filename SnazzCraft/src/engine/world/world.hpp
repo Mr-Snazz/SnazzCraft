@@ -15,6 +15,7 @@
 #include "../utilities/math/math.hpp"
 #include "../utilities/file-handling/text-file-handling/text-file-handling.hpp"
 #include "../hitbox/hitbox.hpp"
+#include "../entity/entity.hpp"
 
 #define WORLD_SAVE_FILE_DESCRIPTOR_NAME            ('0')
 #define WORLD_SAVE_FILE_DESCRIPTOR_SIZE            ('1')
@@ -49,10 +50,21 @@ namespace SnazzCraft
 
         void OptimizeChunks();
 
-        bool IsCollidingVoxel(const SnazzCraft::Hitbox& Hitbox);
+        SnazzCraft::Voxel* IsCollidingVoxel(const SnazzCraft::Hitbox* Hitbox); // Returns nullptr if no collision
+
+        bool MoveEntity(SnazzCraft::Entity* Entity, const glm::vec3& Rotation, float Distance); // Returns true if movement occurred without voxel collision
+
+        bool MoveEntity(glm::vec3 Translation, SnazzCraft::Entity* Entity, const glm::vec3& Rotation); // Returns true if movement occurred without voxel collision
+
+        inline void ApplyGravityToEntity(SnazzCraft::Entity* Entity)
+        {
+            const float MoveDistance = 0.2f;
+
+            this->MoveEntity(glm::vec3(0.0f, -0.2f, 0.0f), Entity, glm::vec3(0.0f, 0.0f, -90.0f));
+        }
 
     private:
-
+        SnazzCraft::Voxel* ResetPositionIfCollidingVoxel(const glm::vec3& PreviousPosition, SnazzCraft::Entity* Entity);
 
     };
 

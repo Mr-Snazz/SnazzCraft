@@ -126,7 +126,7 @@ bool SnazzCraft::Initiate()
     SnazzCraft::WorldGUI = new SnazzCraft::InWorldGUI(900, 900, SnazzCraft::Window);
     SnazzCraft::WorldGUI->GUIInputHandler->Callback = &WorldInputCallback;
 
-    SnazzCraft::Player->SetHitbox({ 2.0f, 4.0f, 2.0f });
+    SnazzCraft::Player->SetHitbox({ 4.0f, 8.0f, 4.0f });
 
     return true;
 }
@@ -138,20 +138,22 @@ void SnazzCraft::MainLoop()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         SnazzCraft::GlobalFPSTracker->UpdateFPS();
-        //system(CLEAR_COMMAND);
-        //std::cout << "FPS| " << SnazzCraft::GlobalFPSTracker->FPS << "\n";
+        system(CLEAR_COMMAND);
+        std::cout << "FPS| " << SnazzCraft::GlobalFPSTracker->FPS << "\n";
 
         switch (SnazzCraft::UserMode)
         {
             case SNAZZCRAFT_USER_MODE_WORLD:
-                if (SnazzCraft::CurrentWorld == nullptr) break;
+                if (SnazzCraft::CurrentWorld == nullptr || SnazzCraft::WorldGUI == nullptr) break;
 
-                if (SnazzCraft::WorldGUI != nullptr) {
-                    SnazzCraft::WorldGUI->GUIInputHandler->PollEvents();
-                    SnazzCraft::WorldGUI->GUIInputHandler->HandleEvents();
-                    SnazzCraft::WorldGUI->Render();
-                }
+                //SnazzCraft::CurrentWorld->ApplyGravityToEntity(SnazzCraft::Player);
 
+                // Poll and handle events
+                SnazzCraft::WorldGUI->GUIInputHandler->PollEvents();
+                SnazzCraft::WorldGUI->GUIInputHandler->HandleEvents();
+
+                // Render
+                SnazzCraft::WorldGUI->Render();
                 SnazzCraft::VoxelShader->use(); 
 
                 glUniformMatrix4fv(SnazzCraft::ProjectionLock, 1, GL_FALSE, glm::value_ptr(ProjectionMatrix));
@@ -160,17 +162,6 @@ void SnazzCraft::MainLoop()
                 glUniformMatrix4fv(SnazzCraft::ViewLock, 1, GL_FALSE, glm::value_ptr(SnazzCraft::ViewMatrix));
                 
                 RenderWorld();
-
-                //SnazzCraft::Player->EntityHitbox->UpdateRotation(SnazzCraft::Player->Rotation);
-                SnazzCraft::Player->EntityHitbox->UpdatePosition(SnazzCraft::Player->Position + glm::vec3(5.0f) * SnazzCraft::Player->Front);
-                
-                if (SnazzCraft::CurrentWorld->IsCollidingVoxel(*SnazzCraft::Player->EntityHitbox)) {
-                    SnazzCraft::Player->EntityHitbox->SetColor(SNAZZCRAFT_COLOR_LIGHT_RED);
-                } else {
-                    SnazzCraft::Player->EntityHitbox->SetColor(SNAZZCRAFT_COLOR_LIGHT_GREEN);
-                }
-
-                SnazzCraft::Player->EntityHitbox->Draw(true);
 
                 break;
 
@@ -187,7 +178,7 @@ void SnazzCraft::MainLoop()
         glfwSwapBuffers(SnazzCraft::Window);
         glfwPollEvents(); 
     }
-    
+
     SnazzCraft::CloseApplication = true;
 }
 
@@ -233,6 +224,8 @@ void RenderWorld()
 
 void WorldInputCallback(SnazzCraft::Event* Event)
 {
+    if (SnazzCraft::CurrentWorld == nullptr) return;
+
     switch (Event->Type)
     {
         case SNAZZCRAFT_EVENT_KEY_DOWN:
@@ -247,43 +240,43 @@ void WorldInputCallback(SnazzCraft::Event* Event)
                     break;
 
                 case SNAZZCRAFT_KEY_W:
-                    SnazzCraft::Player->Move({ 0.0f, 0.0f, 0.0f }, 1.0f, false);
+                    SnazzCraft::CurrentWorld->MoveEntity(SnazzCraft::Player, glm::vec3(0.0f), 1.0f);
                     break;
 
                 case SNAZZCRAFT_KEY_A:
-                    SnazzCraft::Player->Move({ 0.0f, -90.0f, 0.0f }, 1.0f, false);
+                    SnazzCraft::CurrentWorld->MoveEntity(SnazzCraft::Player, glm::vec3(0.0f, -90.0f, 0.0f), 1.0f);
                     break;
 
                 case SNAZZCRAFT_KEY_S:
-                    SnazzCraft::Player->Move({ 0.0f, 180.0f, 0.0f }, 1.0f, false);
+                    SnazzCraft::CurrentWorld->MoveEntity(SnazzCraft::Player, glm::vec3(0.0f, 180.0f, 0.0f), 1.0f);
                     break;
 
                 case SNAZZCRAFT_KEY_D:
-                    SnazzCraft::Player->Move({ 0.0f, 90.0f, 0.0f }, 1.0f, false);
+                    SnazzCraft::CurrentWorld->MoveEntity(SnazzCraft::Player, glm::vec3(0.0f, 90.0f, 0.0f), 1.0f);
                     break;
 
                 case SNAZZCRAFT_KEY_SPACE:
-                    SnazzCraft::Player->Position.y += 1.0f;
+                    SnazzCraft::CurrentWorld->MoveEntity(glm::vec3(0.0f, 1.0f, 0.0f), SnazzCraft::Player, glm::vec3(0.0f));
                     break;
 
                 case SNAZZCRAFT_KEY_LEFT_SHIFT:
-                    SnazzCraft::Player->Position.y -= 1.0f;
+                    SnazzCraft::CurrentWorld->MoveEntity(glm::vec3(0.0f, -1.0f, 0.0f), SnazzCraft::Player, glm::vec3(0.0f));
                     break;
 
                 case SNAZZCRAFT_KEY_Q:
-                    SnazzCraft::Player->Rotate({ 0.0f, -2.0f, 0.0f }, false);
+                    SnazzCraft::Player->Rotate({ 0.0f, -2.0f, 0.0f });
                     break;
 
                 case SNAZZCRAFT_KEY_E:
-                    SnazzCraft::Player->Rotate({ 0.0f, 2.0f, 0.0f }, false);
+                    SnazzCraft::Player->Rotate({ 0.0f, 2.0f, 0.0f });
                     break;
 
                 case SNAZZCRAFT_KEY_X:
-                    SnazzCraft::Player->Rotate({ 0.0f, 0.0f, -2.0f }, false);
+                    SnazzCraft::Player->Rotate({ 0.0f, 0.0f, -2.0f });
                     break;
 
                 case SNAZZCRAFT_KEY_C:
-                    SnazzCraft::Player->Rotate({ 0.0f, 0.0f, 2.0f }, false);
+                    SnazzCraft::Player->Rotate({ 0.0f, 0.0f, 2.0f });
                     break;
             }
 

@@ -10,9 +10,9 @@ namespace SnazzCraft
 
     User(glm::vec3 Position, glm::vec3 Rotation);
     
-    void Move(const glm::vec3& Rotation, float Distance, bool UpdateHitbox) override;
+    void Move(const glm::vec3& AdditionalRotation, float Distance) override;
 
-    void Rotate(const glm::vec3& Rotation, bool UpdateHitbox) override;
+    void Rotate(const glm::vec3& AdditionalRotation) override;
 
     private:
     

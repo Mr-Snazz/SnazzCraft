@@ -46,9 +46,10 @@ namespace SnazzCraft
 
         bool VoxelTouchingChunkBorder(unsigned int VoxelIndex, unsigned int* BorderDirection);
 
-        bool IsCollidingVoxel(const SnazzCraft::Hitbox& Hitbox);
+        SnazzCraft::Voxel* IsCollidingVoxel(const SnazzCraft::Hitbox* Hitbox); // Returns nullptr if no collision
 
     private:
+        SnazzCraft::Hitbox* VoxelCollisionHitbox = nullptr;
 
     };
 

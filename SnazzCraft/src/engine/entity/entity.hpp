@@ -21,14 +21,14 @@ namespace SnazzCraft
         Entity(glm::vec3 Position, glm::vec3 Rotation);
         virtual ~Entity();
 
-        virtual void Move(const glm::vec3& Rotation, float Distance, bool UpdateHitbox);
+        virtual void Move(const glm::vec3& AdditionalRotation, float Distance);
 
-        virtual void Rotate(const glm::vec3& Rotation, bool UpdateHitbox);
+        virtual void Rotate(const glm::vec3& AdditionalRotation);
 
         inline void SetHitbox(const glm::vec3& Dimensions)
         {
             delete this->EntityHitbox;
-            this->EntityHitbox = new SnazzCraft::Hitbox(this->Position, Dimensions, this->Rotation);
+            this->EntityHitbox = new SnazzCraft::Hitbox(this->Position, Dimensions);
         }
 
     private:
