@@ -126,7 +126,7 @@ bool SnazzCraft::Initiate()
     SnazzCraft::WorldGUI = new SnazzCraft::InWorldGUI(900, 900, SnazzCraft::Window);
     SnazzCraft::WorldGUI->GUIInputHandler->Callback = &WorldInputCallback;
 
-    SnazzCraft::Player->SetHitbox({ 4.0f, 8.0f, 4.0f });
+    SnazzCraft::Player->SetHitbox({ 1.75f, 5.75f, 1.75f });
 
     return true;
 }
