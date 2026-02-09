@@ -287,7 +287,7 @@ void WorldInputCallback(SnazzCraft::Event* Event)
             break;
         }
 
-        case SNAZZCRAFT_EVENT_MOUSE_CLICK_LEFT:
+        case SNAZZCRAFT_EVENT_MOUSE_CLICK_LEFT_PRESS:
         {
             SnazzCraft::GUI* WorldGUI = static_cast<SnazzCraft::GUI*>((Event->EventData->AccessDataType(SNAZZCRAFT_DATA_TYPE_GUI_ADDRESS)));
             if (WorldGUI == nullptr) return;
@@ -303,7 +303,7 @@ void MainMenuCallback(SnazzCraft::Event* Event)
 {
     switch (Event->Type)
     {
-        case SNAZZCRAFT_EVENT_MOUSE_CLICK_LEFT:
+        case SNAZZCRAFT_EVENT_MOUSE_CLICK_LEFT_PRESS:
         {
             SnazzCraft::GUI* MenuGUI = static_cast<SnazzCraft::GUI*>((Event->EventData->AccessDataType(SNAZZCRAFT_DATA_TYPE_GUI_ADDRESS)));
             if (MenuGUI == nullptr) return;

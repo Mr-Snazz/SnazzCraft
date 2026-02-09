@@ -72,19 +72,13 @@ inline void MouseButtonCallback(GLFWwindow* Window, int Button, int Action, int 
     double MouseX, MouseY;
     glfwGetCursorPos(Window, &MouseX, &MouseY);
 
-    uint8_t EventType;
-    switch (Button)
-    {
-        case GLFW_MOUSE_BUTTON_LEFT:
-            EventType = SNAZZCRAFT_EVENT_MOUSE_CLICK_LEFT;
-            break;
-
-        case GLFW_MOUSE_BUTTON_RIGHT:
-            EventType = SNAZZCRAFT_EVENT_MOUSE_CLICK_RIGHT;
-            break;
-
-        default:
-            return;
+    unsigned char EventType;
+    if (Button == GLFW_MOUSE_BUTTON_LEFT) {
+        EventType = (Action == GLFW_PRESS) ? SNAZZCRAFT_EVENT_MOUSE_CLICK_LEFT_PRESS : SNAZZCRAFT_EVENT_MOUSE_CLICK_LEFT_RELEASE;
+    } else if (Button == GLFW_MOUSE_BUTTON_RIGHT) {
+        EventType = (Action == GLFW_PRESS) ? SNAZZCRAFT_EVENT_MOUSE_CLICK_RIGHT_PRESS : SNAZZCRAFT_EVENT_MOUSE_CLICK_RIGHT_RELEASE;
+    } else {
+        return;
     }
 
     SnazzCraft::Event* NewEvent = new SnazzCraft::Event(EventType);
