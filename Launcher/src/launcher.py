@@ -1,11 +1,17 @@
 import tkinter
+from tkinter import *
+
 import subprocess
+
+ExecutableDirectory = "/bin/"
 
 Root = tkinter.Tk()
 Root.title("Launcher")
-Root.geometry("300x200")
+Root.geometry("1200x800")
 
-subprocess.run(["./bin/executable"], cwd="../../SnazzCraft", check=True)
+#Root.mainloop()
+
+subprocess.run(["." + ExecutableDirectory + "executable"], cwd="SnazzCraft", check=True)
 
 
 
