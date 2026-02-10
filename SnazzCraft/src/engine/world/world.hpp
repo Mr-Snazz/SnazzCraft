@@ -57,6 +57,8 @@ namespace SnazzCraft
 
         void MoveEntity(glm::vec3 Translation, SnazzCraft::Entity* Entity); // Returns true if movement occurred without voxel collision
 
+        void UpdateLighting();
+
         inline void ApplyGravityToEntities(std::vector<SnazzCraft::Entity*> AdditionalEntities)
         {
             const float MoveDistance = 0.2f;

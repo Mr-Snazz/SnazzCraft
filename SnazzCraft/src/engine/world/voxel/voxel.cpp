@@ -26,3 +26,13 @@ SnazzCraft::Voxel::Voxel(unsigned int X, unsigned int Y, unsigned int Z, unsigne
     this->Cullable = Cullable;
     this->Collidable = Collidable;
 }
+
+void SnazzCraft::Voxel::SetFaceLightLevels(std::vector<unsigned int> SideIndexes, unsigned int LightLevel)
+{
+    for (unsigned int SideIndex : SideIndexes) {
+        if (this->FaceLightLevels[SideIndex] >= LightLevel) continue;
+
+        this->FaceLightLevels[SideIndex] = LightLevel;
+    }
+}
+
