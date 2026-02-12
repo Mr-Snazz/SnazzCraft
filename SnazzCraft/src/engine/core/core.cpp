@@ -153,7 +153,6 @@ void SnazzCraft::MainLoop()
                 SnazzCraft::WorldGUI->GUIInputHandler->HandleEvents();
 
                 // Render
-                SnazzCraft::WorldGUI->Render();
                 SnazzCraft::VoxelShader->use(); 
 
                 glUniformMatrix4fv(SnazzCraft::ProjectionLock, 1, GL_FALSE, glm::value_ptr(ProjectionMatrix));
@@ -162,6 +161,7 @@ void SnazzCraft::MainLoop()
                 glUniformMatrix4fv(SnazzCraft::ViewLock, 1, GL_FALSE, glm::value_ptr(SnazzCraft::ViewMatrix));
                 
                 RenderWorld();
+                SnazzCraft::WorldGUI->Render();
 
                 break;
 
