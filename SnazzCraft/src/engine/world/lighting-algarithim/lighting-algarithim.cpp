@@ -1,68 +1,77 @@
 #include "../world.hpp"
 
-std::vector<unsigned int> GetRelativeLightingSideIndexes(int LightPosition[3], int VoxelPosition[3]);
+void PropogateSunlight(int X, int Y, int Z, SnazzCraft::World* World, unsigned int LightLevel);
+
+bool OutOfBounds(int X, int Y, int Z, unsigned int WorldSize);
 
 void SnazzCraft::World::UpdateLighting()
 {
-    const int WorldSizeInt = static_cast<int>(this->Size);
-
-    for (auto& ChunkPair : *this->Chunks) {
-    for (auto& VoxelPair : *ChunkPair.second->OptimizedVoxels) {
+    for (auto ChunkPair : *this->Chunks) {
+    for (auto VoxelPair : *ChunkPair.second->Voxels) {
         if (VoxelPair.second.LightProducingLevel == 0) continue;
 
-        int VoxelPositionInt[3] {
-            static_cast<int>(VoxelPair.second.Position[0]),
-            static_cast<int>(VoxelPair.second.Position[1]),
-            static_cast<int>(VoxelPair.second.Position[2])
-        };  
+        int X = VoxelPair.second.Position[0] + ChunkPair.second->Position[0] * SnazzCraft::Chunk::Width;
+        int Y = VoxelPair.second.Position[1];
+        int Z = VoxelPair.second.Position[2] + ChunkPair.second->Position[1] * SnazzCraft::Chunk::Depth;
 
-        int Range = static_cast<int>(VoxelPair.second.LightProducingLevel);
-        for (int X = VoxelPositionInt[0] - Range; X <= VoxelPositionInt[0] + Range; X++) {
-        for (int Y = VoxelPositionInt[1] - Range; Y <= VoxelPositionInt[1] + Range; Y++) {
-        for (int Z = VoxelPositionInt[2] - Range; Z <= VoxelPositionInt[2] + Range; Z++) {
-            if (X < 0 || Y < 0 || Z < 0 || X >= WorldSizeInt || Y >= WorldSizeInt || Z >= WorldSizeInt) continue;
-
-            int CheckPosition[3] = { X, Y, Z };
-            unsigned int ChunkIndex = static_cast<unsigned int>(INDEX_2D(X, Z, WorldSizeInt));
-
-            auto ChunkIterator = this->Chunks->find(ChunkIndex);
-            if (ChunkIterator == this->Chunks->end()) continue;
-
-            auto VoxelIterator = ChunkIterator->second->Voxels->find(VOXEL_INDEX(CheckPosition[0], CheckPosition[1], CheckPosition[2]));
-            if (VoxelIterator == ChunkIterator->second->Voxels->end()) continue;
-
-
-            
-
-        }
-        }
-        }
+        PropogateSunlight(X, Y, Z, this, VoxelPair.second.LightProducingLevel);
     }
     }
 }
 
-std::vector<unsigned int> GetRelativeLightingSideIndexes(int LightPosition[3], int VoxelPosition[3])
+void PropogateSunlight(int X, int Y, int Z, SnazzCraft::World* World, unsigned int LightLevel)
 {
-    std::vector<unsigned int> SideIndexes;
+    auto NewRecursion = [X, Y, Z, World, LightLevel](unsigned int TranslationIndex) -> void
+    {
+        int NewX = X + SnazzCraft::VoxelCheckPositions[TranslationIndex][0];
+        int NewY = Y + SnazzCraft::VoxelCheckPositions[TranslationIndex][1];
+        int NewZ = Z + SnazzCraft::VoxelCheckPositions[TranslationIndex][2];
 
-    if (LightPosition[0] > VoxelPosition[0]) {
-        SideIndexes.push_back(2); // Right
-    } else if (LightPosition[0] < VoxelPosition[0]) {
-        SideIndexes.push_back(1); // Left
+        PropogateSunlight(NewX, NewY, NewZ, World, LightLevel - 1);
+    };
+
+    auto GetChunkPosition = [X, Z](int& OutX, int& OutZ) -> void
+    {
+        OutX = X / SnazzCraft::Chunk::Width;
+        OutZ = Z / SnazzCraft::Chunk::Depth;
+    };  
+
+    auto GetLocalVoxelPosition = [X, Y, Z](int& OutX, int& OutY, int& OutZ) -> void
+    {
+        OutX = X % SnazzCraft::Chunk::Width;
+        OutY = Y;
+        OutZ = Z % SnazzCraft::Chunk::Depth;
+    };  
+
+    if (!OutOfBounds(X, Y, Z, World->Size) || LightLevel == 0) return;
+
+    int ChunkX, ChunkZ;
+    GetChunkPosition(ChunkX, ChunkZ);
+    unsigned int ChunkHash = ChunkZ * World->Size + ChunkX;
+    auto ChunkIterator = World->Chunks->find(ChunkHash);
+    if (ChunkIterator == World->Chunks->end()) return;
+
+    int VoxelX, VoxelY, VoxelZ;
+    GetLocalVoxelPosition(VoxelX, VoxelY, VoxelZ);
+    unsigned int VoxelHash = VOXEL_INDEX(VoxelX, VoxelY, VoxelZ);
+    auto VoxelIterator = ChunkIterator->second->Voxels->find(VoxelHash);
+    if (VoxelIterator == ChunkIterator->second->Voxels->end()) {
+        for (unsigned int I = 0; I < 6; I++) {
+            NewRecursion(I);
+        }
+
+        return;
     }
 
-    if (LightPosition[1] > VoxelPosition[1]) {
-        SideIndexes.push_back(4); // Top
-    } else if (LightPosition[1] < VoxelPosition[1]) {
-        SideIndexes.push_back(5); // Bottom
+    for (unsigned int I = 0; I < 6; I++) {
+        VoxelIterator->second.FaceLightLevels[I] = VoxelIterator->second.FaceLightLevels[I] >= LightLevel ? VoxelIterator->second.FaceLightLevels[I] : LightLevel;
+
+        NewRecursion(I);
     }
 
-    if (LightPosition[2] > VoxelPosition[2]) {
-        SideIndexes.push_back(3); // Back
-    } else if (LightPosition[2] < VoxelPosition[2]) {
-        SideIndexes.push_back(0); // Front
-    }
-
-    return SideIndexes;
 }
 
+bool OutOfBounds(int X, int Y, int Z, unsigned int WorldSize)
+{
+    return X >= 0 && Y >= 0 && Z >= 0 && X < SnazzCraft::Chunk::Width * WorldSize && Y < SnazzCraft::Chunk::Height && Z < SnazzCraft::Chunk::Depth * WorldSize;
+}

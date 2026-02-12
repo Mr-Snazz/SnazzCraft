@@ -27,9 +27,7 @@ bool SnazzCraft::World::GenerateChunk(unsigned int X, unsigned int Z)
         std::lock_guard<std::mutex> Lock(this->ChunkMutex);
 
         auto Iterator = this->Chunks->find(INDEX_2D(X, Z, this->Size));
-        if (Iterator != this->Chunks->end()) { 
-            return false; 
-        }
+        if (Iterator != this->Chunks->end()) return false;
     }
     
     SnazzCraft::Chunk* NewChunk = new SnazzCraft::Chunk(X, Z);
@@ -54,23 +52,12 @@ void SnazzCraft::World::RenderChunks()
 
 void SnazzCraft::World::OptimizeChunks()
 {
+    this->UpdateLighting();
+
     for (auto& ChunkPair : *this->Chunks) {
         ChunkPair.second->CullVoxelFaces();
         ChunkPair.second->UpdateMesh();
     }
-}
-
-SnazzCraft::World* SnazzCraft::CreateWorld(std::string Name, unsigned int Size, int Seed)
-{
-    SnazzCraft::World* NewWorld = new SnazzCraft::World(Name, Size, Seed);
-
-    for (unsigned int X = 0; X < NewWorld->Size; X++) {
-    for (unsigned int Z = 0; Z < NewWorld->Size; Z++) {
-        NewWorld->GenerateChunk(X, Z);
-    }
-    }
-
-    return NewWorld;
 }
 
 SnazzCraft::Voxel* SnazzCraft::World::IsCollidingVoxel(const SnazzCraft::Hitbox* Hitbox)
@@ -126,6 +113,19 @@ void SnazzCraft::World::MoveEntity(glm::vec3 Translation, SnazzCraft::Entity* En
         Entity->Position[I] = OldCoordinate;
         Entity->EntityHitbox->Position[I] = OldCoordinate;
     }
+}
+
+SnazzCraft::World* SnazzCraft::CreateWorld(std::string Name, unsigned int Size, int Seed)
+{
+    SnazzCraft::World* NewWorld = new SnazzCraft::World(Name, Size, Seed);
+
+    for (unsigned int X = 0; X < NewWorld->Size; X++) {
+    for (unsigned int Z = 0; Z < NewWorld->Size; Z++) {
+        NewWorld->GenerateChunk(X, Z);
+    }
+    }
+
+    return NewWorld;
 }
 
 SnazzCraft::World* SnazzCraft::LoadWorldFromSaveFile(std::string FilePath)

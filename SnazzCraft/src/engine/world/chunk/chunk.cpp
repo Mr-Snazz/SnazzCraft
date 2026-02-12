@@ -53,8 +53,11 @@ void SnazzCraft::Chunk::Generate(SnazzCraft::HeightMap* HeightMap, unsigned int 
 
         // Testing Torches
         if (X != 5 || Z != 5) continue;
+        SnazzCraft::Voxel NewVoxel = SnazzCraft::Voxel(X, HeightAtPositionIterator->second, Z, ID_VOXEL_TORCH, false, false);
+        NewVoxel.LightProducingLevel = 10;
+        for (unsigned int I = 0; I < 6; I++) { NewVoxel.FaceLightLevels[I] = 15; }
 
-        this->Voxels->insert({ VOXEL_INDEX(X, HeightAtPositionIterator->second, Z), SnazzCraft::Voxel(X, HeightAtPositionIterator->second, Z, ID_VOXEL_TORCH, false, false) });
+        this->Voxels->insert({ VOXEL_INDEX(X, HeightAtPositionIterator->second, Z), NewVoxel });
     }
     }
 }
@@ -75,7 +78,7 @@ void SnazzCraft::Chunk::UpdateMesh()
         for (SnazzCraft::Vertice3D& Vertice3D : Vertices) { 
             Vertice3D.Position += Offset; // Adjusting to world space once now means not having to create a new model matrix for each individual chunk later
 
-            if (NewVerticesCount >= 0 && NewVerticesCount <= 3 || NewVerticesCount >= 8 && NewVerticesCount <= 11) Vertice3D.Brightness = 0.5f; // Darken front and right faces
+            //if (NewVerticesCount >= 0 && NewVerticesCount <= 3 || NewVerticesCount >= 8 && NewVerticesCount <= 11) Vertice3D.Brightness = 0.5f; // Darken front and right faces
 
             NewTexturedVertices.push_back(Vertice3D);
             NewVerticesCount++; 
@@ -145,6 +148,10 @@ bool SnazzCraft::Chunk::VoxelTouchingChunkBorder(unsigned int VoxelIndex, unsign
 
 SnazzCraft::Voxel* SnazzCraft::Chunk::IsCollidingVoxel(const SnazzCraft::Hitbox* Hitbox)
 {
+    int Range[3] = {
+
+    };
+
     int VPosition[3];
     this->WorldSpaceToVoxelSpace(Hitbox->Position, VPosition);
 

@@ -4,6 +4,8 @@
 
 #include "../../../../includes/glm/glm.hpp"
 
+#define MAX_BRIGHTNESS (15)
+
 namespace SnazzCraft
 {
     class Voxel
@@ -11,7 +13,7 @@ namespace SnazzCraft
     public:
         const static unsigned int Size = 2;
 
-        unsigned int Position[3]; // In Chunk Space
+        unsigned int Position[3]; // In local chunk space
         unsigned int ID;
         unsigned int LightProducingLevel = 0;
         bool Cullable = true;
@@ -23,15 +25,13 @@ namespace SnazzCraft
             Value of 0 represents that side is not visible    
         */
         unsigned int Sides[6] = { 1, 1, 1, 1, 1, 1 }; 
-        unsigned int FaceLightLevels[6] = { 0, 0, 0, 0, 0, 0 }; 
+        unsigned int FaceLightLevels[6] = { 4, 4, 4, 4, 4, 4 }; 
 
         Voxel(unsigned int X, unsigned int Y, unsigned int Z, unsigned int ID);
 
         Voxel(unsigned int X, unsigned int Y, unsigned int Z, unsigned int ID, bool Cullable);
 
         Voxel(unsigned int X, unsigned int Y, unsigned int Z, unsigned int ID, bool Cullable, bool Collidable);
-
-        void SetFaceLightLevels(std::vector<unsigned int> SideIndexes, unsigned int LightLevel);
 
         inline unsigned int GetSideCount() const
         {
