@@ -28,7 +28,7 @@ namespace SnazzCraft
 
         ~VoxelTextureApplier();
 
-        std::vector<SnazzCraft::Vertice3D> GetTexturedVertices(const Voxel& Voxel);
+        std::vector<SnazzCraft::Vertice3D> GetTexturedVertices(const SnazzCraft::Voxel& Voxel);
 
     private:
         unsigned int TextureCoordinates[ATLAS_SIZE * ATLAS_SIZE][2];

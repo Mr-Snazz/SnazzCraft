@@ -12,9 +12,10 @@ SnazzCraft::VoxelTextureApplier::~VoxelTextureApplier()
 
 }
 
-std::vector<SnazzCraft::Vertice3D> SnazzCraft::VoxelTextureApplier::GetTexturedVertices(const Voxel& Voxel)
+std::vector<SnazzCraft::Vertice3D> SnazzCraft::VoxelTextureApplier::GetTexturedVertices(const SnazzCraft::Voxel& Voxel)
 {
     const glm::vec2 HalfPixel(HALF_PIXEL, HALF_PIXEL);   
+    const int HalfVoxelSize = static_cast<int>(SnazzCraft::Voxel::Size / 2.0f);
 
     std::vector<SnazzCraft::Vertice3D> Vertices;
 
@@ -72,9 +73,9 @@ std::vector<SnazzCraft::Vertice3D> SnazzCraft::VoxelTextureApplier::GetTexturedV
             
             // Update Positions
             for (unsigned int I = 0; I < 24; I++) { 
-                Vertices[I].Position.x = Vertices[I].Position.x < 0.0f ? -0.125f : 0.125f;
-                Vertices[I].Position.y = Vertices[I].Position.y > 0.0f ? 0.75f : Vertices[I].Position.y; 
-                Vertices[I].Position.z = Vertices[I].Position.z < 0.0f ? -0.125f : 0.125f;
+                Vertices[I].Position.x = Vertices[I].Position.x < 0.0f ? -0.125f * HalfVoxelSize : 0.125f * HalfVoxelSize;
+                Vertices[I].Position.y = Vertices[I].Position.y > 0.0f ?  0.75f  * HalfVoxelSize : Vertices[I].Position.y; 
+                Vertices[I].Position.z = Vertices[I].Position.z < 0.0f ? -0.125f * HalfVoxelSize : 0.125f * HalfVoxelSize;
             }
 
             break;
