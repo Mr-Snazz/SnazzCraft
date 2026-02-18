@@ -17,6 +17,7 @@ namespace SnazzCraft
 
         SnazzCraft::Mesh* EntityMesh = nullptr;
         SnazzCraft::Hitbox* EntityHitbox = nullptr;
+        glm::vec3 HitboxOffset = glm::vec3(0.0f);
 
         Entity(glm::vec3 Position, glm::vec3 Rotation);
         virtual ~Entity();

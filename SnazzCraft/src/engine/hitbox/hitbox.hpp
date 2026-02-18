@@ -26,12 +26,12 @@ namespace SnazzCraft
                    (glm::abs(this->Position.z - Point.z) <= this->HalfDimensions.z);
         }
 
-        inline void UpdateDimensions(const glm::vec3& NewDimensions)
+        constexpr void UpdateDimensions(const glm::vec3& NewDimensions)
         {
             this->HalfDimensions = NewDimensions / 2.0f;
         }
 
-        inline glm::vec3 GetFullDimensions() const
+        constexpr glm::vec3 GetFullDimensions() const
         {
             return this->HalfDimensions * 2.0f;
         }

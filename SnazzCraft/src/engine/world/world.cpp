@@ -233,15 +233,73 @@ bool SnazzCraft::World::SaveWorldToFile(bool OverwriteExistingFile)
     return true;
 }
 
-bool SnazzCraft::World::PlaceBlock(SnazzCraft::User* Player)
+bool SnazzCraft::World::PlaceVoxel(SnazzCraft::User* Player, unsigned int VoxelID)
 {
-    SnazzCraft::World::VoxelDDAResult* Result = this->MarchDDAToVoxel(Player->Position, SnazzCraft::CalculateFrontVector(Player->Rotation, true), 10.0f);
-    if (Result->CollidedWithVoxel) { delete Result; return false; }
+    // Step 1: Raycast to find which voxel we hit
+    SnazzCraft::World::VoxelDDAResult* Result = this->MarchDDAToVoxel(
+        Player->Position,
+        SnazzCraft::CalculateFrontVector(Player->Rotation, true),
+        10.0f
+    );
 
+    if (Result->CollidingVoxel == nullptr) {
+        delete Result;
+        return false;
+    }
 
+    // Step 2: Get hit voxel world coordinates
+    glm::ivec3 HitVoxel(
+        Result->CollidingVoxel->Position[0],
+        Result->CollidingVoxel->Position[1],
+        Result->CollidingVoxel->Position[2]
+    );
+
+    // Step 3: Compute direction to place the new voxel
+    glm::vec3 RayDir = glm::normalize(Result->EndPosition - Player->Position);
+
+    // Step 4: Calculate the new voxel's world position
+    glm::ivec3 PlaceVoxelWorld(
+        HitVoxel.x + static_cast<int>(glm::sign(RayDir.x)),
+        HitVoxel.y + static_cast<int>(glm::sign(RayDir.y)),
+        HitVoxel.z + static_cast<int>(glm::sign(RayDir.z))
+    );
+
+    delete Result;
+
+    // Step 5: Determine which chunk this voxel belongs to
+    int ChunkX = PlaceVoxelWorld.x / SnazzCraft::Chunk::Width;
+    int ChunkZ = PlaceVoxelWorld.z / SnazzCraft::Chunk::Depth;
+
+    if (ChunkX < 0 || ChunkZ < 0 || ChunkX >= static_cast<int>(this->Size) || ChunkZ >= static_cast<int>(this->Size))
+        return false;
+
+    auto ChunkIterator = this->Chunks->find(INDEX_2D(ChunkX, ChunkZ, this->Size));
+    if (ChunkIterator == this->Chunks->end()) return false;
+
+    // Step 6: Convert world voxel coordinates to local chunk coordinates
+    int LocalX = PlaceVoxelWorld.x % SnazzCraft::Chunk::Width;
+    int LocalY = PlaceVoxelWorld.y;
+    int LocalZ = PlaceVoxelWorld.z % SnazzCraft::Chunk::Depth;
+
+    // Handle negative modulo correctly
+    if (LocalX < 0) LocalX += SnazzCraft::Chunk::Width;
+    if (LocalZ < 0) LocalZ += SnazzCraft::Chunk::Depth;
+
+    // Step 7: Check if the local voxel slot is empty
+    int LocalIndex = LOCAL_VOXEL_INDEX(LocalX, LocalY, LocalZ);
+    if (ChunkIterator->second->Voxels->find(LocalIndex) != ChunkIterator->second->Voxels->end())
+        return false;
+
+    // Step 8: Place the voxel
+    ChunkIterator->second->Voxels->insert_or_assign(LocalIndex, SnazzCraft::Voxel(LocalX, LocalY, LocalZ, VoxelID));
+
+    // Step 9: Update mesh for this chunk
+    ChunkIterator->second->CullVoxelFaces();
+    ChunkIterator->second->UpdateMesh();
 
     return true;
 }
+
 
 SnazzCraft::World::VoxelDDAResult* SnazzCraft::World::MarchDDAToVoxel(const glm::vec3& StartingPosition, const glm::vec3& FrontVector, float MaxDistance)
 {
@@ -278,15 +336,14 @@ SnazzCraft::World::VoxelDDAResult* SnazzCraft::World::MarchDDAToVoxel(const glm:
     );
 
     float Distance = 0.0f;
-    float LastDistance = 0.0f;
+    float PreviousDistance = 0.0f;
     while (Distance < MaxDistance)
     {
         SnazzCraft::Voxel* Hit = GetCollidingVoxel(Position);
         if (Hit)
         {
             Result->CollidingVoxel = Hit;
-            Result->EndPosition = Position;
-            Result->CollidedWithVoxel = true;
+            Result->EndPosition = Position; // End at emtpy space or starting position if collided instantly
             return Result;
         }
 
@@ -309,8 +366,8 @@ SnazzCraft::World::VoxelDDAResult* SnazzCraft::World::MarchDDAToVoxel(const glm:
             Voxel.z += Step.z;
         }
 
-        float StepDistance = Distance - LastDistance;
-        LastDistance = Distance;
+        float StepDistance = Distance - PreviousDistance;
+        PreviousDistance = Distance;
 
         SnazzCraft::MoveVector3DWithFront(Position, RayDir, StepDistance);
     }
@@ -431,7 +488,7 @@ SnazzCraft::World* SnazzCraft::World::LoadWorldFromSaveFile(std::string FilePath
                 SnazzCraft::ParseData(NewInfo, Data, DataIndex, EmptyChar); 
                 NewVoxelInfo[3] = static_cast<unsigned int>(stoul(NewInfo));
 
-                NewChunk->Voxels->insert({ VOXEL_INDEX(NewVoxelInfo[0], NewVoxelInfo[1], NewVoxelInfo[2]), SnazzCraft::Voxel(NewVoxelInfo[0], NewVoxelInfo[1], NewVoxelInfo[2], NewVoxelInfo[3]) }); 
+                NewChunk->Voxels->insert({ LOCAL_VOXEL_INDEX(NewVoxelInfo[0], NewVoxelInfo[1], NewVoxelInfo[2]), SnazzCraft::Voxel(NewVoxelInfo[0], NewVoxelInfo[1], NewVoxelInfo[2], NewVoxelInfo[3]) }); 
 
                 break;
             }
@@ -449,6 +506,5 @@ SnazzCraft::World* SnazzCraft::World::LoadWorldFromSaveFile(std::string FilePath
 
     return NewWorld;
 }
-
 
 

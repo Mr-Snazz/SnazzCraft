@@ -2,6 +2,8 @@
 
 #include "../entity.hpp"
 
+extern const glm::vec3 UserHitboxDimensions;
+
 namespace SnazzCraft
 {
     class User : public SnazzCraft::Entity

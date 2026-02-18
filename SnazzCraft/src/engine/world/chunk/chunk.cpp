@@ -49,7 +49,7 @@ void SnazzCraft::Chunk::Generate(SnazzCraft::HeightMap* HeightMap, unsigned int 
             if (HeightAtPositionIterator->second != 0 && Y == HeightAtPositionIterator->second - 1) NewVoxelID = ID_VOXEL_DIRT_GRASS_MIX;
             else if (HeightAtPositionIterator->second != 0 && Y >= HeightAtPositionIterator->second - 4) NewVoxelID = ID_VOXEL_DIRT;
 
-            this->Voxels->insert({ VOXEL_INDEX(X, Y, Z), SnazzCraft::Voxel(X, Y, Z, NewVoxelID) });
+            this->Voxels->insert({ LOCAL_VOXEL_INDEX(X, Y, Z), SnazzCraft::Voxel(X, Y, Z, NewVoxelID) });
         }
 
         // Testing Torches
@@ -57,7 +57,7 @@ void SnazzCraft::Chunk::Generate(SnazzCraft::HeightMap* HeightMap, unsigned int 
         SnazzCraft::Voxel NewVoxel = SnazzCraft::Voxel(X, HeightAtPositionIterator->second, Z, ID_VOXEL_TORCH, false, false);
         NewVoxel.LightProducingLevel = 18;
 
-        this->Voxels->insert({ VOXEL_INDEX(X, HeightAtPositionIterator->second, Z), NewVoxel });
+        this->Voxels->insert({ LOCAL_VOXEL_INDEX(X, HeightAtPositionIterator->second, Z), NewVoxel });
     }
     }
 }
@@ -111,9 +111,9 @@ void SnazzCraft::Chunk::CullVoxelFaces()
                 (int)(VoxelPair.second.Position[2]) + SnazzCraft::VoxelCheckPositions[I][2]
             };
 
-            if (!VALID_VOXEL_POSITION(CheckPosition[0], CheckPosition[1], CheckPosition[2])) continue;
+            if (!VALID_LOCAL_VOXEL_POSITION(CheckPosition[0], CheckPosition[1], CheckPosition[2])) continue;
 
-            auto CurrentIterator = this->Voxels->find(VOXEL_INDEX(CheckPosition[0], CheckPosition[1], CheckPosition[2]));
+            auto CurrentIterator = this->Voxels->find(LOCAL_VOXEL_INDEX(CheckPosition[0], CheckPosition[1], CheckPosition[2]));
             if (CurrentIterator == this->Voxels->end()) continue;
 
             if (!CurrentIterator->second.Cullable) continue;
@@ -135,7 +135,7 @@ bool SnazzCraft::Chunk::VoxelTouchingChunkBorder(unsigned int VoxelIndex, unsign
         int CheckY = static_cast<int>(VoxelIterator->second.Position[1]) + SnazzCraft::VoxelCheckPositions[I][1];
         int CheckZ = static_cast<int>(VoxelIterator->second.Position[2]) + SnazzCraft::VoxelCheckPositions[I][2];
 
-        if (!VALID_VOXEL_POSITION(CheckX, CheckY, CheckZ)) {
+        if (!VALID_LOCAL_VOXEL_POSITION(CheckX, CheckY, CheckZ)) {
             if (BorderDirection != nullptr) *BorderDirection = I;
 
             return true;
@@ -147,22 +147,20 @@ bool SnazzCraft::Chunk::VoxelTouchingChunkBorder(unsigned int VoxelIndex, unsign
 
 SnazzCraft::Voxel* SnazzCraft::Chunk::GetCollidingVoxel(const SnazzCraft::Hitbox* Hitbox)
 {
+    int Range[3] = {
+        static_cast<int>(glm::ceil(Hitbox->HalfDimensions[0])),
+        static_cast<int>(glm::ceil(Hitbox->HalfDimensions[1])),
+        static_cast<int>(glm::ceil(Hitbox->HalfDimensions[2]))
+    };
+
     int VPosition[3];
     this->WorldSpaceToVoxelSpace(Hitbox->Position, VPosition);
 
-    for (int X = VPosition[0] - 1; X <= VPosition[0] + 1; X++) {
-    for (int Y = VPosition[1] - 1; Y <= VPosition[1] + 1; Y++) {
-    for (int Z = VPosition[2] - 1; Z <= VPosition[2] + 1; Z++) {
-        if (!VALID_VOXEL_POSITION(X, Y, Z)) continue;
-
-        auto VoxelIterator = this->Voxels->find(VOXEL_INDEX(X, Y, Z));
-        if (VoxelIterator == this->Voxels->end()) continue;
-
-        if (!VoxelIterator->second.Collidable) continue;
-
-        this->VoxelCollisionHitbox->Position = this->VoxelPositionToWorldPosition(X, Y, Z); 
-        
-        if (this->VoxelCollisionHitbox->IsColliding(*Hitbox)) return &VoxelIterator->second;
+    for (int X = VPosition[0] - Range[0]; X <= VPosition[0] + Range[0]; X++) {
+    for (int Y = VPosition[1] - Range[1]; Y <= VPosition[1] + Range[1]; Y++) {
+    for (int Z = VPosition[2] - Range[2]; Z <= VPosition[2] + Range[2]; Z++) {
+        SnazzCraft::Voxel* CollidingVoxel = this->GetCollidingVoxel(Hitbox, X, Y, Z);
+        if (CollidingVoxel != nullptr) return CollidingVoxel;
     }
     }
     }
@@ -176,17 +174,32 @@ SnazzCraft::Voxel* SnazzCraft::Chunk::GetCollidingVoxel(const glm::vec3& Positio
     glm::vec3 CheckPosition = Position;
     this->WorldSpaceToVoxelSpace(CheckPosition, VPosition);
 
-    if (!VALID_VOXEL_POSITION(VPosition[0], VPosition[1], VPosition[2])) return nullptr;
+    if (!VALID_LOCAL_VOXEL_POSITION(VPosition[0], VPosition[1], VPosition[2])) return nullptr;
 
-    auto VoxelIterator = this->Voxels->find(VOXEL_INDEX(VPosition[0], VPosition[1], VPosition[2]));
+    auto VoxelIterator = this->Voxels->find(LOCAL_VOXEL_INDEX(VPosition[0], VPosition[1], VPosition[2]));
     if (VoxelIterator == this->Voxels->end()) return nullptr;
 
     if (!VoxelIterator->second.Collidable) return nullptr;
 
-    this->VoxelCollisionHitbox->Position = this->VoxelPositionToWorldPosition(VPosition[0], VPosition[1], VPosition[2]); 
+    this->VoxelCollisionHitbox->Position = this->LocalVoxelPositionToWorldPosition(VPosition[0], VPosition[1], VPosition[2]); 
     if (this->VoxelCollisionHitbox->IsColliding(CheckPosition)) return &VoxelIterator->second;
 
     return nullptr;
+}
+
+SnazzCraft::Voxel* SnazzCraft::Chunk::GetCollidingVoxel(const SnazzCraft::Hitbox* Hitbox, int LocalVoxelX, int LocalVoxelY, int LocalVoxelZ)
+{
+    if (!VALID_LOCAL_VOXEL_POSITION(LocalVoxelX, LocalVoxelY, LocalVoxelZ)) return nullptr;
+
+    auto VoxelIterator = this->Voxels->find(LOCAL_VOXEL_INDEX(LocalVoxelX, LocalVoxelY, LocalVoxelZ));
+    if (VoxelIterator == this->Voxels->end()) return nullptr;
+
+    if (!VoxelIterator->second.Collidable) return nullptr;
+
+    this->VoxelCollisionHitbox->Position = this->LocalVoxelPositionToWorldPosition(LocalVoxelX, LocalVoxelY, LocalVoxelZ); 
+    if (!this->VoxelCollisionHitbox->IsColliding(*Hitbox)) return nullptr;
+
+    return &VoxelIterator->second;
 }
 
 void SnazzCraft::Chunk::ApplyBrightnessToVertices(std::vector<SnazzCraft::Vertice3D>& Vertices, const SnazzCraft::Voxel& Voxel)

@@ -11,6 +11,8 @@ namespace SnazzCraft
 
         InWorldGUI(unsigned int WindowWidth, unsigned int WindowHeight, GLFWwindow* Window);
 
+        bool InMenu = false;
+
     private:
 
 

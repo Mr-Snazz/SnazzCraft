@@ -126,8 +126,6 @@ bool SnazzCraft::Initiate()
     SnazzCraft::WorldGUI = new SnazzCraft::InWorldGUI(900, 900, SnazzCraft::Window);
     SnazzCraft::WorldGUI->GUIInputHandler->Callback = &WorldInputCallback;
 
-    SnazzCraft::Player->SetHitbox({ 1.75f, 5.75f, 1.75f });
-
     return true;
 }
 
@@ -279,8 +277,8 @@ void WorldInputCallback(SnazzCraft::Event* Event)
                     SnazzCraft::Player->Rotate({ 0.0f, 0.0f, 2.0f });
                     break;
 
-                case SNAZZCRAFT_KEY_F:
-                    SnazzCraft::Player->Position.y += 0.2f;
+                case SNAZZCRAFT_KEY_1:
+                    std::cout << SnazzCraft::CurrentWorld->PlaceVoxel(SnazzCraft::Player, 5) << "\n";
                     break;
             }
 
@@ -289,11 +287,13 @@ void WorldInputCallback(SnazzCraft::Event* Event)
 
         case SNAZZCRAFT_EVENT_MOUSE_CLICK_LEFT_PRESS:
         {
-            SnazzCraft::GUI* WorldGUI = static_cast<SnazzCraft::GUI*>((Event->EventData->AccessDataType(SNAZZCRAFT_DATA_TYPE_GUI_ADDRESS)));
+            SnazzCraft::InWorldGUI* WorldGUI = static_cast<SnazzCraft::InWorldGUI*>((Event->EventData->AccessDataType(SNAZZCRAFT_DATA_TYPE_GUI_ADDRESS)));
             if (WorldGUI == nullptr) return;
 
-            WorldGUI->SendEventToButtons(Event);
+            if (WorldGUI->InMenu) WorldGUI->SendEventToButtons(Event);
             
+            
+
             break;
         }
     }

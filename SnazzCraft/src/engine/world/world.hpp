@@ -36,7 +36,6 @@ namespace SnazzCraft
         {
             SnazzCraft::Voxel* CollidingVoxel = nullptr;
             glm::vec3 EndPosition = glm::vec3(0.0f);
-            bool CollidedWithVoxel = false;
         };
 
         std::string Name = "UNASSIGNED";
@@ -64,7 +63,7 @@ namespace SnazzCraft
 
         SnazzCraft::Voxel* GetCollidingVoxel(const SnazzCraft::Hitbox* Hitbox); // Returns nullptr if no collision
 
-        SnazzCraft::Voxel* GetCollidingVoxel(const glm::vec3& Position); 
+        SnazzCraft::Voxel* GetCollidingVoxel(const glm::vec3& Position); // Returns nullptr if no collision
 
         void MoveEntity(SnazzCraft::Entity* Entity, const glm::vec3& Rotation, float Distance); // Returns true if movement occurred without voxel collision
 
@@ -76,7 +75,7 @@ namespace SnazzCraft
 
         bool SaveWorldToFile(bool OverwriteExistingFile);
 
-        bool PlaceBlock(SnazzCraft::User* Player);
+        bool PlaceVoxel(SnazzCraft::User* Player, unsigned int VoxelID);
 
         SnazzCraft::World::VoxelDDAResult* MarchDDAToVoxel(const glm::vec3& StartingPosition, const glm::vec3& FrontVector, float MaxDistance); // FrontVector should be normalized
 
@@ -102,8 +101,6 @@ namespace SnazzCraft
         static SnazzCraft::World* CreateWorld(std::string Name, unsigned int Size, int Seed);
 
         static SnazzCraft::World* LoadWorldFromSaveFile(std::string FilePath);
-
-
     };
 
     
