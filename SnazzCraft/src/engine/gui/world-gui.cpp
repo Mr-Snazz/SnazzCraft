@@ -16,3 +16,4 @@ SnazzCraft::InWorldGUI::InWorldGUI(unsigned int WindowWidth, unsigned int Window
     this->WidgetCollections[1]->Buttons[0]->ActivePanel->Texture->CreateTextureFromString("activiate wireframe", 255, 255, 255);
     this->WidgetCollections[1]->Buttons[0]->Callback = &ToggleWireframeCallback;
 }
+

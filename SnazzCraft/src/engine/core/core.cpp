@@ -291,9 +291,7 @@ void WorldInputCallback(SnazzCraft::Event* Event)
             if (WorldGUI == nullptr) return;
 
             if (WorldGUI->InMenu) WorldGUI->SendEventToButtons(Event);
-            
-            
-
+        
             break;
         }
     }
