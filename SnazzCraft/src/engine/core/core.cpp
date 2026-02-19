@@ -103,6 +103,7 @@ bool SnazzCraft::Initiate()
 
     glUniformMatrix4fv(SnazzCraft::ProjectionLock, 1, GL_FALSE, glm::value_ptr(ProjectionMatrix));
     glUniformMatrix4fv(SnazzCraft::ModelLock, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
+    glUniformMatrix4fv(SnazzCraft::ProjectionLock, 1, GL_FALSE, glm::value_ptr(ProjectionMatrix));
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
@@ -152,8 +153,6 @@ void SnazzCraft::MainLoop()
 
                 // Render
                 SnazzCraft::VoxelShader->use(); 
-
-                glUniformMatrix4fv(SnazzCraft::ProjectionLock, 1, GL_FALSE, glm::value_ptr(ProjectionMatrix));
 
                 SnazzCraft::ViewMatrix = glm::lookAt(SnazzCraft::Player->Position, SnazzCraft::Player->Position + SnazzCraft::Player->Front, glm::vec3(0.0, 1.0, 0.0));
                 glUniformMatrix4fv(SnazzCraft::ViewLock, 1, GL_FALSE, glm::value_ptr(SnazzCraft::ViewMatrix));
@@ -224,75 +223,110 @@ void WorldInputCallback(SnazzCraft::Event* Event)
 {
     if (SnazzCraft::CurrentWorld == nullptr) return;
 
-    switch (Event->Type)
-    {
-        case SNAZZCRAFT_EVENT_KEY_DOWN:
+    if (!SnazzCraft::WorldGUI->InInventory) { // Not in inventory
+        switch (Event->Type)
         {
-            unsigned char* Key = static_cast<unsigned char*>(Event->EventData->AccessDataType(SNAZZCRAFT_DATA_TYPE_KEY));
-            if (Key == nullptr) return;
-
-            switch (*Key)
+            case SNAZZCRAFT_EVENT_KEY_DOWN:
             {
-                case SNAZZCRAFT_KEY_ESCAPE:
-                    SnazzCraft::CloseApplication = true;
-                    break;
+                unsigned char* Key = static_cast<unsigned char*>(Event->EventData->AccessDataType(SNAZZCRAFT_DATA_TYPE_KEY));
+                if (Key == nullptr) return;
 
-                case SNAZZCRAFT_KEY_W:
-                    SnazzCraft::CurrentWorld->MoveEntity(SnazzCraft::Player, glm::vec3(0.0f), 1.0f);
-                    break;
+                switch (*Key)
+                {
+                    case SNAZZCRAFT_KEY_ESCAPE:
+                        SnazzCraft::CloseApplication = true;
+                        break;
 
-                case SNAZZCRAFT_KEY_A:
-                    SnazzCraft::CurrentWorld->MoveEntity(SnazzCraft::Player, glm::vec3(0.0f, -90.0f, 0.0f), 1.0f);
-                    break;
+                    case SNAZZCRAFT_KEY_W:
+                        SnazzCraft::CurrentWorld->MoveEntity(SnazzCraft::Player, glm::vec3(0.0f), 1.0f);
+                        break;
 
-                case SNAZZCRAFT_KEY_S:
-                    SnazzCraft::CurrentWorld->MoveEntity(SnazzCraft::Player, glm::vec3(0.0f, 180.0f, 0.0f), 1.0f);
-                    break;
+                    case SNAZZCRAFT_KEY_A:
+                        SnazzCraft::CurrentWorld->MoveEntity(SnazzCraft::Player, glm::vec3(0.0f, -90.0f, 0.0f), 1.0f);
+                        break;
 
-                case SNAZZCRAFT_KEY_D:
-                    SnazzCraft::CurrentWorld->MoveEntity(SnazzCraft::Player, glm::vec3(0.0f, 90.0f, 0.0f), 1.0f);
-                    break;
+                    case SNAZZCRAFT_KEY_S:
+                        SnazzCraft::CurrentWorld->MoveEntity(SnazzCraft::Player, glm::vec3(0.0f, 180.0f, 0.0f), 1.0f);
+                        break;
 
-                case SNAZZCRAFT_KEY_SPACE:
-                    SnazzCraft::CurrentWorld->MoveEntity(glm::vec3(0.0f, 1.0f, 0.0f), SnazzCraft::Player);
-                    break;
+                    case SNAZZCRAFT_KEY_D:
+                        SnazzCraft::CurrentWorld->MoveEntity(SnazzCraft::Player, glm::vec3(0.0f, 90.0f, 0.0f), 1.0f);
+                        break;
 
-                case SNAZZCRAFT_KEY_LEFT_SHIFT:
-                    SnazzCraft::CurrentWorld->MoveEntity(glm::vec3(0.0f, -1.0f, 0.0f), SnazzCraft::Player);
-                    break;
+                    case SNAZZCRAFT_KEY_SPACE:
+                        SnazzCraft::CurrentWorld->MoveEntity(glm::vec3(0.0f, 1.0f, 0.0f), SnazzCraft::Player);
+                        break;
 
-                case SNAZZCRAFT_KEY_Q:
-                    SnazzCraft::Player->Rotate({ 0.0f, -2.0f, 0.0f });
-                    break;
+                    case SNAZZCRAFT_KEY_LEFT_SHIFT:
+                        SnazzCraft::CurrentWorld->MoveEntity(glm::vec3(0.0f, -1.0f, 0.0f), SnazzCraft::Player);
+                        break;
 
-                case SNAZZCRAFT_KEY_E:
-                    SnazzCraft::Player->Rotate({ 0.0f, 2.0f, 0.0f });
-                    break;
+                    case SNAZZCRAFT_KEY_Q:
+                        SnazzCraft::Player->Rotate({ 0.0f, -2.0f, 0.0f });
+                        break;
 
-                case SNAZZCRAFT_KEY_X:
-                    SnazzCraft::Player->Rotate({ 0.0f, 0.0f, -2.0f });
-                    break;
+                    case SNAZZCRAFT_KEY_E:
+                        SnazzCraft::Player->Rotate({ 0.0f, 2.0f, 0.0f });
+                        break;
 
-                case SNAZZCRAFT_KEY_C:
-                    SnazzCraft::Player->Rotate({ 0.0f, 0.0f, 2.0f });
-                    break;
+                    case SNAZZCRAFT_KEY_X:
+                        SnazzCraft::Player->Rotate({ 0.0f, 0.0f, -2.0f });
+                        break;
 
-                case SNAZZCRAFT_KEY_1:
-                    std::cout << SnazzCraft::CurrentWorld->PlaceVoxel(SnazzCraft::Player, 5) << "\n";
-                    break;
+                    case SNAZZCRAFT_KEY_C:
+                        SnazzCraft::Player->Rotate({ 0.0f, 0.0f, 2.0f });
+                        break;
+
+                    default:
+                        break;
+                }
+
+                break;
             }
 
-            break;
+            case SNAZZCRAFT_EVENT_MOUSE_CLICK_LEFT_PRESS:
+            {
+                Event->EventData->Items.push_back(SnazzCraft::WorldGUI);
+                Event->EventData->Types.push_back(SNAZZCRAFT_DATA_TYPE_GUI_ADDRESS);
+
+                SnazzCraft::WorldGUI->SendEventToButtons(Event);
+            
+                break;
+            }
+
+            default:
+                break;
         }
-
-        case SNAZZCRAFT_EVENT_MOUSE_CLICK_LEFT_PRESS:
+    } else { // In inventory
+        switch (Event->Type)
         {
-            SnazzCraft::InWorldGUI* WorldGUI = static_cast<SnazzCraft::InWorldGUI*>((Event->EventData->AccessDataType(SNAZZCRAFT_DATA_TYPE_GUI_ADDRESS)));
-            if (WorldGUI == nullptr) return;
+            case SNAZZCRAFT_EVENT_KEY_DOWN:
+            {
+                unsigned char* Key = static_cast<unsigned char*>(Event->EventData->AccessDataType(SNAZZCRAFT_DATA_TYPE_KEY));
+                if (Key == nullptr) return;
 
-            if (WorldGUI->InMenu) WorldGUI->SendEventToButtons(Event);
-        
-            break;
+                switch (*Key)
+                {
+
+                    default:
+                        break;
+                }
+
+                break;
+            }
+
+            case SNAZZCRAFT_EVENT_MOUSE_CLICK_LEFT_PRESS:
+            {
+                Event->EventData->Items.push_back(SnazzCraft::WorldGUI);
+                Event->EventData->Types.push_back(SNAZZCRAFT_DATA_TYPE_GUI_ADDRESS);
+
+                SnazzCraft::WorldGUI->SendEventToButtons(Event);
+            
+                break;
+            }
+
+            default:
+                break;
         }
     }
 }
@@ -303,10 +337,7 @@ void MainMenuCallback(SnazzCraft::Event* Event)
     {
         case SNAZZCRAFT_EVENT_MOUSE_CLICK_LEFT_PRESS:
         {
-            SnazzCraft::GUI* MenuGUI = static_cast<SnazzCraft::GUI*>((Event->EventData->AccessDataType(SNAZZCRAFT_DATA_TYPE_GUI_ADDRESS)));
-            if (MenuGUI == nullptr) return;
-           
-            MenuGUI->SendEventToButtons(Event);
+            SnazzCraft::MenuGUI->SendEventToButtons(Event);
             break;
         }
     }
