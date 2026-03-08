@@ -1,9 +1,9 @@
 CPPC = g++
 CC = gcc
 INCLUDES = includes
-CPPFLAGS = -I$(INCLUDES)
+CPPFLAGS = -I$(INCLUDES) -Werror
 CFLAGS = -I$(INCLUDES)
-LDFLAGS = -lglfw -ldl -lGL -lnoise -lm
+LDFLAGS = -lglfw -ldl -lGL -lnoise -lm -std=c++23
 
 # 1. Automatically find all .cpp and .c files recursively
 # This finds every file in src/ and includes/ without you listing them

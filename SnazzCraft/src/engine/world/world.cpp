@@ -9,6 +9,7 @@ SnazzCraft::World::World(std::string Name, unsigned int Size, int Seed)
     this->Seed = Seed;
 
     this->WorldHeightMap = new SnazzCraft::HeightMap(this->Size * SnazzCraft::Chunk::Width, 0, SnazzCraft:: Chunk::Height - 1, this->Seed, 1.0, 0.5, 2.0, 6);
+    this->Chunks = new std::unordered_map<unsigned int, SnazzCraft::Chunk*>();
 }
 
 SnazzCraft::World::~World()
@@ -17,26 +18,21 @@ SnazzCraft::World::~World()
         delete ChunkPair.second;
     }
 
-    delete this->Chunks;
     delete this->WorldHeightMap;
+    delete this->Chunks;
 }
 
 bool SnazzCraft::World::GenerateChunk(unsigned int X, unsigned int Z)
 {
-    {
-        std::lock_guard<std::mutex> Lock(this->ChunkMutex);
-
-        auto Iterator = this->Chunks->find(INDEX_2D(X, Z, this->Size));
-        if (Iterator != this->Chunks->end()) return false;
-    }
+    auto Iterator = this->Chunks->find(INDEX_2D(X, Z, this->Size));
+    if (Iterator != this->Chunks->end()) return false;
     
     SnazzCraft::Chunk* NewChunk = new SnazzCraft::Chunk(X, Z);
     NewChunk->Generate(this->WorldHeightMap, this->Size * SnazzCraft::Chunk::Width);
+    NewChunk->CullVoxelFaces();
+    NewChunk->UpdateMesh();
 
-    {
-        std::lock_guard<std::mutex> Lock(this->ChunkMutex);
-        (*this->Chunks)[INDEX_2D(X, Z, this->Size)] = NewChunk;
-    }
+    (*this->Chunks)[INDEX_2D(X, Z, this->Size)] = NewChunk;
 
     return true;
 }
@@ -58,18 +54,10 @@ void SnazzCraft::World::RenderChunks(SnazzCraft::User* Player)
     }
 }
 
-void SnazzCraft::World::OptimizeChunks()
+SnazzCraft::Voxel* SnazzCraft::World::GetCollidingVoxel(const SnazzCraft::Hitbox* Hitbox) const
 {
-    for (auto& ChunkPair : *this->Chunks) {
-        ChunkPair.second->CullVoxelFaces();
-        ChunkPair.second->UpdateMesh();
-    }
-}
-
-SnazzCraft::Voxel* SnazzCraft::World::GetCollidingVoxel(const SnazzCraft::Hitbox* Hitbox)
-{
-    int ChunkX = static_cast<int>(Hitbox->Position.x / (SnazzCraft::Chunk::Width * SnazzCraft::Voxel::Size));
-    int ChunkZ = static_cast<int>(Hitbox->Position.z / (SnazzCraft::Chunk::Depth * SnazzCraft::Voxel::Size));
+    const int ChunkX = static_cast<int>(Hitbox->Position.x / (SnazzCraft::Chunk::Width * SnazzCraft::Voxel::Size));
+    const int ChunkZ = static_cast<int>(Hitbox->Position.z / (SnazzCraft::Chunk::Depth * SnazzCraft::Voxel::Size));
 
     for (int X = ChunkX - 1; X <= ChunkX + 1; X++) {
     for (int Z = ChunkZ - 1; Z <= ChunkZ + 1; Z++) {
@@ -86,10 +74,10 @@ SnazzCraft::Voxel* SnazzCraft::World::GetCollidingVoxel(const SnazzCraft::Hitbox
     return nullptr;
 }
 
-SnazzCraft::Voxel* SnazzCraft::World::GetCollidingVoxel(const glm::vec3& Position)
+SnazzCraft::Voxel* SnazzCraft::World::GetCollidingVoxel(const glm::vec3& Position) const
 {
-    int ChunkX = static_cast<int>(Position.x / (SnazzCraft::Chunk::Width * SnazzCraft::Voxel::Size));
-    int ChunkZ = static_cast<int>(Position.z / (SnazzCraft::Chunk::Depth * SnazzCraft::Voxel::Size));
+    const int ChunkX = static_cast<int>(Position.x / (SnazzCraft::Chunk::Width * SnazzCraft::Voxel::Size));
+    const int ChunkZ = static_cast<int>(Position.z / (SnazzCraft::Chunk::Depth * SnazzCraft::Voxel::Size));
 
     if (ChunkX < 0 || ChunkZ < 0 || ChunkX >= static_cast<int>(this->Size) || ChunkZ >= static_cast<int>(this->Size)) return nullptr;
 
@@ -102,7 +90,7 @@ SnazzCraft::Voxel* SnazzCraft::World::GetCollidingVoxel(const glm::vec3& Positio
     return nullptr;
 }
 
-void SnazzCraft::World::MoveEntity(SnazzCraft::Entity* Entity, const glm::vec3& Rotation, float Distance)
+void SnazzCraft::World::MoveEntity(SnazzCraft::Entity* Entity, const glm::vec3& Rotation, float Distance) const
 {
     glm::vec3 NewPosition = Entity->Position;
     MoveVector3D(NewPosition, Entity->Rotation + Rotation, Distance);
@@ -121,7 +109,7 @@ void SnazzCraft::World::MoveEntity(SnazzCraft::Entity* Entity, const glm::vec3& 
     }
 }
 
-void SnazzCraft::World::MoveEntity(glm::vec3 Translation, SnazzCraft::Entity* Entity)
+void SnazzCraft::World::MoveEntity(glm::vec3 Translation, SnazzCraft::Entity* Entity) const
 {
     for (unsigned int I = 0; I < 3; I++) {
         float OldCoordinate = Entity->Position[I];
@@ -137,7 +125,7 @@ void SnazzCraft::World::MoveEntity(glm::vec3 Translation, SnazzCraft::Entity* En
     }
 }
 
-void SnazzCraft::World::UpdateLighting()
+void SnazzCraft::World::UpdateLighting() const
 {
     for (auto& ChunkPair : *this->Chunks) ChunkPair.second->LightValues->clear();
 
@@ -153,9 +141,43 @@ void SnazzCraft::World::UpdateLighting()
         this->ApplyLighting(Position, VoxelPair.second.LightProducingLevel);
     }
     }
+
+    for (auto& ChunkPair : *this->Chunks) ChunkPair.second->UpdateMesh();
 }
 
-void SnazzCraft::World::ApplyLighting(int LightOrigin[3], int LightProducingLevel)
+bool SnazzCraft::World::SaveWorldToFile(bool OverwriteExistingFile)
+{
+    constexpr const char* FileDirectory = "worlds/";
+    constexpr const char* FileExtension = ".txt";
+
+    std::string FilePath = FileDirectory + this->Name + FileExtension;
+    std::ofstream File;
+
+    if (std::filesystem::exists(FilePath) && !OverwriteExistingFile) return false;
+
+    File.open(FilePath);
+
+    File << WORLD_SAVE_FILE_DESCRIPTOR_NAME       << ": " << this->Name << "\n";
+    File << WORLD_SAVE_FILE_DESCRIPTOR_SIZE       << ": " << this->Size << "\n";
+    File << WORLD_SAVE_FILE_DESCRIPTOR_WORLD_SEED << ": " << this->Seed << "\n";
+
+    for (auto& ChunkPair : *this->Chunks) {
+        SnazzCraft::Chunk* Chunk = ChunkPair.second;
+
+        File << WORLD_SAVE_FILE_DESCRIPTOR_CHUNK_BEGIN << ": " << Chunk->Position[0] << " " << Chunk->Position[1] << "\n";
+
+        for (auto& VoxelPair : *Chunk->Voxels) {
+            File << WORLD_SAVE_FILE_DESCRIPTOR_CHUNK_NEW_VOXEL << ": " << VoxelPair.second.Position[0] << " " << VoxelPair.second.Position[1] << " " << VoxelPair.second.Position[2] << " " << VoxelPair.second.ID << "\n";
+        }
+
+        File << WORLD_SAVE_FILE_DESCRIPTOR_CHUNK_END << ":\n";
+    }
+
+    File.close();
+    return true;
+}
+
+void SnazzCraft::World::ApplyLighting(int LightOrigin[3], int LightProducingLevel) const
 {
     auto IsOutsideWorld = [this](int X, int Y, int Z) -> bool
     {
@@ -199,190 +221,21 @@ void SnazzCraft::World::ApplyLighting(int LightOrigin[3], int LightProducingLeve
     }
 }
 
-bool SnazzCraft::World::SaveWorldToFile(bool OverwriteExistingFile)
+SnazzCraft::World* SnazzCraft::World::CreateWorld(std::string Name, unsigned int* Size, int Seed)
 {
-    const std::string FileDirectory = "worlds/";
-    const std::string FileExtension = ".txt";
-
-    std::string FilePath = FileDirectory + this->Name + FileExtension;
-    std::ofstream File;
-
-    if (std::filesystem::exists(FilePath) && !OverwriteExistingFile) {
-        return false;
+    unsigned int GenerateSize;
+    if (Size == nullptr) {
+        GenerateSize = SnazzCraft::World::MaxSize;
     } else {
-        File.open(FilePath);
+        GenerateSize = *Size % SnazzCraft::World::MaxSize;
     }
 
-    File << WORLD_SAVE_FILE_DESCRIPTOR_NAME       << ": " << this->Name << "\n";
-    File << WORLD_SAVE_FILE_DESCRIPTOR_SIZE       << ": " << this->Size << "\n";
-    File << WORLD_SAVE_FILE_DESCRIPTOR_WORLD_SEED << ": " << this->Seed << "\n";
-
-    for (auto& ChunkPair : *this->Chunks) {
-        SnazzCraft::Chunk* Chunk = ChunkPair.second;
-
-        File << WORLD_SAVE_FILE_DESCRIPTOR_CHUNK_BEGIN << ": " << Chunk->Position[0] << " " << Chunk->Position[1] << "\n";
-
-        for (auto& VoxelPair : *Chunk->Voxels) {
-            File << WORLD_SAVE_FILE_DESCRIPTOR_CHUNK_NEW_VOXEL << ": " << VoxelPair.second.Position[0] << " " << VoxelPair.second.Position[1] << " " << VoxelPair.second.Position[2] << " " << VoxelPair.second.ID << "\n";
-        }
-
-        File << WORLD_SAVE_FILE_DESCRIPTOR_CHUNK_END << ":\n";
-    }
-
-    File.close();
-    return true;
-}
-
-bool SnazzCraft::World::PlaceVoxel(SnazzCraft::User* Player, unsigned int VoxelID)
-{
-    // Step 1: Raycast to find which voxel we hit
-    SnazzCraft::World::VoxelDDAResult* Result = this->MarchDDAToVoxel(
-        Player->Position,
-        SnazzCraft::CalculateFrontVector(Player->Rotation, true),
-        10.0f
-    );
-
-    if (Result->CollidingVoxel == nullptr) {
-        delete Result;
-        return false;
-    }
-
-    // Step 2: Get hit voxel world coordinates
-    glm::ivec3 HitVoxel(
-        Result->CollidingVoxel->Position[0],
-        Result->CollidingVoxel->Position[1],
-        Result->CollidingVoxel->Position[2]
-    );
-
-    // Step 3: Compute direction to place the new voxel
-    glm::vec3 RayDir = glm::normalize(Result->EndPosition - Player->Position);
-
-    // Step 4: Calculate the new voxel's world position
-    glm::ivec3 PlaceVoxelWorld(
-        HitVoxel.x + static_cast<int>(glm::sign(RayDir.x)),
-        HitVoxel.y + static_cast<int>(glm::sign(RayDir.y)),
-        HitVoxel.z + static_cast<int>(glm::sign(RayDir.z))
-    );
-
-    delete Result;
-
-    // Step 5: Determine which chunk this voxel belongs to
-    int ChunkX = PlaceVoxelWorld.x / SnazzCraft::Chunk::Width;
-    int ChunkZ = PlaceVoxelWorld.z / SnazzCraft::Chunk::Depth;
-
-    if (ChunkX < 0 || ChunkZ < 0 || ChunkX >= static_cast<int>(this->Size) || ChunkZ >= static_cast<int>(this->Size))
-        return false;
-
-    auto ChunkIterator = this->Chunks->find(INDEX_2D(ChunkX, ChunkZ, this->Size));
-    if (ChunkIterator == this->Chunks->end()) return false;
-
-    // Step 6: Convert world voxel coordinates to local chunk coordinates
-    int LocalX = PlaceVoxelWorld.x % SnazzCraft::Chunk::Width;
-    int LocalY = PlaceVoxelWorld.y;
-    int LocalZ = PlaceVoxelWorld.z % SnazzCraft::Chunk::Depth;
-
-    // Handle negative modulo correctly
-    if (LocalX < 0) LocalX += SnazzCraft::Chunk::Width;
-    if (LocalZ < 0) LocalZ += SnazzCraft::Chunk::Depth;
-
-    // Step 7: Check if the local voxel slot is empty
-    int LocalIndex = LOCAL_VOXEL_INDEX(LocalX, LocalY, LocalZ);
-    if (ChunkIterator->second->Voxels->find(LocalIndex) != ChunkIterator->second->Voxels->end())
-        return false;
-
-    // Step 8: Place the voxel
-    ChunkIterator->second->Voxels->insert_or_assign(LocalIndex, SnazzCraft::Voxel(LocalX, LocalY, LocalZ, VoxelID));
-
-    // Step 9: Update mesh for this chunk
-    ChunkIterator->second->CullVoxelFaces();
-    ChunkIterator->second->UpdateMesh();
-
-    return true;
-}
-
-
-SnazzCraft::World::VoxelDDAResult* SnazzCraft::World::MarchDDAToVoxel(const glm::vec3& StartingPosition, const glm::vec3& FrontVector, float MaxDistance)
-{
-    SnazzCraft::World::VoxelDDAResult* Result = new SnazzCraft::World::VoxelDDAResult();
-
-    glm::vec3 RayDir = glm::normalize(FrontVector);
-    glm::vec3 Position = StartingPosition;
-
-    // World-space voxel
-    glm::ivec3 Voxel = glm::floor(Position);
-
-    glm::ivec3 Step(
-        RayDir.x > 0 ? 1 : -1,
-        RayDir.y > 0 ? 1 : -1,
-        RayDir.z > 0 ? 1 : -1
-    );
-
-    glm::vec3 Delta(
-        SnazzCraft::Voxel::Size / glm::abs(RayDir.x),
-        SnazzCraft::Voxel::Size / glm::abs(RayDir.y),
-        SnazzCraft::Voxel::Size / glm::abs(RayDir.z)
-    );
-
-    glm::vec3 NextBoundary(
-        (Step.x > 0 ? Voxel.x + 1 : Voxel.x) * SnazzCraft::Voxel::Size,
-        (Step.y > 0 ? Voxel.y + 1 : Voxel.y) * SnazzCraft::Voxel::Size,
-        (Step.z > 0 ? Voxel.z + 1 : Voxel.z) * SnazzCraft::Voxel::Size
-    );
-
-    glm::vec3 Max(
-        (NextBoundary.x - Position.x) / RayDir.x,
-        (NextBoundary.y - Position.y) / RayDir.y,
-        (NextBoundary.z - Position.z) / RayDir.z
-    );
-
-    float Distance = 0.0f;
-    float PreviousDistance = 0.0f;
-    while (Distance < MaxDistance)
-    {
-        SnazzCraft::Voxel* Hit = GetCollidingVoxel(Position);
-        if (Hit)
-        {
-            Result->CollidingVoxel = Hit;
-            Result->EndPosition = Position; // End at emtpy space or starting position if collided instantly
-            return Result;
-        }
-
-        if (Max.x < Max.y && Max.x < Max.z)
-        {
-            Distance = Max.x;
-            Max.x += Delta.x;
-            Voxel.x += Step.x;
-        }
-        else if (Max.y < Max.z)
-        {
-            Distance = Max.y;
-            Max.y += Delta.y;
-            Voxel.y += Step.y;
-        }
-        else
-        {
-            Distance = Max.z;
-            Max.z += Delta.z;
-            Voxel.z += Step.z;
-        }
-
-        float StepDistance = Distance - PreviousDistance;
-        PreviousDistance = Distance;
-
-        SnazzCraft::MoveVector3DWithFront(Position, RayDir, StepDistance);
-    }
-
-    return Result;
-}
-
-SnazzCraft::World* SnazzCraft::World::CreateWorld(std::string Name, unsigned int Size, int Seed)
-{
-    SnazzCraft::World* NewWorld = new SnazzCraft::World(Name, Size, Seed);
+    SnazzCraft::World* NewWorld = new SnazzCraft::World(Name, GenerateSize, Seed);
 
     for (unsigned int X = 0; X < NewWorld->Size; X++) {
     for (unsigned int Z = 0; Z < NewWorld->Size; Z++) {
         NewWorld->GenerateChunk(X, Z);
-    }
+    } 
     }
 
     return NewWorld;

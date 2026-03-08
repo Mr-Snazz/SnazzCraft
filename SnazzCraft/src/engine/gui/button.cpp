@@ -41,16 +41,17 @@ void SetWorldModeButtonCallback(SnazzCraft::Event* Event)
 
     SnazzCraft::World* NewWorld = SnazzCraft::CurrentWorld;
 
+    unsigned int* NewWorldSize = new unsigned int(5);
     if (NewWorld == nullptr) { 
-        NewWorld = SnazzCraft::World::CreateWorld("default-generated-world", 4, 58008);
+        NewWorld = SnazzCraft::World::CreateWorld("default-generated-world", NewWorldSize, 58008);
         NewWorld->UpdateLighting();
-        NewWorld->OptimizeChunks();
     }
 
     Event->EventData->Items.push_back(static_cast<void*>(NewWorld));
     Event->EventData->Types.push_back(SNAZZCRAFT_DATA_TYPE_WORLD_ADDRESS);
 
     SnazzCraft::ChangeModeCallback(Event);
+    delete NewWorldSize;
 }
 
 void SetMainMenuModeButtonCallback(SnazzCraft::Event* Event)

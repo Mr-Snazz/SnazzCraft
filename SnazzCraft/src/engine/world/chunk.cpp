@@ -35,6 +35,8 @@ SnazzCraft::Chunk::~Chunk()
 
 void SnazzCraft::Chunk::Generate(SnazzCraft::HeightMap* HeightMap, unsigned int MapWidth)
 {
+    std::lock_guard<std::mutex> Lock(this->Mutex);
+
     unsigned int HeightMapOffsetX = this->Position[0] * SnazzCraft::Chunk::Width;
     unsigned int HeightMapOffsetZ = this->Position[1] * SnazzCraft::Chunk::Depth;
 
@@ -64,6 +66,8 @@ void SnazzCraft::Chunk::Generate(SnazzCraft::HeightMap* HeightMap, unsigned int 
 
 void SnazzCraft::Chunk::UpdateMesh()
 {
+    std::lock_guard<std::mutex> Lock(this->Mutex);
+
     delete this->ChunkMesh;
 
     std::vector<SnazzCraft::Vertice3D> NewTexturedVertices;
@@ -99,6 +103,8 @@ void SnazzCraft::Chunk::UpdateMesh()
 
 void SnazzCraft::Chunk::CullVoxelFaces()
 {
+    std::lock_guard<std::mutex> Lock(this->Mutex);
+
     this->OptimizedVoxels->clear();
 
     for (auto VoxelPair : *this->Voxels)  {
@@ -125,7 +131,7 @@ void SnazzCraft::Chunk::CullVoxelFaces()
     }
 }
 
-bool SnazzCraft::Chunk::VoxelTouchingChunkBorder(unsigned int VoxelIndex, unsigned int* BorderDirection)
+bool SnazzCraft::Chunk::VoxelTouchingChunkBorder(unsigned int VoxelIndex, unsigned int* BorderDirection) const
 {
     auto VoxelIterator = this->Voxels->find(VoxelIndex);
     if (VoxelIterator == this->Voxels->end()) return false;
@@ -145,7 +151,7 @@ bool SnazzCraft::Chunk::VoxelTouchingChunkBorder(unsigned int VoxelIndex, unsign
     return false;
 }
 
-SnazzCraft::Voxel* SnazzCraft::Chunk::GetCollidingVoxel(const SnazzCraft::Hitbox* Hitbox)
+SnazzCraft::Voxel* SnazzCraft::Chunk::GetCollidingVoxel(const SnazzCraft::Hitbox* Hitbox) const
 {
     int Range[3] = {
         static_cast<int>(glm::ceil(Hitbox->HalfDimensions[0])),
@@ -168,7 +174,7 @@ SnazzCraft::Voxel* SnazzCraft::Chunk::GetCollidingVoxel(const SnazzCraft::Hitbox
     return nullptr;
 }
 
-SnazzCraft::Voxel* SnazzCraft::Chunk::GetCollidingVoxel(const glm::vec3& Position)
+SnazzCraft::Voxel* SnazzCraft::Chunk::GetCollidingVoxel(const glm::vec3& Position) const
 {
     int VPosition[3];
     glm::vec3 CheckPosition = Position;
@@ -187,7 +193,7 @@ SnazzCraft::Voxel* SnazzCraft::Chunk::GetCollidingVoxel(const glm::vec3& Positio
     return nullptr;
 }
 
-SnazzCraft::Voxel* SnazzCraft::Chunk::GetCollidingVoxel(const SnazzCraft::Hitbox* Hitbox, int LocalVoxelX, int LocalVoxelY, int LocalVoxelZ)
+SnazzCraft::Voxel* SnazzCraft::Chunk::GetCollidingVoxel(const SnazzCraft::Hitbox* Hitbox, int LocalVoxelX, int LocalVoxelY, int LocalVoxelZ) const
 {
     if (!VALID_LOCAL_VOXEL_POSITION(LocalVoxelX, LocalVoxelY, LocalVoxelZ)) return nullptr;
 
@@ -202,7 +208,7 @@ SnazzCraft::Voxel* SnazzCraft::Chunk::GetCollidingVoxel(const SnazzCraft::Hitbox
     return &VoxelIterator->second;
 }
 
-void SnazzCraft::Chunk::ApplyBrightnessToVertices(std::vector<SnazzCraft::Vertice3D>& Vertices, const SnazzCraft::Voxel& Voxel)
+void SnazzCraft::Chunk::ApplyBrightnessToVertices(std::vector<SnazzCraft::Vertice3D>& Vertices, const SnazzCraft::Voxel& Voxel) const
 {
     int LightApplyValue = 1;
 
