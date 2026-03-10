@@ -41,10 +41,9 @@ void SetWorldModeButtonCallback(SnazzCraft::Event* Event)
 
     SnazzCraft::World* NewWorld = SnazzCraft::CurrentWorld;
 
-    unsigned int* NewWorldSize = new unsigned int(5);
+    unsigned int* NewWorldSize = new unsigned int(4);
     if (NewWorld == nullptr) { 
         NewWorld = SnazzCraft::World::CreateWorld("default-generated-world", NewWorldSize, 58008);
-        NewWorld->UpdateAllLighting();
     }
 
     Event->EventData->Items.push_back(static_cast<void*>(NewWorld));

@@ -44,7 +44,7 @@ namespace SnazzCraft
 
         ~World();
 
-        void GenerateChunk(unsigned int X, unsigned int Z);
+        void GenerateChunk(unsigned int X, unsigned int Z, bool UpdateLighting);
 
         void RenderChunks(SnazzCraft::User* Player);
 
@@ -56,7 +56,7 @@ namespace SnazzCraft
 
         void MoveEntity(glm::vec3 Translation, SnazzCraft::Entity* Entity) const; // Returns true if movement occurred without voxel collision
 
-        void UpdateAllLighting() const;
+        void UpdateAndApplyAllLighting() const;
 
         bool SaveWorldToFile(bool OverwriteExistingFile);
 
@@ -77,13 +77,26 @@ namespace SnazzCraft
 
     private:
         std::unordered_map<unsigned int, SnazzCraft::Chunk*>* Chunks = nullptr;
-        mutable std::mutex ChunksMutex;
 
         SnazzCraft::HeightMap* WorldHeightMap = nullptr;
 
-        void ApplyLighting(int LightOrigin[3], int LightProducingLevel) const;
+        void ApplyLightingVoxel(int LightOrigin[3], int LightProducingLevel, bool AutoUpdateChunks) const;
 
         void InitializeAndAddChunk(unsigned int X, unsigned int Z) const;
+
+        inline void ApplyLightingChunk(SnazzCraft::Chunk* Chunk) const
+        {
+            for (auto& VoxelPair : *Chunk->Voxels) {
+                if (VoxelPair.second.LightProducingLevel <= 0) continue;
+
+                int Position[3] = {
+                    static_cast<int>(VoxelPair.second.Position[0]) + Chunk->Position[0] * SnazzCraft::Chunk::Width,
+                    static_cast<int>(VoxelPair.second.Position[1]),
+                    static_cast<int>(VoxelPair.second.Position[2]) + Chunk->Position[1] * SnazzCraft::Chunk::Depth,
+                };
+                this->ApplyLightingVoxel(Position, VoxelPair.second.LightProducingLevel, false);
+            }
+        }
         
     public:
         static SnazzCraft::World* CreateWorld(std::string Name, unsigned int* Size, int Seed);

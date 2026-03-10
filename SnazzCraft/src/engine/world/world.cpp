@@ -22,8 +22,10 @@ SnazzCraft::World::~World()
     delete this->Chunks;
 }
 
-void SnazzCraft::World::GenerateChunk(unsigned int X, unsigned int Z)
+void SnazzCraft::World::GenerateChunk(unsigned int X, unsigned int Z, bool UpdateLighting)
 {
+    if (X >= SnazzCraft::World::Size || Z >= SnazzCraft::World::Size) return;
+
     auto Iterator = this->Chunks->find(INDEX_2D(X, Z, this->Size));
     if (Iterator != this->Chunks->end()) return;
 
@@ -32,6 +34,8 @@ void SnazzCraft::World::GenerateChunk(unsigned int X, unsigned int Z)
     NewChunk->CullVoxelFaces();
     NewChunk->UpdateMesh();
     (*this->Chunks)[INDEX_2D(X, Z, this->Size)] = NewChunk;
+
+    if (UpdateLighting) this->ApplyLightingChunk(NewChunk);
 }
 
 void SnazzCraft::World::RenderChunks(SnazzCraft::User* Player)
@@ -45,7 +49,6 @@ void SnazzCraft::World::RenderChunks(SnazzCraft::User* Player)
 
         auto ChunkIterator = this->Chunks->find(INDEX_2D(X, Z, static_cast<int>(this->Size)));
         if (ChunkIterator == this->Chunks->end()) {
-            this->GenerateChunk(X, Z);
             ChunkIterator = this->Chunks->find(INDEX_2D(X, Z, static_cast<int>(this->Size)));
         }
 
@@ -125,21 +128,12 @@ void SnazzCraft::World::MoveEntity(glm::vec3 Translation, SnazzCraft::Entity* En
     }
 }
 
-void SnazzCraft::World::UpdateAllLighting() const
+void SnazzCraft::World::UpdateAndApplyAllLighting() const
 {
     for (auto& ChunkPair : *this->Chunks) { ChunkPair.second->LightValues->clear(); }
 
     for (auto& ChunkPair : *this->Chunks) {
-    for (auto& VoxelPair : *ChunkPair.second->Voxels) {
-        if (VoxelPair.second.LightProducingLevel <= 0) continue;
-
-        int Position[3] = {
-            static_cast<int>(VoxelPair.second.Position[0]) + ChunkPair.second->Position[0] * SnazzCraft::Chunk::Width,
-            static_cast<int>(VoxelPair.second.Position[1]),
-            static_cast<int>(VoxelPair.second.Position[2]) + ChunkPair.second->Position[1] * SnazzCraft::Chunk::Depth,
-        };
-        this->ApplyLighting(Position, VoxelPair.second.LightProducingLevel);
-    }
+        this->ApplyLightingChunk(ChunkPair.second);
     }
 
     for (auto& ChunkPair : *this->Chunks) ChunkPair.second->UpdateMesh();
@@ -177,7 +171,7 @@ bool SnazzCraft::World::SaveWorldToFile(bool OverwriteExistingFile)
     return true;
 }
 
-void SnazzCraft::World::ApplyLighting(int LightOrigin[3], int LightProducingLevel) const
+void SnazzCraft::World::ApplyLightingVoxel(int LightOrigin[3], int LightProducingLevel, bool AutoUpdateChunks) const
 {
     auto IsOutsideWorld = [this](int X, int Y, int Z) -> bool
     {
@@ -192,6 +186,9 @@ void SnazzCraft::World::ApplyLighting(int LightOrigin[3], int LightProducingLeve
 
         return LightProducingLevel - (TranslationX + TranslationY + TranslationZ);
     };
+
+    static std::vector<SnazzCraft::Chunk*> ChunksToUpdate;
+    if (AutoUpdateChunks) ChunksToUpdate.clear();
 
     for (int X = LightOrigin[0] - LightProducingLevel; X <= LightOrigin[0] + LightProducingLevel; X++) {
     for (int Y = LightOrigin[1] - LightProducingLevel; Y <= LightOrigin[1] + LightProducingLevel; Y++) {
@@ -211,32 +208,36 @@ void SnazzCraft::World::ApplyLighting(int LightOrigin[3], int LightProducingLeve
         int LightIndex = INDEX_3D(Local[0], Local[1], Local[2], SnazzCraft::Chunk::Width, SnazzCraft::Chunk::Height);
         auto LightIterator = ChunkIterator->second->LightValues->find(LightIndex);
 
-        if (LightIterator == ChunkIterator->second->LightValues->end()) {
+        if (LightIterator == ChunkIterator->second->LightValues->end() || LightIterator->second < LightValue) {
             ChunkIterator->second->LightValues->insert_or_assign(LightIndex, LightValue);
-        } else if (LightIterator->second < LightValue) {
-            ChunkIterator->second->LightValues->insert_or_assign(LightIndex, LightValue);
+
+            ChunksToUpdate.push_back(ChunkIterator->second);
         }
     }
     }
+    }
+
+    if (!AutoUpdateChunks) return;
+
+    for (SnazzCraft::Chunk* Chunk : ChunksToUpdate) {
+        Chunk->UpdateMesh();
     }
 }
 
 SnazzCraft::World* SnazzCraft::World::CreateWorld(std::string Name, unsigned int* Size, int Seed)
 {
-    unsigned int GenerateSize;
-    if (Size == nullptr) {
-        GenerateSize = SnazzCraft::World::MaxSize;
-    } else {
-        GenerateSize = *Size % SnazzCraft::World::MaxSize;
-    }
+    unsigned int GenerateSize = Size == nullptr ? 
+        SnazzCraft::World::MaxSize : 
+        *Size % SnazzCraft::World::MaxSize;
 
     SnazzCraft::World* NewWorld = new SnazzCraft::World(Name, GenerateSize, Seed);
 
     for (unsigned int X = 0; X < NewWorld->Size; X++) {
     for (unsigned int Z = 0; Z < NewWorld->Size; Z++) {
-        NewWorld->GenerateChunk(X, Z);
+        NewWorld->GenerateChunk(X, Z, false);
     } 
     }
+    NewWorld->UpdateAndApplyAllLighting();
 
     return NewWorld;
 }
@@ -359,5 +360,4 @@ SnazzCraft::World* SnazzCraft::World::LoadWorldFromSaveFile(std::string FilePath
 
     return NewWorld;
 }
-
 
