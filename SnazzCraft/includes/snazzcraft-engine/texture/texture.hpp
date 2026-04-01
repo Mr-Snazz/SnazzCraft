@@ -36,8 +36,6 @@ namespace SnazzCraft
 
         void CreateTextureFromString(std::string Text, unsigned char R, unsigned char G, unsigned char B);
 
-        bool OverlayNewTexture(const char* FilePath, int OffsetX, int OffsetY);
-
         inline bool BindTexture()
         {
             if (this->ID == nullptr) return false;

@@ -79,34 +79,6 @@ void SnazzCraft::Texture::CreateTextureFromString(std::string Text, unsigned cha
     this->SetTexture();
 }
 
-bool SnazzCraft::Texture::OverlayNewTexture(const char* FilePath, int OffsetX, int OffsetY)
-{
-    int NewWidth, NewHeight, NewNRChannels = 0;
-
-    unsigned char* NewData = stbi_load(FilePath, &NewWidth, &NewHeight, &NewNRChannels, 0);
-    if (NewData == nullptr || NewNRChannels != this->NRChannels) return false;
-
-    for (int Y = OffsetY; Y < OffsetY + NewHeight; Y++) {
-        if (Y < 0 || Y >= this->Dimensions[1]) continue;
-
-        for (int X = OffsetX; X < OffsetX + NewWidth; X++) {
-            if (X < 0 || X >= this->Dimensions[0]) continue;
-
-            unsigned int Index = (Y * this->Dimensions[0] + X) * this->NRChannels;
-            unsigned int NewDataIndex = ((Y - OffsetY) * NewWidth + (X - OffsetX)) * NewNRChannels;
-
-            for (unsigned int I = 0; I < NewNRChannels; I++) {
-                this->Data[Index + I] = NewData[NewDataIndex + I];
-            }
-        }
-    }
-
-    glDeleteTextures(1, this->ID);
-    this->SetTexture();
-
-    return true;
-}
-
 void SnazzCraft::Texture::SetTexture()
 {
     glGenTextures(1, &*this->ID);

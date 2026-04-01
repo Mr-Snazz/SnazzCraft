@@ -19,7 +19,7 @@ namespace SnazzCraft
 
         InputHandler(GLFWwindow* Window);
 
-        ~InputHandler();
+        virtual ~InputHandler();
 
         virtual void PollEvents();
 
