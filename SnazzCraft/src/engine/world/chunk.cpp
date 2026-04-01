@@ -46,7 +46,7 @@ void SnazzCraft::Chunk::Generate(SnazzCraft::HeightMap* HeightMap, uint32_t MapW
             if (HeightAtPositionIterator->second != 0 && Y == HeightAtPositionIterator->second - 1) NewVoxelID = ID_VOXEL_DIRT_GRASS_MIX;
             else if (HeightAtPositionIterator->second != 0 && Y >= HeightAtPositionIterator->second - 4) NewVoxelID = ID_VOXEL_DIRT;
 
-            this->Voxels->insert({ LOCAL_VOXEL_INDEX(X, Y, Z), SnazzCraft::Voxel(X, Y, Z, NewVoxelID) });
+            this->Voxels->insert({ SnazzCraft::Chunk::LocalVoxelIndex(X, Y, Z), SnazzCraft::Voxel(X, Y, Z, NewVoxelID) });
         }
 
         // Testing Torches
@@ -54,13 +54,26 @@ void SnazzCraft::Chunk::Generate(SnazzCraft::HeightMap* HeightMap, uint32_t MapW
         SnazzCraft::Voxel NewVoxel = SnazzCraft::Voxel(X, HeightAtPositionIterator->second, Z, ID_VOXEL_TORCH, false, false);
         NewVoxel.LightProducingLevel = 18;
 
-        this->Voxels->insert({ LOCAL_VOXEL_INDEX(X, HeightAtPositionIterator->second, Z), NewVoxel });
+        this->Voxels->insert({ SnazzCraft::Chunk::LocalVoxelIndex(X, HeightAtPositionIterator->second, Z), NewVoxel });
     }
     }
 }
 
 void SnazzCraft::Chunk::UpdateVerticesAndIndices()
 {
+    auto ApplyLightingToVertices = [this](const SnazzCraft::Voxel& Voxel, std::vector<SnazzCraft::Vertice3D>& Vertices) -> void
+    {
+        int LightValue = 1;
+        auto LightValueIterator = this->LightValues->find(SnazzCraft::Chunk::LocalVoxelIndex(Voxel));
+        if (LightValueIterator != this->LightValues->end()) LightValue = LightValueIterator->second;
+        LightValue = LightValue < Voxel.LightProducingLevel ? Voxel.LightProducingLevel : LightValue;
+
+        float LightValueToApply = static_cast<float>(LightValue) / MAX_VOXEL_LIGHT_VALUE;
+        for (SnazzCraft::Vertice3D& Vertice : Vertices) {
+            Vertice.Brightness = LightValueToApply;
+        }
+    };
+
     this->Vertices->clear();
     this->Indices->clear();
 
@@ -69,8 +82,8 @@ void SnazzCraft::Chunk::UpdateVerticesAndIndices()
         uint32_t NewVerticesCount = 0;
 
         std::vector<SnazzCraft::Vertice3D> Vertices = SnazzCraft::EngineVoxelTextureApplier->GetTexturedVertices(VoxelPair.second);
-        this->ApplyBrightnessToVertices(Vertices, VoxelPair.second);
-  
+        ApplyLightingToVertices(VoxelPair.second, Vertices);
+
         for (SnazzCraft::Vertice3D& Vertice3D : Vertices) { 
             Vertice3D.Position += Offset; // Adjusting to world space once now means not having to create a new model matrix for each individual chunk later
 
@@ -82,7 +95,7 @@ void SnazzCraft::Chunk::UpdateVerticesAndIndices()
             if (!VoxelPair.second.Sides[SideIndex]) continue;
 
             for (uint32_t I = 0; I < 6; I++) {
-                this->Indices->push_back(SnazzCraft::VoxelMesh->Indices[(SideIndex * 6) + I] + this->Vertices->size() - NewVerticesCount);
+                this->Indices->push_back(SnazzCraft::VoxelMesh->Indices[INDEX_2D(I, SideIndex, 6)] + this->Vertices->size() - NewVerticesCount);
             }
         }
     }
@@ -102,9 +115,9 @@ void SnazzCraft::Chunk::CullVoxelFaces()
                 (int)(VoxelPair.second.Position[2]) + SnazzCraft::VoxelCheckPositions[I][2]
             };
 
-            if (!VALID_LOCAL_VOXEL_POSITION(CheckPosition[0], CheckPosition[1], CheckPosition[2])) continue;
+            if (!SnazzCraft::Chunk::ValidLocalVoxelPosition(CheckPosition[0], CheckPosition[1], CheckPosition[2])) continue;
 
-            auto CurrentIterator = this->Voxels->find(LOCAL_VOXEL_INDEX(CheckPosition[0], CheckPosition[1], CheckPosition[2]));
+            auto CurrentIterator = this->Voxels->find(SnazzCraft::Chunk::LocalVoxelIndex(CheckPosition[0], CheckPosition[1], CheckPosition[2]));
             if (CurrentIterator == this->Voxels->end()) continue;
 
             if (!CurrentIterator->second.Cullable) continue;
@@ -126,7 +139,7 @@ bool SnazzCraft::Chunk::VoxelTouchingChunkBorder(uint32_t VoxelIndex, uint32_t* 
         int32_t CheckY = static_cast<int>(VoxelIterator->second.Position[1]) + SnazzCraft::VoxelCheckPositions[I][1];
         int32_t CheckZ = static_cast<int>(VoxelIterator->second.Position[2]) + SnazzCraft::VoxelCheckPositions[I][2];
 
-        if (!VALID_LOCAL_VOXEL_POSITION(CheckX, CheckY, CheckZ)) {
+        if (!SnazzCraft::Chunk::ValidLocalVoxelPosition(CheckX, CheckY, CheckZ)) {
             if (BorderDirection != nullptr) *BorderDirection = I;
 
             return true;
@@ -165,9 +178,9 @@ SnazzCraft::Voxel* SnazzCraft::Chunk::GetCollidingVoxel(const glm::vec3& Positio
     glm::vec3 CheckPosition = Position;
     this->WorldSpaceToVoxelSpace(CheckPosition, VPosition);
 
-    if (!VALID_LOCAL_VOXEL_POSITION(VPosition[0], VPosition[1], VPosition[2])) return nullptr;
+    if (!SnazzCraft::Chunk::ValidLocalVoxelPosition(VPosition[0], VPosition[1], VPosition[2])) return nullptr;
 
-    auto VoxelIterator = this->Voxels->find(LOCAL_VOXEL_INDEX(VPosition[0], VPosition[1], VPosition[2]));
+    auto VoxelIterator = this->Voxels->find(SnazzCraft::Chunk::LocalVoxelIndex(VPosition[0], VPosition[1], VPosition[2]));
     if (VoxelIterator == this->Voxels->end()) return nullptr;
 
     if (!VoxelIterator->second.Collidable) return nullptr;
@@ -180,9 +193,9 @@ SnazzCraft::Voxel* SnazzCraft::Chunk::GetCollidingVoxel(const glm::vec3& Positio
 
 SnazzCraft::Voxel* SnazzCraft::Chunk::GetCollidingVoxel(const SnazzCraft::Hitbox* Hitbox, int32_t LocalVoxelX, int32_t LocalVoxelY, int32_t LocalVoxelZ) const
 {
-    if (!VALID_LOCAL_VOXEL_POSITION(LocalVoxelX, LocalVoxelY, LocalVoxelZ)) return nullptr;
+    if (!SnazzCraft::Chunk::ValidLocalVoxelPosition(LocalVoxelX, LocalVoxelY, LocalVoxelZ)) return nullptr;
 
-    auto VoxelIterator = this->Voxels->find(LOCAL_VOXEL_INDEX(LocalVoxelX, LocalVoxelY, LocalVoxelZ));
+    auto VoxelIterator = this->Voxels->find(SnazzCraft::Chunk::LocalVoxelIndex(LocalVoxelX, LocalVoxelY, LocalVoxelZ));
     if (VoxelIterator == this->Voxels->end()) return nullptr;
 
     if (!VoxelIterator->second.Collidable) return nullptr;
@@ -193,19 +206,5 @@ SnazzCraft::Voxel* SnazzCraft::Chunk::GetCollidingVoxel(const SnazzCraft::Hitbox
     return &VoxelIterator->second;
 }
 
-void SnazzCraft::Chunk::ApplyBrightnessToVertices(std::vector<SnazzCraft::Vertice3D>& Vertices, const SnazzCraft::Voxel& Voxel)
-{
-    int32_t LightApplyValue = 1;
 
-    auto LightIterator = this->LightValues->find(INDEX_3D(Voxel.Position[0], Voxel.Position[1], Voxel.Position[2], SnazzCraft::Chunk::Width, SnazzCraft::Chunk::Height));
-    if (LightIterator != this->LightValues->end()) {
-        if (LightIterator->second > LightApplyValue) LightApplyValue = LightIterator->second;
-    }
-
-    if (Voxel.LightProducingLevel > LightApplyValue) LightApplyValue = Voxel.LightProducingLevel;
-
-    for (SnazzCraft::Vertice3D& Vertice : Vertices) {
-        Vertice.Brightness = LightApplyValue / static_cast<float>(MAX_BRIGHTNESS);
-    }
-}
 

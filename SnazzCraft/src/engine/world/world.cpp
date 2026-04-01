@@ -8,58 +8,37 @@ SnazzCraft::World::World(std::string Name, uint32_t Size, int Seed)
     this->Name = Name;
     this->Seed = Seed;
 
-    this->ChunkMeshUpdateQueue = new std::vector<SnazzCraft::Chunk*>();
     this->Chunks = new std::unordered_map<uint32_t, SnazzCraft::Chunk*>();
     this->WorldHeightMap = new SnazzCraft::HeightMap(this->Size * SnazzCraft::Chunk::Width, 0, SnazzCraft:: Chunk::Height - 1, this->Seed, 1.0, 0.5, 2.0, 6);
-    this->ApplyLightingQueue = new std::unordered_set<uint32_t>();
 }
 
 SnazzCraft::World::~World()
 {
-    delete this->ChunkMeshUpdateQueue;
     for (auto& ChunkPair : *this->Chunks) {
         delete ChunkPair.second;
     }
 
     delete this->Chunks;
     delete this->WorldHeightMap;
-    delete this->ApplyLightingQueue;
 }
 
-void SnazzCraft::World::GenerateChunk(uint32_t X, uint32_t Z)
+void SnazzCraft::World::GenerateChunk(uint32_t X, uint32_t Z, bool ApplyLighting) const
 {
-    auto InitializeNewChunk = [this, X, Z]() -> void
-    {
-        SnazzCraft::Chunk* NewChunk = new SnazzCraft::Chunk(X, Z);
-
-        {
-            std::lock_guard<std::mutex> LockGuard(this->HeightMapMutex);
-            NewChunk->Generate(this->WorldHeightMap, this->Size * SnazzCraft::Chunk::Width);
-        }
-        
-        NewChunk->CullVoxelFaces();
-
-        {
-            std::lock_guard<std::mutex> LockGuard(this->ChunkMeshUpdateQueueMutex);
-            this->ChunkMeshUpdateQueue->push_back(NewChunk);
-        }
-
-        std::lock_guard<std::mutex> LockGuard(this->ChunkMutex);
-        (*this->Chunks)[INDEX_2D(X, Z, this->Size)] = NewChunk;
-        this->ApplyLightingChunk(NewChunk);
-        NewChunk->UpdateVerticesAndIndices();
-    };
-
     if (X >= SnazzCraft::World::Size || Z >= SnazzCraft::World::Size) return;
 
-    {
-        std::lock_guard<std::mutex> LockGuard(this->ChunkMutex);
-        auto Iterator = this->Chunks->find(INDEX_2D(X, Z, this->Size));
-        if (Iterator != this->Chunks->end()) return;
-    }
+    uint32_t ChunkIndex = INDEX_2D(X, Z, this->Size);
+    auto Iterator = this->Chunks->find(ChunkIndex);
+    if (Iterator != this->Chunks->end()) return;
     
-    std::thread ChunkInitializationThread(InitializeNewChunk);
-    ChunkInitializationThread.detach();
+    SnazzCraft::Chunk* NewChunk = new SnazzCraft::Chunk(X, Z);
+
+    NewChunk->Generate(this->WorldHeightMap, this->Size * SnazzCraft::Chunk::Width);
+    NewChunk->CullVoxelFaces();
+    NewChunk->UpdateVerticesAndIndices();   
+
+    (*this->Chunks)[ChunkIndex] = NewChunk;
+    if (ApplyLighting) this->UpdateChunkLighting(NewChunk);
+    NewChunk->UpdateMesh();
 }
 
 void SnazzCraft::World::RenderChunks(SnazzCraft::User* Player)
@@ -67,9 +46,6 @@ void SnazzCraft::World::RenderChunks(SnazzCraft::User* Player)
     int32_t PlayerChunkPosition[2];
     SnazzCraft::Chunk::GetChunkPosition(Player->Position, PlayerChunkPosition);
 
-    this->UpdateChunkMeshesInQueue();
-
-    std::lock_guard<std::mutex> LockGuard(this->ChunkMutex);
     for (int32_t X = PlayerChunkPosition[0] - static_cast<int32_t>(this->RenderDistance); X <= PlayerChunkPosition[0] + static_cast<int32_t>(this->RenderDistance); X++) {
     for (int32_t Z = PlayerChunkPosition[1] - static_cast<int32_t>(this->RenderDistance); Z <= PlayerChunkPosition[1] + static_cast<int32_t>(this->RenderDistance); Z++) {
         if (X < 0 || X >= this->Size || Z < 0 || Z >= this->Size) continue;
@@ -77,13 +53,7 @@ void SnazzCraft::World::RenderChunks(SnazzCraft::User* Player)
         auto ChunkIterator = this->Chunks->find(INDEX_2D(X, Z, static_cast<int32_t>(this->Size)));
         if (ChunkIterator == this->Chunks->end()) continue;
 
-        if (ChunkIterator->second->ChunkMesh == nullptr) {
-            {
-                std::lock_guard<std::mutex> LockGuard(this->ChunkMeshUpdateQueueMutex);
-                this->ChunkMeshUpdateQueue->push_back(ChunkIterator->second);
-            }
-            continue;
-        }
+        if (ChunkIterator->second->ChunkMesh == nullptr) continue; 
         ChunkIterator->second->ChunkMesh->Draw();
     }
     }
@@ -130,7 +100,6 @@ void SnazzCraft::World::MoveEntity(SnazzCraft::Entity* Entity, const glm::vec3& 
     glm::vec3 NewPosition = Entity->Position;
     MoveVector3D(NewPosition, Entity->Rotation + Rotation, Distance);
 
-    std::lock_guard<std::mutex> LockGuard(this->ChunkMutex);
     for (uint32_t I = 0; I < 3; I++) {
         float OldCoordinate = Entity->Position[I];
 
@@ -147,7 +116,6 @@ void SnazzCraft::World::MoveEntity(SnazzCraft::Entity* Entity, const glm::vec3& 
 
 void SnazzCraft::World::MoveEntity(glm::vec3 Translation, SnazzCraft::Entity* Entity) const
 {
-    std::lock_guard<std::mutex> LockGuard(this->ChunkMutex);
     for (uint32_t I = 0; I < 3; I++) {
         float OldCoordinate = Entity->Position[I];
 
@@ -160,18 +128,6 @@ void SnazzCraft::World::MoveEntity(glm::vec3 Translation, SnazzCraft::Entity* En
         Entity->Position[I] = OldCoordinate;
         Entity->EntityHitbox->Position[I] = OldCoordinate;
     }
-}
-
-void SnazzCraft::World::UpdateAndApplyAllLighting() const
-{
-    std::lock_guard<std::mutex> LockGuard(this->ChunkMutex);
-    for (auto& ChunkPair : *this->Chunks) { ChunkPair.second->LightValues->clear(); }
-
-    for (auto& ChunkPair : *this->Chunks) {
-        this->ApplyLightingChunk(ChunkPair.second);
-    }
-
-    for (auto& ChunkPair : *this->Chunks) ChunkPair.second->UpdateMesh();
 }
 
 bool SnazzCraft::World::SaveWorldToFile(bool OverwriteExistingFile)
@@ -206,11 +162,11 @@ bool SnazzCraft::World::SaveWorldToFile(bool OverwriteExistingFile)
     return true;
 }
 
-void SnazzCraft::World::ApplyLightingVoxel(int32_t LightOrigin[3], int32_t LightProducingLevel, bool AutoUpdateChunks) const
+void SnazzCraft::World::ApplyLightingVoxel(int32_t LightOrigin[3], int32_t LightProducingLevel, std::unordered_set<uint32_t>& ChunksToUpdate) const
 {
     auto IsOutsideWorld = [this](int32_t X, int32_t Y, int32_t Z) -> bool
     {
-        return X < 0 || Y < 0 || Z < 0 || X >= static_cast<int32_t>(this->Size) * SnazzCraft::Chunk::Width || Y >= SnazzCraft::Chunk::Height || Z >= static_cast<int32_t>(this->Size) * SnazzCraft::Chunk::Depth;
+        return X >= static_cast<int32_t>(this->Size) * SnazzCraft::Chunk::Width || Y >= SnazzCraft::Chunk::Height || Z >= static_cast<int32_t>(this->Size) * SnazzCraft::Chunk::Depth;
     };
 
     auto GetLightValue = [LightOrigin, LightProducingLevel](int32_t X, int32_t Y, int32_t Z) -> int32_t
@@ -222,8 +178,6 @@ void SnazzCraft::World::ApplyLightingVoxel(int32_t LightOrigin[3], int32_t Light
         return LightProducingLevel - (TranslationX + TranslationY + TranslationZ);
     };
 
-    std::vector<SnazzCraft::Chunk*> ChunksToUpdate;
-
     for (int32_t X = LightOrigin[0] - LightProducingLevel; X <= LightOrigin[0] + LightProducingLevel; X++) {
     for (int32_t Y = LightOrigin[1] - LightProducingLevel; Y <= LightOrigin[1] + LightProducingLevel; Y++) {
     for (int32_t Z = LightOrigin[2] - LightProducingLevel; Z <= LightOrigin[2] + LightProducingLevel; Z++) {
@@ -231,7 +185,13 @@ void SnazzCraft::World::ApplyLightingVoxel(int32_t LightOrigin[3], int32_t Light
 
         int32_t ChunkCoordinates[2];
         SnazzCraft::Chunk::GetChunkPosition(X, Z, ChunkCoordinates);
-        auto ChunkIterator = this->Chunks->find(INDEX_2D(ChunkCoordinates[0], ChunkCoordinates[1], this->Size));
+
+        uint32_t ChunkIndex = INDEX_2D(ChunkCoordinates[0], ChunkCoordinates[1], this->Size);
+        auto ChunkIterator = this->Chunks->find(ChunkIndex);
+        if (ChunkIterator == this->Chunks->end()) {
+            this->GenerateChunk(ChunkCoordinates[0], ChunkCoordinates[1], true);
+            ChunkIterator = this->Chunks->find(ChunkIndex);
+        }
         if (ChunkIterator == this->Chunks->end()) continue;
 
         int32_t LightValue = GetLightValue(X, Y, Z);
@@ -239,40 +199,32 @@ void SnazzCraft::World::ApplyLightingVoxel(int32_t LightOrigin[3], int32_t Light
 
         int32_t Local[3];
         SnazzCraft::Chunk::GetLocalVoxelPosition(X, Y, Z, Local);
-        int32_t LightIndex = INDEX_3D(Local[0], Local[1], Local[2], SnazzCraft::Chunk::Width, SnazzCraft::Chunk::Height);
+        int32_t LightIndex = SnazzCraft::Chunk::LocalVoxelIndex(Local[0], Local[1], Local[2]);
         auto LightIterator = ChunkIterator->second->LightValues->find(LightIndex);
 
         if (LightIterator == ChunkIterator->second->LightValues->end() || LightIterator->second < LightValue) {
             ChunkIterator->second->LightValues->insert_or_assign(LightIndex, LightValue);
-
-            if (!AutoUpdateChunks) continue;
-            ChunksToUpdate.push_back(ChunkIterator->second);
+            ChunksToUpdate.insert(INDEX_2D(ChunkIterator->second->Position[0], ChunkIterator->second->Position[1], this->Size));
         }
     }
     }
-    }
-
-    for (SnazzCraft::Chunk* Chunk : ChunksToUpdate) {
-        std::lock_guard<std::mutex> LockGuard(this->ChunkMeshUpdateQueueMutex);
-        this->ChunkMeshUpdateQueue->push_back(Chunk);
     }
 }
 
 SnazzCraft::World* SnazzCraft::World::CreateWorld(std::string Name, uint32_t Size, int32_t Seed)
 {
-    uint32_t GenerateSize = Size == 0 ? 
+    uint32_t GenerateSize = Size == 0 || Size > SnazzCraft::World::MaxSize ? 
         SnazzCraft::World::MaxSize : 
-        Size % SnazzCraft::World::MaxSize;
+        Size;
 
     SnazzCraft::World* NewWorld = new SnazzCraft::World(Name, GenerateSize, Seed);
 
     for (uint32_t X = 0; X < NewWorld->Size; X++) {
     for (uint32_t Z = 0; Z < NewWorld->Size; Z++) {
-        NewWorld->GenerateChunk(X, Z);
+        NewWorld->GenerateChunk(X, Z, true);
     } 
     }
-    NewWorld->UpdateAndApplyAllLighting();
-
+    
     return NewWorld;
 }
 
@@ -376,7 +328,7 @@ SnazzCraft::World* SnazzCraft::World::LoadWorldFromSaveFile(std::string FilePath
                 SnazzCraft::ParseData(NewInfo, Data, DataIndex, EmptyChar); 
                 NewVoxelInfo[3] = static_cast<uint32_t >(stoul(NewInfo));
 
-                NewChunk->Voxels->insert({ LOCAL_VOXEL_INDEX(NewVoxelInfo[0], NewVoxelInfo[1], NewVoxelInfo[2]), SnazzCraft::Voxel(NewVoxelInfo[0], NewVoxelInfo[1], NewVoxelInfo[2], NewVoxelInfo[3]) }); 
+                NewChunk->Voxels->insert({ SnazzCraft::Chunk::LocalVoxelIndex(NewVoxelInfo[0], NewVoxelInfo[1], NewVoxelInfo[2]), SnazzCraft::Voxel(NewVoxelInfo[0], NewVoxelInfo[1], NewVoxelInfo[2], NewVoxelInfo[3]) }); 
 
                 break;
             }

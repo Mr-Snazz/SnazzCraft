@@ -41,7 +41,7 @@ void SetWorldModeButtonCallback(SnazzCraft::Event* Event)
 
     SnazzCraft::World* NewWorld = SnazzCraft::CurrentWorld;
 
-    unsigned int NewWorldSize = 4;
+    unsigned int NewWorldSize = 10;
     if (NewWorld == nullptr) { 
         NewWorld = SnazzCraft::World::CreateWorld("default-generated-world", NewWorldSize, 58008);
     }

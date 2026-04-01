@@ -30,15 +30,9 @@ namespace SnazzCraft
     class Chunk
     {
     public:
-        static constexpr int32_t Width  = 16;
-        static constexpr int32_t Height = 256;
-        static constexpr int32_t Depth  = 16;
-
-        #define VALID_LOCAL_VOXEL_POSITION(X, Y, Z) ((X) >= 0 && (Y) >= 0 && (Z) >= 0 && (X) < SnazzCraft::Chunk::Width && (Y) < SnazzCraft::Chunk::Height && (Z) < SnazzCraft::Chunk::Depth)
-        #define LOCAL_VOXEL_INDEX(X, Y, Z)          (INDEX_3D(X, Y, Z, SnazzCraft::Chunk::Width, SnazzCraft::Chunk::Height))
+        
 
         int32_t Position[2]; // X & Z Chunk Coordinates
-        glm::vec3 ChunkWorldOffset;
 
         SnazzCraft::Mesh* ChunkMesh = nullptr;
 
@@ -46,9 +40,6 @@ namespace SnazzCraft
         std::unordered_map<uint32_t, SnazzCraft::Voxel>* OptimizedVoxels = new std::unordered_map<uint32_t, SnazzCraft::Voxel>();
         std::unordered_map<uint32_t, int>*               LightValues     = new std::unordered_map<uint32_t, int>();
         std::vector<SnazzCraft::Entity*> Entities;
-
-        std::vector<SnazzCraft::Vertice3D>* Vertices = nullptr;
-        std::vector<uint32_t>* Indices = nullptr;
 
         Chunk(int32_t X, int32_t Y); // Chunk Coordinates 
 
@@ -77,7 +68,10 @@ namespace SnazzCraft
         }
 
     private:
-        void ApplyBrightnessToVertices(std::vector<SnazzCraft::Vertice3D>& Vertices, const SnazzCraft::Voxel& Voxel);
+        glm::vec3 ChunkWorldOffset;
+
+        std::vector<SnazzCraft::Vertice3D>* Vertices = nullptr;
+        std::vector<uint32_t>* Indices = nullptr;
 
         inline glm::vec3 LocalVoxelPositionToWorldPosition(uint32_t X, uint32_t Y, uint32_t Z) const
         {
@@ -97,6 +91,10 @@ namespace SnazzCraft
 
     
     public:
+        static constexpr int32_t Width  = 16;
+        static constexpr int32_t Height = 256;
+        static constexpr int32_t Depth  = 16;
+
         static inline void GetChunkPosition(const glm::vec3& Position, int32_t OutChunkPosition[2]) // Voxel space coordinates
         {
             OutChunkPosition[0] = static_cast<int>(Position.x) / SnazzCraft::Chunk::Width;
@@ -114,6 +112,21 @@ namespace SnazzCraft
             OutLocalChunkPosition[0] = X % SnazzCraft::Chunk::Width;
             OutLocalChunkPosition[1] = Y % SnazzCraft::Chunk::Height;
             OutLocalChunkPosition[2] = Z % SnazzCraft::Chunk::Depth;
+        }
+
+        static inline uint32_t LocalVoxelIndex(uint32_t X, uint32_t Y, uint32_t Z)
+        {
+            return INDEX_3D(X, Y, Z, SnazzCraft::Chunk::Width, SnazzCraft::Chunk::Height);
+        }
+
+        static inline uint32_t LocalVoxelIndex(const SnazzCraft::Voxel& Voxel)
+        {
+            return INDEX_3D(Voxel.Position[0], Voxel.Position[1], Voxel.Position[2], SnazzCraft::Chunk::Width, SnazzCraft::Chunk::Height);
+        }
+
+        static inline bool ValidLocalVoxelPosition(uint32_t X, uint32_t Y, uint32_t Z)
+        {
+            return X >= 0 && Y >= 0 && Z >= 0 && X < SnazzCraft::Chunk::Width && Y < SnazzCraft::Chunk::Height && Z < SnazzCraft::Chunk::Depth;
         }
 
     };

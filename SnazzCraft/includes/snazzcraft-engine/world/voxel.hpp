@@ -4,7 +4,7 @@
 
 #include "../../glm/glm.hpp"
 
-#define MAX_BRIGHTNESS (20)
+#define MAX_VOXEL_LIGHT_VALUE (20)
 
 namespace SnazzCraft
 {

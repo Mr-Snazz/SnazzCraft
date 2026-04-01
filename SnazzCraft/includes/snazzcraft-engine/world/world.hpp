@@ -45,21 +45,19 @@ namespace SnazzCraft
 
         ~World();
 
-        void GenerateChunk(uint32_t X, uint32_t Z);
+        void GenerateChunk(uint32_t X, uint32_t Z, bool ApplyLighting) const; // Thread safe
 
-        void RenderChunks(SnazzCraft::User* Player);
+        void RenderChunks(SnazzCraft::User* Player); // Thread safe
 
-        SnazzCraft::Voxel* GetCollidingVoxel(const SnazzCraft::Hitbox* Hitbox) const; // Returns nullptr if no collision & not thread safe
+        SnazzCraft::Voxel* GetCollidingVoxel(const SnazzCraft::Hitbox* Hitbox) const; // Returns nullptr if no collision - not thread safe
 
-        SnazzCraft::Voxel* GetCollidingVoxel(const glm::vec3& Position) const; // Returns nullptr if no collision & not thread safe
+        SnazzCraft::Voxel* GetCollidingVoxel(const glm::vec3& Position) const; // Returns nullptr if no collision - not thread safe
 
-        void MoveEntity(SnazzCraft::Entity* Entity, const glm::vec3& Rotation, float Distance) const; // Returns true if movement occurred without voxel collision
+        void MoveEntity(SnazzCraft::Entity* Entity, const glm::vec3& Rotation, float Distance) const; // Returns true if movement occurred without voxel collision - not thread safe
 
-        void MoveEntity(glm::vec3 Translation, SnazzCraft::Entity* Entity) const; // Returns true if movement occurred without voxel collision
+        void MoveEntity(glm::vec3 Translation, SnazzCraft::Entity* Entity) const; // Returns true if movement occurred without voxel collision - not thread safe
 
-        void UpdateAndApplyAllLighting() const;
-
-        bool SaveWorldToFile(bool OverwriteExistingFile);
+        bool SaveWorldToFile(bool OverwriteExistingFile); 
 
         inline void ApplyGravityToEntities(std::vector<SnazzCraft::Entity*> AdditionalEntities)
         {
@@ -77,25 +75,26 @@ namespace SnazzCraft
         }
 
     private:
-        std::vector<SnazzCraft::Chunk*>* ChunkMeshUpdateQueue = nullptr;
-        mutable std::mutex ChunkMeshUpdateQueueMutex;
-
         std::unordered_map<uint32_t, SnazzCraft::Chunk*>* Chunks = nullptr;
-        mutable std::mutex ChunkMutex;
 
         SnazzCraft::HeightMap* WorldHeightMap = nullptr;
-        mutable std::mutex HeightMapMutex;
+        
+        /*
+        Only to be called trough UpdateChunkLighting
+        Generates Chunks when light values would affect them
+        Not Thread safe
+        */
+        void ApplyLightingVoxel(int32_t LightOrigin[3], int32_t LightProducingLevel, std::unordered_set<uint32_t>& ChunksToUpdate) const; 
 
-        std::unordered_set<uint32_t>* ApplyLightingQueue = nullptr;
-        mutable std::mutex ApplyLightingQueueMutex;
-
-        void ApplyLightingVoxel(int32_t LightOrigin[3], int32_t LightProducingLevel, bool AutoUpdateChunks) const;
-
-        void InitializeAndAddChunk(uint32_t X, uint32_t Z) const;
-
-        inline void ApplyLightingChunk(SnazzCraft::Chunk* Chunk) const
+        /*
+        Calls UpdateVerticesAndIndices & UpdateMesh on all chunks affected
+        If the Chunk in the address given has not light producing voxels then no updating member functions of the Chunk will be called
+        Not thread safe
+        */
+        inline void UpdateChunkLighting(SnazzCraft::Chunk* Chunk) const
         {
-            for (auto& VoxelPair : *Chunk->Voxels) {
+            std::unordered_set<uint32_t> ChunksToUpdate;
+            for (const auto& VoxelPair : *Chunk->OptimizedVoxels) {
                 if (VoxelPair.second.LightProducingLevel <= 0) continue;
 
                 int32_t Position[3] = {
@@ -103,23 +102,16 @@ namespace SnazzCraft
                     static_cast<int32_t>(VoxelPair.second.Position[1]),
                     static_cast<int32_t>(VoxelPair.second.Position[2]) + Chunk->Position[1] * SnazzCraft::Chunk::Depth,
                 };
-                this->ApplyLightingVoxel(Position, VoxelPair.second.LightProducingLevel, false);
+                this->ApplyLightingVoxel(Position, VoxelPair.second.LightProducingLevel, ChunksToUpdate);
             }
-        }
 
-        inline void UpdateChunkMeshesInQueue()
-        {
-            std::lock_guard<std::mutex> QueueLockGuard(this->ChunkMeshUpdateQueueMutex);
-            std::lock_guard<std::mutex> ChunkLockGuard(this->ChunkMutex);
-            for (SnazzCraft::Chunk* Chunk : *this->ChunkMeshUpdateQueue) {
-                Chunk->UpdateMesh();
+            for (uint32_t I : ChunksToUpdate) {
+                auto ChunkIterator = this->Chunks->find(I);
+                if (ChunkIterator == this->Chunks->end()) continue;
+
+                ChunkIterator->second->UpdateVerticesAndIndices();
+                ChunkIterator->second->UpdateMesh();
             }
-            this->ChunkMeshUpdateQueue->clear();
-        }
-
-        inline void UpdateLightingInQueue()
-        {
-            
         }
         
     public:
