@@ -11,6 +11,7 @@
 #include <thread>
 #include <mutex>
 #include <stdint.h>
+#include <queue>
 
 #include "chunk.hpp"
 #include "../height-map/height-map.hpp"
@@ -75,13 +76,30 @@ namespace SnazzCraft
         }
 
     private:
+        struct LightNode
+        {
+            union 
+            {
+                struct 
+                {
+                    int32_t X, Y, Z;
+                };
+                int32_t Position[3];
+            };
+            int32_t LightValue;
+
+            LightNode(int32_t ILightValue, int32_t IX, int32_t IY, int32_t IZ);
+
+            LightNode(int32_t ILightValue, int32_t IPosition[3]);
+        };
+
         std::unordered_map<uint32_t, SnazzCraft::Chunk*>* Chunks = nullptr;
 
         SnazzCraft::HeightMap* WorldHeightMap = nullptr;
         
         /*
         Only to be called trough UpdateChunkLighting
-        Generates Chunks when light values would affect them
+        Generates currently ungenerated Chunks when light values would affect them
         Not Thread safe
         */
         void ApplyLightingVoxel(int32_t LightOrigin[3], int32_t LightProducingLevel, std::unordered_set<uint32_t>& ChunksToUpdate) const; 
