@@ -33,8 +33,6 @@ namespace SnazzCraft
         bool CollidableToVoxels = true;
         // <-
 
-        bool Sides[6] = { true, true, true, true, true, true }; // Front, Left, Right, Back, Top, Bottom
-
         Voxel(uint32_t IX, uint32_t IY, uint32_t IZ, uint32_t IID);
 
         inline void AutoSetSpecificValues()
@@ -44,6 +42,7 @@ namespace SnazzCraft
                 case ID_VOXEL_ABOVE_GRASS:
                     this->LightProducingLevel = 0;
                     this->LightPropogationDecrease = 0;
+
                     this->Cullable = false;
                     this->CollidableToEntities = false;
                     this->CollidableToVoxels = true;
@@ -67,17 +66,46 @@ namespace SnazzCraft
             }
         }
 
-        inline uint32_t GetSideCount() const
+        inline bool HasSide(uint8_t SideIndex) const
         {
-            uint32_t Count = 0;
-            for (uint32_t I = 0; I < 6; I++) {
-                if (this->Sides[I]) Count++;
+            if (SideIndex > 5) return false;
+            return (this->Sides >> SideIndex) & 1;
+        }
+
+        inline void ChangeSideValue(uint8_t SideIndex, bool Value)
+        {
+            if (SideIndex > 5) return;
+            if (Value) {
+                this->Sides |= (1 << SideIndex);
+            } else {
+                this->Sides &= ~(1 << SideIndex);
+            }
+        }
+
+        inline void SetAllSides()
+        {
+            this->Sides = 0x3F;
+        }
+
+        inline void ClearAllSides()
+        {
+            this->Sides = 0x00;
+        }
+
+        inline uint8_t GetSideCount() const
+        {
+            uint8_t Count = 0;
+            for (uint8_t I = 0; I < 6; I++) {
+                if (this->HasSide(I)) Count++;
             }
 
             return Count;
         }
 
     private:
+        // Bit Order:
+        // false, false, Bottom, Top, Back, Right, Left, Front
+        uint8_t Sides = 0x3F;
 
     };
 } // SnazzCraft
