@@ -1,10 +1,8 @@
 #include "snazzcraft-engine/world/voxel.hpp"
 
-SnazzCraft::Voxel::Voxel(uint32_t X, uint32_t Y, uint32_t Z, uint32_t ID)
+SnazzCraft::Voxel::Voxel(uint32_t IX, uint32_t IY, uint32_t IZ, uint32_t IID)
+    : X(IX), Y(IY), Z(IZ), ID(IID)
 {
-    this->Position[0] = X;
-    this->Position[1] = Y;
-    this->Position[2] = Z;
-    this->ID = ID;
+
 }
 

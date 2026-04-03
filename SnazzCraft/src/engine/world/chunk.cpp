@@ -61,7 +61,7 @@ void SnazzCraft::Chunk::UpdateVerticesAndIndices()
     this->Indices.clear();
 
     for (const auto& VoxelPair : this->OptimizedVoxels) {
-        const glm::vec3 Offset = glm::vec3((float)VoxelPair.second.Position[0], (float)VoxelPair.second.Position[1], (float)VoxelPair.second.Position[2]) * glm::vec3((float)SnazzCraft::Voxel::Size, (float)SnazzCraft::Voxel::Size, (float)SnazzCraft::Voxel::Size) + this->ChunkWorldOffset; 
+        const glm::vec3 Offset = glm::vec3((float)VoxelPair.second.X, (float)VoxelPair.second.Y, (float)VoxelPair.second.Z) * glm::vec3((float)SnazzCraft::Voxel::Size, (float)SnazzCraft::Voxel::Size, (float)SnazzCraft::Voxel::Size) + this->ChunkWorldOffset; 
         uint32_t NewVerticesCount = 0;
 
         for (SnazzCraft::Vertice3D& Vertice3D : SnazzCraft::EngineVoxelTextureApplier->GetTexturedVertices(VoxelPair.second)) { 
@@ -90,9 +90,9 @@ void SnazzCraft::Chunk::CullVoxelFaces()
 
         for (int32_t I = 5; I >= 0; I--) {
             int32_t CheckPosition[3] = {
-                (int)(VoxelPair.second.Position[0]) + SnazzCraft::VoxelCheckPositions[I][0],
-                (int)(VoxelPair.second.Position[1]) + SnazzCraft::VoxelCheckPositions[I][1],
-                (int)(VoxelPair.second.Position[2]) + SnazzCraft::VoxelCheckPositions[I][2]
+                (int)(VoxelPair.second.X) + SnazzCraft::VoxelCheckPositions[I][0],
+                (int)(VoxelPair.second.Y) + SnazzCraft::VoxelCheckPositions[I][1],
+                (int)(VoxelPair.second.Z) + SnazzCraft::VoxelCheckPositions[I][2]
             };
 
             if (!SnazzCraft::Chunk::ValidLocalVoxelPosition(CheckPosition[0], CheckPosition[1], CheckPosition[2])) continue;
@@ -115,9 +115,9 @@ bool SnazzCraft::Chunk::VoxelTouchingChunkBorder(uint32_t VoxelIndex, uint32_t* 
     if (VoxelIterator == this->Voxels.end()) return false;
 
     for (uint32_t I = 0; I < 6; I++) {
-        int32_t CheckX = static_cast<int>(VoxelIterator->second.Position[0]) + SnazzCraft::VoxelCheckPositions[I][0];
-        int32_t CheckY = static_cast<int>(VoxelIterator->second.Position[1]) + SnazzCraft::VoxelCheckPositions[I][1];
-        int32_t CheckZ = static_cast<int>(VoxelIterator->second.Position[2]) + SnazzCraft::VoxelCheckPositions[I][2];
+        int32_t CheckX = static_cast<int>(VoxelIterator->second.X) + SnazzCraft::VoxelCheckPositions[I][0];
+        int32_t CheckY = static_cast<int>(VoxelIterator->second.Y) + SnazzCraft::VoxelCheckPositions[I][1];
+        int32_t CheckZ = static_cast<int>(VoxelIterator->second.Z) + SnazzCraft::VoxelCheckPositions[I][2];
 
         if (!SnazzCraft::Chunk::ValidLocalVoxelPosition(CheckX, CheckY, CheckZ)) {
             if (BorderDirection != nullptr) *BorderDirection = I;

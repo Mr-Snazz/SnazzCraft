@@ -128,7 +128,7 @@ namespace SnazzCraft
 
         static inline uint32_t LocalVoxelIndex(const SnazzCraft::Voxel& Voxel)
         {
-            return INDEX_3D(Voxel.Position[0], Voxel.Position[1], Voxel.Position[2], SnazzCraft::Chunk::Width, SnazzCraft::Chunk::Height);
+            return INDEX_3D(Voxel.X, Voxel.Y, Voxel.Z, SnazzCraft::Chunk::Width, SnazzCraft::Chunk::Height);
         }
 
         static inline bool ValidLocalVoxelPosition(int32_t X, int32_t Y, int32_t Z)

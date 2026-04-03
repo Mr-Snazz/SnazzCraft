@@ -147,7 +147,7 @@ bool SnazzCraft::World::SaveWorldToFile(bool OverwriteExistingFile)
         File << WORLD_SAVE_FILE_DESCRIPTOR_CHUNK_BEGIN << ": " << Chunk->Position[0] << " " << Chunk->Position[1] << "\n";
 
         for (auto& VoxelPair : Chunk->Voxels) {
-            File << WORLD_SAVE_FILE_DESCRIPTOR_CHUNK_NEW_VOXEL << ": " << VoxelPair.second.Position[0] << " " << VoxelPair.second.Position[1] << " " << VoxelPair.second.Position[2] << " " << VoxelPair.second.ID << "\n";
+            File << WORLD_SAVE_FILE_DESCRIPTOR_CHUNK_NEW_VOXEL << ": " << VoxelPair.second.X << " " << VoxelPair.second.Y << " " << VoxelPair.second.Z << " " << VoxelPair.second.ID << "\n";
         }
 
         File << WORLD_SAVE_FILE_DESCRIPTOR_CHUNK_END << ":\n";
@@ -164,9 +164,9 @@ void SnazzCraft::World::UpdateChunkLighting(SnazzCraft::Chunk* Chunk)
         if (VoxelPair.second.LightProducingLevel <= 0) continue;
 
         int32_t Position[3] = {
-            static_cast<int32_t>(VoxelPair.second.Position[0]) + Chunk->Position[0] * SnazzCraft::Chunk::Width,
-            static_cast<int32_t>(VoxelPair.second.Position[1]),
-            static_cast<int32_t>(VoxelPair.second.Position[2]) + Chunk->Position[1] * SnazzCraft::Chunk::Depth,
+            static_cast<int32_t>(VoxelPair.second.X) + Chunk->Position[0] * SnazzCraft::Chunk::Width,
+            static_cast<int32_t>(VoxelPair.second.Y),
+            static_cast<int32_t>(VoxelPair.second.Z) + Chunk->Position[1] * SnazzCraft::Chunk::Depth,
         };
         this->ApplyLightingVoxel(Position, VoxelPair.second.LightProducingLevel, ChunksToUpdate);
     }
@@ -188,9 +188,10 @@ void SnazzCraft::World::ApplyLightingVoxel(int32_t LightOrigin[3], int32_t Light
         return X < 0 || Y < 0 || Z < 0 || X >= static_cast<int32_t>(this->Size) * SnazzCraft::Chunk::Width || Y >= SnazzCraft::Chunk::Height || Z >= static_cast<int32_t>(this->Size) * SnazzCraft::Chunk::Depth;
     };
 
-    auto AddLightNodes = [this](std::queue<SnazzCraft::World::LightNode>& Queue, const SnazzCraft::World::LightNode& OriginNode) -> void
+    auto AddLightNodes = [this](std::queue<SnazzCraft::World::LightNode>& Queue, const SnazzCraft::World::LightNode& OriginNode, int LightPropagationDecrease) -> void
     {
-        if (OriginNode.LightValue <= 1) return;
+        int32_t NewLightValue = OriginNode.LightValue - LightPropagationDecrease;
+        if (NewLightValue <= 0) return;
 
         for (uint8_t I = 0; I < 3; I++) {
             int32_t NewPosition[3] = {
@@ -198,7 +199,6 @@ void SnazzCraft::World::ApplyLightingVoxel(int32_t LightOrigin[3], int32_t Light
                 OriginNode.Y,
                 OriginNode.Z
             };
-            int32_t NewLightValue = OriginNode.LightValue - 1;
 
             // Add in both directons on axies specified by I
             NewPosition[I]--;
@@ -213,7 +213,6 @@ void SnazzCraft::World::ApplyLightingVoxel(int32_t LightOrigin[3], int32_t Light
     SnazzCraft::World::LightNode LightOriginNode(LightProducingLevel, LightOrigin);
     Queue.push(LightOriginNode);
 
-    bool First = true;
     while (!Queue.empty())
     {
         SnazzCraft::World::LightNode CurrentNode = Queue.front();
@@ -245,10 +244,11 @@ void SnazzCraft::World::ApplyLightingVoxel(int32_t LightOrigin[3], int32_t Light
             int32_t LocalVoxelPosition[3];
             SnazzCraft::Chunk::GetLocalVoxelPosition(CurrentNode.X, CurrentNode.Y, CurrentNode.Z, LocalVoxelPosition);
             auto VoxelIterator = ChunkIterator->second->OptimizedVoxels.find(SnazzCraft::Chunk::LocalVoxelIndex(LocalVoxelPosition[0], LocalVoxelPosition[1], LocalVoxelPosition[2]));
-            
-            if (CurrentNode.LightValue > 1 && (VoxelIterator == ChunkIterator->second->OptimizedVoxels.end() || First)) AddLightNodes(Queue, CurrentNode);
+            bool VoxelAtPosition = VoxelIterator != ChunkIterator->second->OptimizedVoxels.end();
+            int LightPropogationDecrease = VoxelAtPosition ? VoxelIterator->second.LightPropogationDecrease : 1;
+
+            AddLightNodes(Queue, CurrentNode, LightPropogationDecrease);
         }
-        First = false; 
     }
 }
 
