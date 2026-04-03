@@ -39,5 +39,5 @@ namespace SnazzCraft
     };
 
     
-}
+} // SnazzCraft
 

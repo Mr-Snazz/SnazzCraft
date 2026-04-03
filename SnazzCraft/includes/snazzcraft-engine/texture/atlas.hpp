@@ -38,5 +38,5 @@ namespace SnazzCraft
     };
 
     extern SnazzCraft::VoxelTextureApplier* EngineVoxelTextureApplier;
-}
+} // SnazzCraft
 

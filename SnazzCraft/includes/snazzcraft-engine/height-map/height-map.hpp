@@ -25,4 +25,4 @@ namespace SnazzCraft
         int HeightConstraintHigh;
 
     };
-}
+} // SnazzCraft

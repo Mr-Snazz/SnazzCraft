@@ -51,7 +51,7 @@ const std::vector<SnazzCraft::Vertice3D> VoxelMeshVertices = {
     { {  1.0f, -1.0f,  1.0f }, { 0.2f, 0.2f } },
 };
 
-const std::vector<unsigned int> VoxelMeshIndices = {
+const std::vector<uint32_t> VoxelMeshIndices = {
     0,  1,  2,    2,  3,  0,    // Front  (verts 0  .. 3 )
     4,  5,  6,    6,  7,  4,    // Left   (verts 4  .. 7 )
     8,  9,  10,   10, 11, 8,    // Right  (verts 8  .. 11)

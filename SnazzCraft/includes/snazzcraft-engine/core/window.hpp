@@ -5,5 +5,5 @@
 namespace SnazzCraft
 {
     extern GLFWwindow* Window;
-}
+} // SnazzCraft
 

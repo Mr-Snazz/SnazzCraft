@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <stdint.h>
 
 #include "../../glm/glm.hpp"
 #include "../../glad.h"
@@ -14,24 +15,24 @@ namespace SnazzCraft
     {
     public:
         std::vector<SnazzCraft::Vertice3D> Vertices;
-        std::vector<unsigned int> Indices;
+        std::vector<uint32_t> Indices;
         glm::vec3 ScaleVector = { 1.0f, 1.0f, 1.0f };
 
-        unsigned int VAO;
+        uint32_t VAO;
 
-        Mesh(std::vector<SnazzCraft::Vertice3D> Vertices, std::vector<unsigned int> Indices); // Use shader before initializing
+        Mesh(std::vector<SnazzCraft::Vertice3D> Vertices, std::vector<uint32_t> Indices); // Use shader before initializing
 
         virtual ~Mesh();
 
         virtual void Draw(); 
 
     private:
-        unsigned int VBO;
-        unsigned int EBO;
+        uint32_t VBO;
+        uint32_t EBO;
 
         void Initiate();
     };
 
     extern SnazzCraft::Mesh* VoxelMesh;
-}
+} // SnazzCraft
 

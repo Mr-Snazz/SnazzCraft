@@ -2,7 +2,7 @@
 
 SnazzCraft::Mesh* SnazzCraft::VoxelMesh = nullptr;
 
-SnazzCraft::Mesh::Mesh(std::vector<SnazzCraft::Vertice3D> Vertices, std::vector<unsigned int> Indices)
+SnazzCraft::Mesh::Mesh(std::vector<SnazzCraft::Vertice3D> Vertices, std::vector<uint32_t> Indices)
 {
 	this->Vertices = Vertices;
 	this->Indices = Indices;
@@ -39,7 +39,7 @@ void SnazzCraft::Mesh::Initiate()
 
     // EBO: upload index data
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->Indices.size() * sizeof(unsigned int), this->Indices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->Indices.size() * sizeof(uint32_t), this->Indices.data(), GL_STATIC_DRAW);
 
     // Set vertex attribute pointers
 

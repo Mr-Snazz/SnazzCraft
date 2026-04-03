@@ -17,7 +17,7 @@
 namespace SnazzCraft
 {
     SnazzCraft::Texture* GenerateSolidColorTexture(std::string ColorName); // Only give predefined color names
-}
+} // SnazzCraft
 
 
 

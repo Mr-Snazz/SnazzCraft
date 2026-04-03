@@ -26,4 +26,4 @@ namespace SnazzCraft
     };
 
     extern SnazzCraft::FPSTracker* GlobalFPSTracker;
-}
+} // SnazzCraft

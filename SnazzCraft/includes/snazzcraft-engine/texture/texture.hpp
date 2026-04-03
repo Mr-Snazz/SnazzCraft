@@ -57,7 +57,7 @@ namespace SnazzCraft
     };
 
     extern SnazzCraft::Texture* VoxelTextureAtlas;
-}
+} // SnazzCraft
 
 
 

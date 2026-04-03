@@ -22,6 +22,6 @@ namespace SnazzCraft
     private:
 
     };
-}
+} // SnazzCraft
 
 

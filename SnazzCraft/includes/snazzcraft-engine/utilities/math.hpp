@@ -12,7 +12,7 @@ namespace SnazzCraft
     void MoveVector3D(glm::vec3& Vector, const glm::vec3& Rotation, float Distance);
 
     void MoveVector3DWithFront(glm::vec3& Vector, const glm::vec3& Front, float Distance);
-}   
+} // SnazzCraft
 
 
 

@@ -13,6 +13,6 @@ namespace SnazzCraft
     void CloseWindowCallback(SnazzCraft::Event* Event);
 
     void ToggleWireframeCallback(SnazzCraft::Event* Event);
-}
+} // SnazzCraft
 
 

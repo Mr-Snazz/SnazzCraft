@@ -29,5 +29,5 @@ namespace SnazzCraft
 
 
     extern SnazzCraft::InWorldGUI* WorldGUI;
-}
+} // SnazzCraft
 

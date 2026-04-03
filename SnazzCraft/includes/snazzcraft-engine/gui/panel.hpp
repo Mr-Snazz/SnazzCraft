@@ -39,7 +39,7 @@ namespace SnazzCraft
         void Initiate(unsigned int X, unsigned int Y, unsigned int Width, unsigned int Height);
 
     };
-}
+} // SnazzCraft
 
 #define SNAZZCRAFT_PANEL_LONG(X, Y, Texture)  new SnazzCraft::Panel(X, Y, SNAZZCRAFT_PANEL_LONG_WIDTH, SNAZZCRAFT_PANEL_LONG_HEIGHT, Texture)
 #define SNAZZCRAFT_PANEL_SHORT(X, Y, Texture) new SnazzCraft::Panel(X, Y, SNAZZCRAFT_PANEL_SHORT_WIDTH, SNAZZCRAFT_PANEL_SHORT_HEIGHT, Texture)

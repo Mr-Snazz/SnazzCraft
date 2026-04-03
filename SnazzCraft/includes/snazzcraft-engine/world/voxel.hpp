@@ -45,5 +45,5 @@ namespace SnazzCraft
     private:
 
     };
-}
+} // SnazzCraft
 

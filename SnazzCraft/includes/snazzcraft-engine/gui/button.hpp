@@ -47,7 +47,7 @@ namespace SnazzCraft
 
 
     };
-}
+} // SnazzCraft
 
 #define SNAZZCRAFT_BUTTON_LONG(X, Y)  new SnazzCraft::Button(X, Y, 275, 50)
 #define SNAZZCRAFT_BUTTON_SHORT(X, Y) new SnazzCraft::Button(X, Y, 125, 50)

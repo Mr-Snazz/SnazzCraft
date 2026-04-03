@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <stdint.h>
 
 #include "../../glad.h"
 #include "../../glfw3.h"
@@ -57,7 +58,7 @@ namespace SnazzCraft
     void MainLoop();
 
     void FreeResources();
-}
+} // SnazzCraft
 
 inline void FrameBufferSizeCallBack(GLFWwindow* Window, int Width, int Height)
 {

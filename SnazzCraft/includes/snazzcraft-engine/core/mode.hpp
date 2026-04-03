@@ -10,5 +10,5 @@ namespace SnazzCraft
     extern unsigned char UserMode;
 
     extern bool WireframeModeActive;
-}
+} // SnazzCraft
 

@@ -22,4 +22,4 @@ namespace SnazzCraft
     };
 
     extern SnazzCraft::User* Player;
-}
+} // SnazzCraft

@@ -22,7 +22,7 @@ namespace SnazzCraft
     };
 
     extern SnazzCraft::MainMenuGUI* MenuGUI;
-}
+} // SnazzCraft
 
 
 
