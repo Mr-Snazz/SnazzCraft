@@ -34,7 +34,7 @@ namespace SnazzCraft
     class World
     {
     public:
-        static constexpr uint32_t MaxSize = 2147483647u; 
+        static constexpr uint32_t MaxSize = 2147483647u;
 
         std::string Name = "UNASSIGNED";
         uint32_t Size; // Size^2 = #Chunks

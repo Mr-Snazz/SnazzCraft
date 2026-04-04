@@ -13,7 +13,7 @@ int SnazzCraft::ViewLock;
 
 bool SnazzCraft::CloseApplication = false;
 
-const std::vector<SnazzCraft::Vertice3D> VoxelMeshVertices = {
+const std::vector<SnazzCraft::VoxelVertice> VoxelMeshVertices = {
     // Front
     { { -1.0f, -1.0f, -1.0f }, { 0.0f, 0.2f } },
     { { -1.0f,  1.0f, -1.0f }, { 0.0f, 0.0f } },

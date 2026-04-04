@@ -12,12 +12,12 @@ SnazzCraft::VoxelTextureApplier::~VoxelTextureApplier()
 
 }
 
-std::vector<SnazzCraft::Vertice3D> SnazzCraft::VoxelTextureApplier::GetTexturedVertices(const SnazzCraft::Voxel& Voxel)
+std::vector<SnazzCraft::VoxelVertice> SnazzCraft::VoxelTextureApplier::GetTexturedVertices(const SnazzCraft::Voxel& Voxel)
 {
     constexpr glm::vec2 HalfPixel(HALF_PIXEL, HALF_PIXEL);   
     constexpr int HalfVoxelSize = static_cast<int>(SnazzCraft::Voxel::Size / 2.0f);
 
-    std::vector<SnazzCraft::Vertice3D> Vertices;
+    std::vector<SnazzCraft::VoxelVertice> Vertices;
 
     glm::vec2 AtlasCoordinates = { 
         (float)this->TextureCoordinates[Voxel.ID][0],
@@ -26,8 +26,8 @@ std::vector<SnazzCraft::Vertice3D> SnazzCraft::VoxelTextureApplier::GetTexturedV
 
     AtlasCoordinates /= (float)ATLAS_SIZE; 
 
-    for (const SnazzCraft::Vertice3D& V : SnazzCraft::VoxelMesh->Vertices) { // Currently vertices are in mesh space
-        Vertices.push_back(SnazzCraft::Vertice3D((V.Position * SnazzCraft::VoxelMesh->ScaleVector), V.TextureCoordinate + AtlasCoordinates));
+    for (const SnazzCraft::VoxelVertice& V : SnazzCraft::VoxelMesh->Vertices) { // Currently vertices are in mesh space
+        Vertices.push_back(SnazzCraft::VoxelVertice((V.Position * SnazzCraft::VoxelMesh->ScaleVector), V.TextureCoordinate + AtlasCoordinates));
     }
 
     switch (Voxel.ID) // Special cases

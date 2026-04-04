@@ -10,7 +10,7 @@ namespace SnazzCraft
     struct HeightMap
     {
     public:
-        std::unordered_map<unsigned int, unsigned>* HeightValues = new std::unordered_map<unsigned int, unsigned>();
+        std::unordered_map<unsigned int, int> HeightValues = std::unordered_map<unsigned int, int>();
         SnazzCraft::PerlinNoiseModule* NoiseModule = nullptr;
         
 

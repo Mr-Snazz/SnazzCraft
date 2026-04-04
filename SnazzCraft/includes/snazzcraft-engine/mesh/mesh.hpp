@@ -7,20 +7,20 @@
 #include "../../glad.h"
 #include "../../shader_s.h"
 
-#include "../vertice/vertice-3d.hpp"
+#include "../vertice/voxel-vertice.hpp"
 
 namespace SnazzCraft
 {
     class Mesh
     {
     public:
-        std::vector<SnazzCraft::Vertice3D> Vertices;
+        std::vector<SnazzCraft::VoxelVertice> Vertices;
         std::vector<uint32_t> Indices;
         glm::vec3 ScaleVector = { 1.0f, 1.0f, 1.0f };
 
         uint32_t VAO;
 
-        Mesh(std::vector<SnazzCraft::Vertice3D> Vertices, std::vector<uint32_t> Indices); // Use shader before initializing
+        Mesh(std::vector<SnazzCraft::VoxelVertice> Vertices, std::vector<uint32_t> Indices); // Use shader before initializing
 
         virtual ~Mesh();
 

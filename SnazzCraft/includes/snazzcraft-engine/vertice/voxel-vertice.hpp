@@ -4,18 +4,18 @@
 
 namespace SnazzCraft
 {
-	class Vertice3D
+	class VoxelVertice
 	{
 	public:
 		glm::vec3 Position;
 		glm::vec2 TextureCoordinate;
 		float Brightness = 1.0f;
 
-		Vertice3D();
+		VoxelVertice();
 
-		Vertice3D(glm::vec3 Position, glm::vec2 TextureCoordinate);
+		VoxelVertice(glm::vec3 Position, glm::vec2 TextureCoordinate);
 
-		Vertice3D(glm::vec3 Position, glm::vec2 TextureCoordinate, float Brightness);
+		VoxelVertice(glm::vec3 Position, glm::vec2 TextureCoordinate, float Brightness);
 
 	private:
 

@@ -1,16 +1,16 @@
 #include "snazzcraft-engine/world/voxel-type.hpp"
 #include "snazzcraft-engine/world/voxel.hpp"
 
-const SnazzCraft::VoxelType& SnazzCraft::VoxelType::GetVoxelType(uint32_t VoxelID)
+const SnazzCraft::VoxelType& SnazzCraft::VoxelType::GetVoxelType(uint8_t VoxelID)
 {
-    static const SnazzCraft::VoxelType AboveGrass(0, 0, false, false, true);
+    static const SnazzCraft::VoxelType Phantom(0, 0, false, false, true);
     static const SnazzCraft::VoxelType Torch(18, 0, false, false, true);
     static const SnazzCraft::VoxelType FullSolid(0, SnazzCraft::Voxel::MaxLightValue, true, true, true);
 
     switch (VoxelID)
     {
         case ID_VOXEL_ABOVE_GRASS:
-            return AboveGrass;
+            return Phantom;
 
         case ID_VOXEL_TORCH:
             return Torch;
@@ -26,3 +26,5 @@ SnazzCraft::VoxelType::VoxelType(int32_t ILightProducingLevel, int32_t ILightPro
 {
 
 }
+
+

@@ -2,7 +2,7 @@
 
 SnazzCraft::Mesh* SnazzCraft::VoxelMesh = nullptr;
 
-SnazzCraft::Mesh::Mesh(std::vector<SnazzCraft::Vertice3D> Vertices, std::vector<uint32_t> Indices)
+SnazzCraft::Mesh::Mesh(std::vector<SnazzCraft::VoxelVertice> Vertices, std::vector<uint32_t> Indices)
 {
 	this->Vertices = Vertices;
 	this->Indices = Indices;
@@ -35,7 +35,7 @@ void SnazzCraft::Mesh::Initiate()
 
     // VBO: upload vertex data
     glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
-    glBufferData(GL_ARRAY_BUFFER, this->Vertices.size() * sizeof(SnazzCraft::Vertice3D), this->Vertices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, this->Vertices.size() * sizeof(SnazzCraft::VoxelVertice), this->Vertices.data(), GL_STATIC_DRAW);
 
     // EBO: upload index data
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
@@ -44,15 +44,15 @@ void SnazzCraft::Mesh::Initiate()
     // Set vertex attribute pointers
 
     // layout (location = 0) ? vec3 position
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(SnazzCraft::Vertice3D), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(SnazzCraft::VoxelVertice), (void*)0);
     glEnableVertexAttribArray(0);
 
     // layout (location = 1) ? vec2 texCoord
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(SnazzCraft::Vertice3D), (void*)offsetof(SnazzCraft::Vertice3D, SnazzCraft::Vertice3D::TextureCoordinate));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(SnazzCraft::VoxelVertice), (void*)offsetof(SnazzCraft::VoxelVertice, SnazzCraft::VoxelVertice::TextureCoordinate));
     glEnableVertexAttribArray(1);
 
     // layout (location = 2) ? float brightness
-    glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(SnazzCraft::Vertice3D), (void*)offsetof(SnazzCraft::Vertice3D, SnazzCraft::Vertice3D::Brightness));
+    glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(SnazzCraft::VoxelVertice), (void*)offsetof(SnazzCraft::VoxelVertice, SnazzCraft::VoxelVertice::Brightness));
     glEnableVertexAttribArray(2);
 
     // Unbind (optional safety)

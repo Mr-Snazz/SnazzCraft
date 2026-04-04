@@ -25,9 +25,9 @@ namespace SnazzCraft
             };
             uint8_t Position[3]; // In local chunk space
         };
-        uint32_t ID;
+        uint8_t ID;
 
-        Voxel(uint8_t IX, uint8_t IY, uint8_t IZ, uint32_t IID);
+        Voxel(uint8_t IX, uint8_t IY, uint8_t IZ, uint8_t IID);
 
         const SnazzCraft::VoxelType& GetVoxelType() const;
 

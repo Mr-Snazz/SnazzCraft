@@ -13,7 +13,7 @@ namespace SnazzCraft
         bool CollidableToEntities;
         bool CollidableToVoxels;
 
-        static const VoxelType& GetVoxelType(uint32_t VoxelID);
+        static const VoxelType& GetVoxelType(uint8_t VoxelID);
 
     private:
         VoxelType(int32_t ILightProducingLevel, int32_t ILightPropogationDecrease, bool ICullable, bool ICollidableToEntities, bool ICollidableToVoxels);

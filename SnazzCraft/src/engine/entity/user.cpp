@@ -2,7 +2,7 @@
 
 const glm::vec3 UserHitboxDimensions = glm::vec3(1.75f, 5.75f, 1.75f);
 
-SnazzCraft::User* SnazzCraft::Player = new SnazzCraft::User({ 100.0f, 70.0f, 100.0f }, { 0.0f, 0.0f, 0.0f });
+SnazzCraft::User* SnazzCraft::Player = new SnazzCraft::User({ -5.0f, 70.0f, -50.0f }, { 0.0f, 0.0f, 0.0f });
 
 SnazzCraft::User::User(glm::vec3 Position, glm::vec3 Rotation) : SnazzCraft::Entity(Position, Rotation)
 {

@@ -5,7 +5,7 @@
 #include <fstream>
 #include <string>
 
-#include "../vertice/vertice-3d.hpp"
+#include "../vertice/voxel-vertice.hpp"
 #include "../world/voxel.hpp"
 #include "../world/voxel-ids.h"
 #include "../mesh/mesh.hpp"
@@ -28,7 +28,7 @@ namespace SnazzCraft
 
         ~VoxelTextureApplier();
 
-        std::vector<SnazzCraft::Vertice3D> GetTexturedVertices(const SnazzCraft::Voxel& Voxel);
+        std::vector<SnazzCraft::VoxelVertice> GetTexturedVertices(const SnazzCraft::Voxel& Voxel);
 
     private:
         unsigned int TextureCoordinates[ATLAS_SIZE * ATLAS_SIZE][2];
