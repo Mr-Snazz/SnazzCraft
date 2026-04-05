@@ -21,6 +21,7 @@
 #include "../entity/entity.hpp"
 #include "../entity/user.hpp"
 #include "../utilities/math.hpp"
+#include "snazzcraft-engine/texture/texture.hpp"
 
 #define WORLD_SAVE_FILE_DESCRIPTOR_NAME            ('0')
 #define WORLD_SAVE_FILE_DESCRIPTOR_SIZE            ('1')
@@ -61,7 +62,7 @@ namespace SnazzCraft
 
         void MoveEntity(glm::vec3 Translation, SnazzCraft::Entity* Entity) const; // Returns true if movement occurred without voxel collision 
 
-        bool SaveWorldToFile(bool OverwriteExistingFile); 
+        bool SaveWorldToFile(bool OverwriteExistingFile) const;
 
         inline void ApplyGravityToEntities(std::vector<SnazzCraft::Entity*> AdditionalEntities)
         {
@@ -87,6 +88,19 @@ namespace SnazzCraft
 
         bool PlaceVoxel(const glm::vec3& Position, const glm::vec3& Rotation, uint8_t VoxelID);
 
+        void UpdateVoxelPlacementDisplayPosition();
+
+        inline void RenderVoxelPlacementDisplayPosition() const 
+        {
+            this->VoxelPlacementDisplayMesh->Draw();
+        }
+
+        inline const glm::vec3& GetVoxelPlacementDisplayPosition() const
+        {
+            const glm::vec3 DefaultReturnPosition(-100.0f, -100.0f, -100.0f);
+            return this->RenderVoxelPlacementDisplay ? this->VoxelPlacementDisplayPosition : DefaultReturnPosition;
+        }
+
     private:
         struct LightNode
         {
@@ -106,6 +120,9 @@ namespace SnazzCraft
         };
 
         SnazzCraft::HeightMap* WorldHeightMap = nullptr;
+        SnazzCraft::Mesh* VoxelPlacementDisplayMesh = nullptr;
+        glm::vec3 VoxelPlacementDisplayPosition;
+        bool RenderVoxelPlacementDisplay = false;
 
         bool RaycastToVoxel(glm::vec3& Position, const glm::vec3& Rotation, float MaxDistance); // Rotation not normalized
 

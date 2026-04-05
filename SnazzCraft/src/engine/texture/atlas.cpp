@@ -17,8 +17,6 @@ std::vector<SnazzCraft::VoxelVertice> SnazzCraft::VoxelTextureApplier::GetTextur
     constexpr glm::vec2 HalfPixel(HALF_PIXEL, HALF_PIXEL);   
     constexpr int32_t HalfVoxelSize = static_cast<int32_t>(SnazzCraft::Voxel::Size / 2.0f);
 
-    std::vector<SnazzCraft::VoxelVertice> Vertices;
-
     glm::vec2 AtlasCoordinates = { 
         (float)this->TextureCoordinates[Voxel.ID][0],
         (float)this->TextureCoordinates[Voxel.ID][1]
@@ -26,6 +24,7 @@ std::vector<SnazzCraft::VoxelVertice> SnazzCraft::VoxelTextureApplier::GetTextur
 
     AtlasCoordinates /= (float)ATLAS_SIZE; 
 
+    std::vector<SnazzCraft::VoxelVertice> Vertices;
     for (const SnazzCraft::VoxelVertice& V : SnazzCraft::VoxelMesh->Vertices) { // Currently vertices are in mesh space
         Vertices.push_back(SnazzCraft::VoxelVertice((V.Position * SnazzCraft::VoxelMesh->ScaleVector), V.TextureCoordinate + AtlasCoordinates));
     }

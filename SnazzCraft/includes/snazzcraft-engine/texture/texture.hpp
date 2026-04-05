@@ -36,7 +36,7 @@ namespace SnazzCraft
 
         void CreateTextureFromString(std::string Text, unsigned char R, unsigned char G, unsigned char B);
 
-        inline bool BindTexture()
+        inline bool BindTexture() const
         {
             if (this->ID == nullptr) return false;
 

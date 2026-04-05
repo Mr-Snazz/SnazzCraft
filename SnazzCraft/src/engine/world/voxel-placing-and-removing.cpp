@@ -6,13 +6,18 @@ bool SnazzCraft::World::PlaceVoxel(const glm::vec3& Position, const glm::vec3& R
     bool HitVoxel = this->RaycastToVoxel(EndPosition, Rotation, this->PlayerReach);
     if (!HitVoxel || EndPosition == Position) return false;
 
-    int32_t ChunkPosition[2];
-    EndPosition /= glm::vec3(static_cast<float>(SnazzCraft::Voxel::Size)); // Now in voxel space 
-    SnazzCraft::Chunk::GetChunkPosition(EndPosition, ChunkPosition);
+    glm::vec3 SnappedWorldPosition = {
+        glm::round(EndPosition.x / SnazzCraft::Voxel::Size) * SnazzCraft::Voxel::Size,
+        glm::round(EndPosition.y / SnazzCraft::Voxel::Size) * SnazzCraft::Voxel::Size,
+        glm::round(EndPosition.z / SnazzCraft::Voxel::Size) * SnazzCraft::Voxel::Size
+    };
 
-    glm::ivec3 VoxelSpaceInt = EndPosition;
+    int32_t ChunkPosition[2];
+    glm::vec3 VoxelSpacePosition = SnappedWorldPosition / glm::vec3(static_cast<float>(SnazzCraft::Voxel::Size));
+    SnazzCraft::Chunk::GetChunkPosition(VoxelSpacePosition, ChunkPosition);
+
     int32_t LocalVoxelPosition[3];
-    SnazzCraft::Chunk::GetLocalVoxelPosition(VoxelSpaceInt.x, VoxelSpaceInt.y, VoxelSpaceInt.z, LocalVoxelPosition);
+    SnazzCraft::Chunk::GetLocalVoxelPosition(static_cast<uint32_t>(VoxelSpacePosition.x), static_cast<uint32_t>(VoxelSpacePosition.y), static_cast<uint32_t>(VoxelSpacePosition.z), LocalVoxelPosition);
 
     uint32_t LocalVoxelIndex = SnazzCraft::Chunk::LocalVoxelIndex(LocalVoxelPosition[0], LocalVoxelPosition[1], LocalVoxelPosition[2]);
 
@@ -25,16 +30,27 @@ bool SnazzCraft::World::PlaceVoxel(const glm::vec3& Position, const glm::vec3& R
     ChunkIterator->second->Voxels.insert_or_assign(LocalVoxelIndex, SnazzCraft::Voxel(LocalVoxelPosition[0], LocalVoxelPosition[1], LocalVoxelPosition[2], VoxelID));
 
     SnazzCraft::Voxel* CollidingVoxel = this->GetCollidingVoxel(SnazzCraft::Player->EntityHitbox);
-    if (CollidingVoxel != nullptr && SnazzCraft::Chunk::LocalVoxelIndex(*CollidingVoxel) == LocalVoxelIndex) {
-        ChunkIterator->second->Voxels.erase(LocalVoxelIndex);
-        return false;
-    }
+    if (CollidingVoxel != nullptr && SnazzCraft::Chunk::LocalVoxelIndex(*CollidingVoxel) == LocalVoxelIndex) { ChunkIterator->second->Voxels.erase(LocalVoxelIndex); return false; }
 
     ChunkIterator->second->CullVoxelFaces();
     ChunkIterator->second->UpdateVerticesAndIndices();
     this->UpdateChunkLighting(ChunkIterator->second, nullptr);
     
     return true;
+}
+
+void SnazzCraft::World::UpdateVoxelPlacementDisplayPosition()
+{
+    glm::vec3 EndPosition = SnazzCraft::Player->Position;
+    bool HitVoxel = this->RaycastToVoxel(EndPosition, SnazzCraft::Player->Rotation, this->PlayerReach);
+    if (!HitVoxel || EndPosition == SnazzCraft::Player->Rotation) { this->RenderVoxelPlacementDisplay = false; return; }
+
+    this->VoxelPlacementDisplayPosition = glm::vec3(
+        glm::round(EndPosition.x / SnazzCraft::Voxel::Size) * SnazzCraft::Voxel::Size,
+        glm::round(EndPosition.y / SnazzCraft::Voxel::Size) * SnazzCraft::Voxel::Size,
+        glm::round(EndPosition.z / SnazzCraft::Voxel::Size) * SnazzCraft::Voxel::Size
+    );
+    this->RenderVoxelPlacementDisplay = true;
 }
 
 bool SnazzCraft::World::RaycastToVoxel(glm::vec3& Position, const glm::vec3& Rotation, float MaxDistance)

@@ -1,6 +1,6 @@
 #include "snazzcraft-engine/world/world.hpp"
 
-bool SnazzCraft::World::SaveWorldToFile(bool OverwriteExistingFile)
+bool SnazzCraft::World::SaveWorldToFile(bool OverwriteExistingFile) const
 {
     constexpr const char* FileDirectory = "worlds/";
     constexpr const char* FileExtension = ".txt";

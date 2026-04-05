@@ -103,7 +103,6 @@ bool SnazzCraft::Initiate()
 
     glUniformMatrix4fv(SnazzCraft::ProjectionLock, 1, GL_FALSE, glm::value_ptr(ProjectionMatrix));
     glUniformMatrix4fv(SnazzCraft::ModelLock, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
-    glUniformMatrix4fv(SnazzCraft::ProjectionLock, 1, GL_FALSE, glm::value_ptr(ProjectionMatrix));
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
@@ -213,10 +212,17 @@ void RenderWorld()
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
 
-    glUniformMatrix4fv(SnazzCraft::ModelLock, 1, GL_FALSE, glm::value_ptr(SnazzCraft::ModelMatrix));
     SnazzCraft::ModelMatrix = glm::mat4(1.0f); // Chunk vertices are stored in world space so no transformation is needed
-
+    glUniformMatrix4fv(SnazzCraft::ModelLock, 1, GL_FALSE, glm::value_ptr(SnazzCraft::ModelMatrix));
+    
     SnazzCraft::CurrentWorld->RenderChunks(SnazzCraft::Player);
+
+    SnazzCraft::CurrentWorld->UpdateVoxelPlacementDisplayPosition();
+    SnazzCraft::ModelMatrix = glm::mat4(1.0f);
+    SnazzCraft::ModelMatrix = glm::translate(SnazzCraft::ModelMatrix, SnazzCraft::CurrentWorld->GetVoxelPlacementDisplayPosition());
+    glUniformMatrix4fv(SnazzCraft::ModelLock, 1, GL_FALSE, glm::value_ptr(SnazzCraft::ModelMatrix));
+    SnazzCraft::CurrentWorld->RenderVoxelPlacementDisplayPosition();
+
 }
 
 void WorldInputCallback(SnazzCraft::Event* Event)
