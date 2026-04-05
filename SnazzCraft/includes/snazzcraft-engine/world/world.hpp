@@ -86,6 +86,8 @@ namespace SnazzCraft
         */
         void UpdateChunkLighting(SnazzCraft::Chunk* Chunk, bool* UpatedInputChunk);
 
+        bool DestroyVoxel(const glm::vec3& Position, const glm::vec3& Rotation);
+
         bool PlaceVoxel(const glm::vec3& Position, const glm::vec3& Rotation, uint8_t VoxelID);
 
         void UpdateVoxelPlacementDisplayPosition();
@@ -136,7 +138,6 @@ namespace SnazzCraft
         /*
         Only to be called trough UpdateChunkLighting
         Generates currently ungenerated Chunks when light values would affect them
-        Not Thread safe
         */
         void ApplyLightingVoxel(int32_t LightOrigin[3], int32_t LightProducingLevel, std::unordered_set<uint32_t>& ChunksToUpdate);
         

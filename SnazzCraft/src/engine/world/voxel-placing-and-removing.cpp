@@ -1,5 +1,12 @@
 #include"snazzcraft-engine/world/world.hpp"
 
+bool GetNewPlacePosition(const glm::vec3& EndPosition, uint8_t FaceHit, SnazzCraft::Voxel* VoxelHit, int8_t OutNewPlacePosition[3], int32_t OutChunkCoordinates[2]);
+
+bool SnazzCraft::World::DestroyVoxel(const glm::vec3& Position, const glm::vec3& Rotation)
+{
+    return false;
+}
+
 bool SnazzCraft::World::PlaceVoxel(const glm::vec3& Position, const glm::vec3& Rotation, uint8_t VoxelID)
 {
     glm::vec3 EndPosition = Position;
@@ -9,55 +16,10 @@ bool SnazzCraft::World::PlaceVoxel(const glm::vec3& Position, const glm::vec3& R
     this->RaycastToVoxel(EndPosition, Rotation, this->PlayerReach, &FaceHit, &VoxelHit);
     if (VoxelHit == nullptr || EndPosition == Position) return false;
 
-    glm::ivec3 VoxelSpacePosition = EndPosition / glm::vec3(static_cast<float>(SnazzCraft::Voxel::Size));
+    int8_t NewPlacePosition[3];
     int32_t ChunkCoordinates[2];
-    SnazzCraft::Chunk::GetChunkPosition(VoxelSpacePosition.x, VoxelSpacePosition.z, ChunkCoordinates);
-
-    int8_t NewPlacePosition[3] = {
-        static_cast<int8_t>(VoxelHit->X),
-        static_cast<int8_t>(VoxelHit->Y),
-        static_cast<int8_t>(VoxelHit->Z)
-    };
-    switch (FaceHit) // Front -> Bottom
-    {
-        case 0: 
-            NewPlacePosition[2]--;
-            if (NewPlacePosition[2] < 0) { 
-                NewPlacePosition[2] += SnazzCraft::Chunk::Depth;
-                ChunkCoordinates[1]--;
-            }
-            break;
-        case 1:
-            NewPlacePosition[0]--;
-            if (NewPlacePosition[0] < 0) { 
-                NewPlacePosition[0] += SnazzCraft::Chunk::Width;
-                ChunkCoordinates[0]--;
-            }
-            break;
-        case 2:
-            NewPlacePosition[0]++;
-            if (NewPlacePosition[0] >= SnazzCraft::Chunk::Width) { 
-                NewPlacePosition[0] -= SnazzCraft::Chunk::Width;
-                ChunkCoordinates[0]++;
-            }
-            break;
-        case 3:
-            NewPlacePosition[2]++;
-            if (NewPlacePosition[2] >= SnazzCraft::Chunk::Depth) { 
-                NewPlacePosition[2] -= SnazzCraft::Chunk::Depth;
-                ChunkCoordinates[1]++;
-            }
-            break;
-        case 4:
-            NewPlacePosition[1]++;
-            if (NewPlacePosition[1] >= SnazzCraft::Chunk::Height) return false;
-            break;
-        case 5:
-            NewPlacePosition[1]--;
-            if (NewPlacePosition[1] < 0) return false;
-            break;
-    }
-
+    if (!GetNewPlacePosition(EndPosition, FaceHit, VoxelHit, NewPlacePosition, ChunkCoordinates)) return false;
+    
     auto ChunkIterator = this->Chunks.find(INDEX_2D(ChunkCoordinates[0], ChunkCoordinates[1], this->Size));
     if (ChunkIterator == this->Chunks.end() || ChunkCoordinates[0] < 0 || ChunkCoordinates[1] < 0 || ChunkCoordinates[0] >= static_cast<int32_t>(this->Size) || ChunkCoordinates[1] >= static_cast<int32_t>(this->Size)) return false;
     
@@ -76,61 +38,16 @@ bool SnazzCraft::World::PlaceVoxel(const glm::vec3& Position, const glm::vec3& R
 
 void SnazzCraft::World::UpdateVoxelPlacementDisplayPosition()
 {
-    glm::vec3 RayStart = SnazzCraft::Player->Position;
+    glm::vec3 EndPosition = SnazzCraft::Player->Position;
     uint8_t FaceHit;
     SnazzCraft::Voxel* VoxelHit = nullptr;
 
-    this->RaycastToVoxel(RayStart, SnazzCraft::Player->Rotation, this->PlayerReach, &FaceHit, &VoxelHit);
+    this->RaycastToVoxel(EndPosition, SnazzCraft::Player->Rotation, this->PlayerReach, &FaceHit, &VoxelHit);
     if (VoxelHit == nullptr) { this->RenderVoxelPlacementDisplay = false; return; }
 
-    glm::ivec3 VoxelSpacePosition = RayStart / glm::vec3(static_cast<float>(SnazzCraft::Voxel::Size));
+    int8_t NewPlacePosition[3];
     int32_t ChunkCoordinates[2];
-    SnazzCraft::Chunk::GetChunkPosition(VoxelSpacePosition.x, VoxelSpacePosition.z, ChunkCoordinates);
-
-    int8_t NewPlacePosition[3] = {
-        static_cast<int8_t>(VoxelHit->X),
-        static_cast<int8_t>(VoxelHit->Y),
-        static_cast<int8_t>(VoxelHit->Z)
-    };
-    switch (FaceHit) // Front -> Bottom
-    {
-        case 0: 
-            NewPlacePosition[2]--;
-            if (NewPlacePosition[2] < 0) { 
-                NewPlacePosition[2] += SnazzCraft::Chunk::Depth;
-                ChunkCoordinates[1]--;
-            }
-            break;
-        case 1:
-            NewPlacePosition[0]--;
-            if (NewPlacePosition[0] < 0) { 
-                NewPlacePosition[0] += SnazzCraft::Chunk::Width;
-                ChunkCoordinates[0]--;
-            }
-            break;
-        case 2:
-            NewPlacePosition[0]++;
-            if (NewPlacePosition[0] >= SnazzCraft::Chunk::Width) { 
-                NewPlacePosition[0] -= SnazzCraft::Chunk::Width;
-                ChunkCoordinates[0]++;
-            }
-            break;
-        case 3:
-            NewPlacePosition[2]++;
-            if (NewPlacePosition[2] >= SnazzCraft::Chunk::Depth) { 
-                NewPlacePosition[2] -= SnazzCraft::Chunk::Depth;
-                ChunkCoordinates[1]++;
-            }
-            break;
-        case 4:
-            NewPlacePosition[1]++;
-            if (NewPlacePosition[1] >= SnazzCraft::Chunk::Height) { this->RenderVoxelPlacementDisplay = false; return; }
-            break;
-        case 5:
-            NewPlacePosition[1]--;
-            if (NewPlacePosition[1] < 0) { this->RenderVoxelPlacementDisplay = false; return; }
-            break;
-    }
+    if (!GetNewPlacePosition(EndPosition, FaceHit, VoxelHit, NewPlacePosition, ChunkCoordinates)) { this->RenderVoxelPlacementDisplay = false; return; }
 
     auto ChunkIterator = this->Chunks.find(INDEX_2D(ChunkCoordinates[0], ChunkCoordinates[1], this->Size));
     if (ChunkIterator == this->Chunks.end() || ChunkCoordinates[0] < 0 || ChunkCoordinates[1] < 0 || ChunkCoordinates[0] >= static_cast<int32_t>(this->Size) || ChunkCoordinates[1] >= static_cast<int32_t>(this->Size)) { this->RenderVoxelPlacementDisplay = false; return; }
@@ -148,7 +65,7 @@ bool SnazzCraft::World::RaycastToVoxel(glm::vec3& Position, const glm::vec3& Rot
 {
     auto UpdateFaceHitAndVoxelHit = [FaceHit, VoxelHit](const glm::ivec3& Step, const uint8_t& LastStepAxis, SnazzCraft::Voxel* HitVoxel) -> void
     {
-        if (FaceHit == nullptr) goto UpdateHitVoxel;
+        if (FaceHit == nullptr) goto UpdateHitVoxel; // A goto statement, how exciting!
         switch (LastStepAxis)
         {
             case 0x00:
@@ -247,4 +164,54 @@ bool SnazzCraft::World::RaycastToVoxel(glm::vec3& Position, const glm::vec3& Rot
     UpdateFaceHitAndVoxelHit(Step, LastStepAxis, nullptr);
     Position = RayOrigin + (RayDirection * MaxDistance);
     return false;
+}
+
+bool GetNewPlacePosition(const glm::vec3& EndPosition, uint8_t FaceHit, SnazzCraft::Voxel* VoxelHit, int8_t OutNewPlacePosition[3], int32_t OutChunkCoordinates[2])
+{
+    glm::ivec3 VoxelSpacePosition = EndPosition / glm::vec3(static_cast<float>(SnazzCraft::Voxel::Size));
+    SnazzCraft::Chunk::GetChunkPosition(VoxelSpacePosition.x, VoxelSpacePosition.z, OutChunkCoordinates);
+
+    OutNewPlacePosition[0] = VoxelHit->X;
+    OutNewPlacePosition[1] = VoxelHit->Y;
+    OutNewPlacePosition[2] = VoxelHit->Z;
+    switch (FaceHit) // Front -> Bottom
+    {
+        case 0: 
+            OutNewPlacePosition[2]--;
+            if (OutNewPlacePosition[2] < 0) { 
+                OutNewPlacePosition[2] += SnazzCraft::Chunk::Depth;
+                OutChunkCoordinates[1]--;
+            }
+            break;
+        case 1:
+            OutNewPlacePosition[0]--;
+            if (OutNewPlacePosition[0] < 0) { 
+                OutNewPlacePosition[0] += SnazzCraft::Chunk::Width;
+                OutChunkCoordinates[0]--;
+            }
+            break;
+        case 2:
+            OutNewPlacePosition[0]++;
+            if (OutNewPlacePosition[0] >= SnazzCraft::Chunk::Width) { 
+                OutNewPlacePosition[0] -= SnazzCraft::Chunk::Width;
+                OutChunkCoordinates[0]++;
+            }
+            break;
+        case 3:
+            OutNewPlacePosition[2]++;
+            if (OutNewPlacePosition[2] >= SnazzCraft::Chunk::Depth) { 
+                OutNewPlacePosition[2] -= SnazzCraft::Chunk::Depth;
+                OutChunkCoordinates[1]++;
+            }
+            break;
+        case 4:
+            OutNewPlacePosition[1]++;
+            if (OutNewPlacePosition[1] >= SnazzCraft::Chunk::Height) return false;
+            break;
+        case 5:
+            OutNewPlacePosition[1]--;
+            if (OutNewPlacePosition[1] < 0) return false;
+            break;
+    }
+    return true;
 }
