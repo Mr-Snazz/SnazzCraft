@@ -83,7 +83,6 @@ namespace SnazzCraft
         Not thread safe
         */
         void UpdateChunkLighting(SnazzCraft::Chunk* Chunk, bool* UpatedInputChunk);
-        
 
     private:
         struct LightNode
@@ -104,6 +103,8 @@ namespace SnazzCraft
         };
 
         SnazzCraft::HeightMap* WorldHeightMap = nullptr;
+
+        
 
         void ApplySunLightingToChunk(SnazzCraft::Chunk* Chunk, std::unordered_set<uint32_t>& ChunksToUpdate);
 
