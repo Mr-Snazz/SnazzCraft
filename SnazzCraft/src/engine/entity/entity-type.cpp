@@ -3,6 +3,7 @@
 const char* TexturesToIntialize[] = {
     "textures/solids/light-green.png",
     "textures/solids/dark-blue.png",
+    "textures/solids/white.png",
     nullptr
 };
 SnazzCraft::Texture* Textures[256];
@@ -11,6 +12,7 @@ uint8_t TexturesSet = 0x00;
 const char* MeshesToInitialize[] = {
     "entity-meshes/test-cube.obj",
     "entity-meshes/test-rectangular-prism.obj",
+    "entity-meshes/cattle.obj",
     nullptr
 };
 SnazzCraft::Mesh* Meshes[256];
@@ -18,6 +20,9 @@ uint8_t MeshesSet = 0x00;
 
 const glm::vec3 HumanoidHitboxDimensions = glm::vec3(1.75f, 5.75f, 1.75f);
 SnazzCraft::Hitbox* HumanoidHitbox;
+
+const glm::vec3 CattleHitboxDimensions = glm::vec3(1.75f, 0.75f, 1.75f);
+SnazzCraft::Hitbox* CattleHitbox;
 
 void SnazzCraft::EntityType::Initialize()
 {
@@ -40,6 +45,8 @@ void SnazzCraft::EntityType::Initialize()
     }
 
     HumanoidHitbox = new SnazzCraft::Hitbox(HumanoidHitboxDimensions);
+    CattleHitbox = new SnazzCraft::Hitbox(CattleHitboxDimensions);
+    Meshes[2]->ScaleVector = glm::vec3(0.5f);
 }
 
 void SnazzCraft::EntityType::FreeResources()
@@ -53,12 +60,14 @@ void SnazzCraft::EntityType::FreeResources()
     }
 
     delete HumanoidHitbox;
+    delete CattleHitbox;
 }
 
 const SnazzCraft::EntityType& SnazzCraft::EntityType::GetEntityType(uint8_t ID)
 {
-    static const SnazzCraft::EntityType Player(Meshes[ID_ENTITY_PLAYER], Textures[ID_ENTITY_PLAYER], HumanoidHitbox);
-    static const SnazzCraft::EntityType Test(Meshes[ID_ENTITY_TEST], Textures[ID_ENTITY_TEST], HumanoidHitbox);
+    static const SnazzCraft::EntityType Player(Meshes[0], Textures[0], HumanoidHitbox);
+    static const SnazzCraft::EntityType Test(Meshes[1], Textures[1], HumanoidHitbox);
+    static const SnazzCraft::EntityType Sheep(Meshes[2], Textures[2], CattleHitbox);
 
     switch (ID)
     {
@@ -67,6 +76,9 @@ const SnazzCraft::EntityType& SnazzCraft::EntityType::GetEntityType(uint8_t ID)
 
         case ID_ENTITY_TEST:
             return Test;
+
+        case ID_ENTITY_SHEEP:
+            return Sheep;
 
         default:
             return Test;

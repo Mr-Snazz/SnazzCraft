@@ -202,11 +202,11 @@ void SnazzCraft::FreeResources()
 void RenderWorld()
 {
     if (SnazzCraft::CurrentWorld->Entities.size() == 0) {
-        SnazzCraft::CurrentWorld->Entities.push_back(new SnazzCraft::Entity(glm::vec3(10.0f, 70.0f, 10.0f), glm::vec3(0.0f, 45.0f, 0.0f), ID_ENTITY_TEST));
+        SnazzCraft::CurrentWorld->Entities.push_back(new SnazzCraft::Entity(glm::vec3(10.0f, 95.0f, 10.0f), glm::vec3(0.0f, 45.0f, 0.0f), ID_ENTITY_SHEEP));
     } else {
-        SnazzCraft::CurrentWorld->Entities[0]->Rotation.x += 0.5f;
-        SnazzCraft::CurrentWorld->Entities[0]->Rotation.y += 1.0f;
-        SnazzCraft::CurrentWorld->Entities[0]->Rotation.z += 1.5f;
+        //SnazzCraft::CurrentWorld->Entities[0]->Rotation.x += 0.5f;
+        //SnazzCraft::CurrentWorld->Entities[0]->Rotation.y += 1.0f;
+        //SnazzCraft::CurrentWorld->Entities[0]->Rotation.z += 1.5f;
     }
 
     if (!SnazzCraft::VoxelTextureAtlas->BindTexture()) return;

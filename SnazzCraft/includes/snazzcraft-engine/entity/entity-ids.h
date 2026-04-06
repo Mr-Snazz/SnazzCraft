@@ -3,6 +3,7 @@
 
 #define ID_ENTITY_PLAYER (0)
 #define ID_ENTITY_TEST (1)
+#define ID_ENTITY_SHEEP (2)
 
 
 #endif // SNAZZCRAFT_ENTITY_IDS_H
