@@ -17,7 +17,7 @@ SnazzCraft::Mesh::~Mesh()
     glDeleteBuffers(1, &this->EBO);
 }
 
-void SnazzCraft::Mesh::Draw()
+void SnazzCraft::Mesh::Draw() const
 {
     glBindVertexArray(this->VAO);
     glDrawElements(GL_TRIANGLES, this->Indices.size(), GL_UNSIGNED_INT, 0);

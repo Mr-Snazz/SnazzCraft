@@ -7,11 +7,6 @@ SnazzCraft::VoxelTextureApplier::VoxelTextureApplier(const char* AtlasFilePath)
     this->LoadAtlasCoordinates(AtlasFilePath);
 }
 
-SnazzCraft::VoxelTextureApplier::~VoxelTextureApplier() 
-{ 
-
-}
-
 std::vector<SnazzCraft::VoxelVertice> SnazzCraft::VoxelTextureApplier::GetTexturedVertices(const SnazzCraft::Voxel& Voxel)
 {
     constexpr glm::vec2 HalfPixel(HALF_PIXEL, HALF_PIXEL);   
@@ -33,27 +28,25 @@ std::vector<SnazzCraft::VoxelVertice> SnazzCraft::VoxelTextureApplier::GetTextur
     {
         case ID_VOXEL_DIRT_GRASS_MIX:
         {
-            // Update Texture Coordinates
-            Vertices[16].TextureCoordinate = { 0.4f, 0.2f };
-            Vertices[17].TextureCoordinate = { 0.4f, 0.0f };
-            Vertices[18].TextureCoordinate = { 0.6f, 0.0f };
-            Vertices[19].TextureCoordinate = { 0.6f, 0.2f };
+            Vertices[16].TextureCoordinate = { (ATLAS_TILE_SIZE * 2), (ATLAS_TILE_SIZE) };
+            Vertices[17].TextureCoordinate = { (ATLAS_TILE_SIZE * 2), 0.0f };
+            Vertices[18].TextureCoordinate = { (ATLAS_TILE_SIZE * 3), 0.0f };
+            Vertices[19].TextureCoordinate = { (ATLAS_TILE_SIZE * 3), (ATLAS_TILE_SIZE) };
 
-            Vertices[20].TextureCoordinate = { 0.6f, 0.2f };
-            Vertices[21].TextureCoordinate = { 0.6f, 0.0f };
-            Vertices[22].TextureCoordinate = { 0.8f, 0.0f };
-            Vertices[23].TextureCoordinate = { 0.8f, 0.2f };
+            Vertices[20].TextureCoordinate = { (ATLAS_TILE_SIZE * 3), (ATLAS_TILE_SIZE) };
+            Vertices[21].TextureCoordinate = { (ATLAS_TILE_SIZE * 3), 0.0f };
+            Vertices[22].TextureCoordinate = { (ATLAS_TILE_SIZE * 4), 0.0f };
+            Vertices[23].TextureCoordinate = { (ATLAS_TILE_SIZE * 4), (ATLAS_TILE_SIZE) };
 
             break;
         }
 
         case ID_VOXEL_TORCH:
         {
-            // Update Texture Coordinates
             for (uint32_t I = 0; I < 6; I++) {
                 uint32_t Index = I * 4;
 
-                Vertices[Index + 0].TextureCoordinate.x += TEXTURE_COORDINATE_TORCH_OFFSET_X * ATLAS_TILE_SIZE;
+                Vertices[Index]    .TextureCoordinate.x += TEXTURE_COORDINATE_TORCH_OFFSET_X * ATLAS_TILE_SIZE;
 
                 Vertices[Index + 1].TextureCoordinate.x += TEXTURE_COORDINATE_TORCH_OFFSET_X * ATLAS_TILE_SIZE;
                 Vertices[Index + 1].TextureCoordinate.y += TEXTURE_COORDINATE_TORCH_OFFSET_Y * ATLAS_TILE_SIZE;
@@ -80,6 +73,21 @@ std::vector<SnazzCraft::VoxelVertice> SnazzCraft::VoxelTextureApplier::GetTextur
             break;
         }
 
+        case ID_VOXEL_OAK_LOG:
+        {
+            Vertices[16].TextureCoordinate = { (ATLAS_TILE_SIZE * 2), (ATLAS_TILE_SIZE * 4) };
+            Vertices[17].TextureCoordinate = { (ATLAS_TILE_SIZE * 2), (ATLAS_TILE_SIZE * 3) };
+            Vertices[18].TextureCoordinate = { (ATLAS_TILE_SIZE * 3), (ATLAS_TILE_SIZE * 3) };
+            Vertices[19].TextureCoordinate = { (ATLAS_TILE_SIZE * 3), (ATLAS_TILE_SIZE * 4) };
+
+            Vertices[20].TextureCoordinate = { (ATLAS_TILE_SIZE * 2), (ATLAS_TILE_SIZE * 4) };
+            Vertices[21].TextureCoordinate = { (ATLAS_TILE_SIZE * 2), (ATLAS_TILE_SIZE * 3) };
+            Vertices[22].TextureCoordinate = { (ATLAS_TILE_SIZE * 3), (ATLAS_TILE_SIZE * 3) };
+            Vertices[23].TextureCoordinate = { (ATLAS_TILE_SIZE * 3), (ATLAS_TILE_SIZE * 4) };
+
+            break;
+        }
+        
         default:
             break;
     }

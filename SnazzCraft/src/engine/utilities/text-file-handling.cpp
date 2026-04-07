@@ -6,16 +6,10 @@ void SnazzCraft::ParseData(std::string& Extract, std::string Data, unsigned int&
     {
         if (Index >= Data.size()) return true;
 
-        if (EndChar != NULL) {
-            if (Data[Index] == *EndChar) return true;
-        }
+        if (EndChar != nullptr && Data[Index] == *EndChar) return true;
 
         return false;
     };
 
-    while (!ShouldBreak())
-    {
-        Extract += Data[Index];
-        Index++;
-    }
+    while (!ShouldBreak()) Extract += Data[Index++];
 }

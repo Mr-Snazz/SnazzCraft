@@ -29,7 +29,7 @@ void SnazzCraft::World::RenderEntities() const
         SnazzCraft::ModelMatrix = glm::translate(glm::mat4(1.0f), Entity->Position);
         
         SnazzCraft::ModelMatrix = glm::rotate(SnazzCraft::ModelMatrix, glm::radians(Entity->Rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
-        SnazzCraft::ModelMatrix = glm::rotate(SnazzCraft::ModelMatrix, glm::radians(Entity->Rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+        SnazzCraft::ModelMatrix = glm::rotate(SnazzCraft::ModelMatrix, glm::radians(-Entity->Rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
         SnazzCraft::ModelMatrix = glm::rotate(SnazzCraft::ModelMatrix, glm::radians(Entity->Rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
 
         SnazzCraft::ModelMatrix = glm::scale(SnazzCraft::ModelMatrix, EntityType.EntityMesh->ScaleVector);

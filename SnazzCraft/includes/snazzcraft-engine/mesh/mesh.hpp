@@ -28,7 +28,7 @@ namespace SnazzCraft
 
         virtual ~Mesh();
 
-        virtual void Draw(); 
+        virtual void Draw() const;
 
     private:
         uint32_t VBO;

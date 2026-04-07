@@ -15,10 +15,10 @@
 #define VOXEL_TEXTURE_SIZE_PIXELS (256)
 #define ATLAS_TILE_SIZE (1.0f / (float)ATLAS_SIZE)
 #define ATLAS_SIZE_PIXELS (ATLAS_SIZE * VOXEL_TEXTURE_SIZE_PIXELS)
-#define HALF_PIXEL (0.5f / (256 * ATLAS_SIZE))
+#define HALF_PIXEL (0.5f / ATLAS_SIZE_PIXELS)
 
-#define TEXTURE_COORDINATE_TORCH_OFFSET_X (112.0f / 256.0f)
-#define TEXTURE_COORDINATE_TORCH_OFFSET_Y (96.0f / 256.0f)
+#define TEXTURE_COORDINATE_TORCH_OFFSET_X (112.0f / (float)VOXEL_TEXTURE_SIZE_PIXELS)
+#define TEXTURE_COORDINATE_TORCH_OFFSET_Y (96.0f / (float)VOXEL_TEXTURE_SIZE_PIXELS)
 
 namespace SnazzCraft
 {
@@ -27,7 +27,7 @@ namespace SnazzCraft
     public:
         VoxelTextureApplier(const char* AtlasFilePath);
 
-        ~VoxelTextureApplier();
+        ~VoxelTextureApplier() = default;
 
         std::vector<SnazzCraft::VoxelVertice> GetTexturedVertices(const SnazzCraft::Voxel& Voxel);
 
