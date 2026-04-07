@@ -1,4 +1,5 @@
 #include "snazzcraft-engine/world/chunk.hpp"
+#include "snazzcraft-engine/world/world.hpp"
 
 SnazzCraft::Chunk::Chunk(int32_t X, int32_t Y)
 : ChunkMesh(nullptr), Voxels(std::unordered_map<uint32_t, SnazzCraft::Voxel>()), 
@@ -201,16 +202,53 @@ SnazzCraft::Voxel* SnazzCraft::Chunk::GetCollidingVoxel(const glm::vec3& Positio
     return &VoxelIterator->second;
 }
 
-void SnazzCraft::Chunk::UpdateLightingOnVertices(const std::unordered_map<uint32_t, SnazzCraft::Chunk*>& Chunks, uint32_t WorldSize)
+void SnazzCraft::Chunk::UpdateLightingOnVertices(SnazzCraft::World* World)
 {
-    auto GetLightValue = [this, Chunks, WorldSize](const SnazzCraft::Voxel& Voxel, int8_t Side) -> float
+    auto GetLightValue = [this, World](const SnazzCraft::Voxel& Voxel, int8_t Side) -> float
     {
         constexpr float DefaultLightValue = 1.0f / static_cast<float>(SnazzCraft::Voxel::MaxLightValue);
 
-        auto LightValueIterator = this->LightValues.find(SnazzCraft::Chunk::LocalVoxelIndex(Voxel));
-        if (LightValueIterator == this->LightValues.end()) return DefaultLightValue;
+        int32_t CheckX = static_cast<int32_t>(Voxel.X) + SnazzCraft::VoxelCheckPositions[Side][0];
+        int32_t CheckY = static_cast<int32_t>(Voxel.Y) + SnazzCraft::VoxelCheckPositions[Side][1];
+        int32_t CheckZ = static_cast<int32_t>(Voxel.Z) + SnazzCraft::VoxelCheckPositions[Side][2];
 
-        return static_cast<float>(LightValueIterator->second) / SnazzCraft::Voxel::MaxLightValue;
+        if (CheckY >= SnazzCraft::Chunk::Height) return static_cast<float>(SnazzCraft::Voxel::SunlightLightValue) / SnazzCraft::Voxel::MaxLightValue;
+        if (CheckY < 0) return DefaultLightValue;
+
+        int32_t TargetChunkX = this->Position[0];
+        int32_t TargetChunkZ = this->Position[1];
+
+        if (CheckX < 0) { 
+            CheckX += SnazzCraft::Chunk::Width; 
+            TargetChunkX--; 
+        } else if (CheckX >= static_cast<int32_t>(SnazzCraft::Chunk::Width)) { 
+            CheckX -= SnazzCraft::Chunk::Width; 
+            TargetChunkX++; 
+        }
+
+        if (CheckZ < 0) { 
+            CheckZ += SnazzCraft::Chunk::Depth; 
+            TargetChunkZ--; 
+        } else if (CheckZ >= static_cast<int32_t>(SnazzCraft::Chunk::Depth)) { 
+            CheckZ -= SnazzCraft::Chunk::Depth; 
+            TargetChunkZ++; 
+        }
+
+        if (TargetChunkX < 0 || TargetChunkZ < 0 || TargetChunkX >= static_cast<int32_t>(World->Size) || TargetChunkZ >= static_cast<int32_t>(World->Size)) return DefaultLightValue;
+
+        uint32_t ChunkIndex = INDEX_2D(static_cast<uint64_t>(TargetChunkX), static_cast<uint64_t>(TargetChunkZ), World->Size);
+        auto ChunkIterator = World->Chunks.find(ChunkIndex);
+        if (ChunkIterator == World->Chunks.end()) {
+            World->GenerateChunk(TargetChunkX, TargetChunkZ, true);
+            ChunkIterator = World->Chunks.find(ChunkIndex);
+        }
+        if (ChunkIterator == World->Chunks.end()) return DefaultLightValue;
+
+        uint32_t LocalIndex = SnazzCraft::Chunk::LocalVoxelIndex(CheckX, CheckY, CheckZ);
+        auto LightValueIterator = ChunkIterator->second->LightValues.find(LocalIndex);
+        if (LightValueIterator == ChunkIterator->second->LightValues.end() || LightValueIterator->second <= 1) return DefaultLightValue;
+
+        return static_cast<float>(LightValueIterator->second) / static_cast<float>(SnazzCraft::Voxel::MaxLightValue);
     };
 
     uint32_t VoxelCount = 0;

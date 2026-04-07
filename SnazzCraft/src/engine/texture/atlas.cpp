@@ -63,7 +63,6 @@ std::vector<SnazzCraft::VoxelVertice> SnazzCraft::VoxelTextureApplier::GetTextur
             Vertices[21].TextureCoordinate.y += ATLAS_TILE_SIZE * 0.5f;
             Vertices[22].TextureCoordinate.y += ATLAS_TILE_SIZE * 0.5f;
             
-            // Update Positions
             for (uint32_t I = 0; I < 24; I++) { 
                 Vertices[I].Position.x = Vertices[I].Position.x < 0.0f ? -0.125f * HalfVoxelSize : 0.125f * HalfVoxelSize;
                 Vertices[I].Position.y = Vertices[I].Position.y > 0.0f ?  0.75f  * HalfVoxelSize : Vertices[I].Position.y; 
@@ -91,6 +90,7 @@ std::vector<SnazzCraft::VoxelVertice> SnazzCraft::VoxelTextureApplier::GetTextur
         default:
             break;
     }
+
     return Vertices;
 }
 

@@ -35,7 +35,7 @@ void SnazzCraft::World::UpdateChunkLighting(SnazzCraft::Chunk* Chunk, bool* Upda
         auto ChunkIterator = this->Chunks.find(I);
         if (ChunkIterator == this->Chunks.end()) { continue; }
 
-        ChunkIterator->second->UpdateLightingOnVertices(this->Chunks, this->Size);
+        ChunkIterator->second->UpdateLightingOnVertices(this);
         ChunkIterator->second->UpdateMesh();
     }
 
@@ -56,14 +56,14 @@ void SnazzCraft::World::ApplySunLightingToChunk(SnazzCraft::Chunk* Chunk, std::u
 
 void SnazzCraft::World::ApplySunLightingToColumn(SnazzCraft::Chunk* Chunk, uint32_t LocalChunkX, uint32_t LocalChunkZ)
 {
-    int LightValue = 15;
+    int LightValue = SnazzCraft::Voxel::SunlightLightValue;
     for (uint32_t Y = SnazzCraft::Chunk::Height; Y > 0; Y--) {
         uint32_t LightY = Y - 1;
         uint32_t LocalIndex = SnazzCraft::Chunk::LocalVoxelIndex(LocalChunkX, LightY, LocalChunkZ);
 
         auto LightIterator = Chunk->LightValues.find(LocalIndex);
         if (LightIterator == Chunk->LightValues.end()) {
-            Chunk->LightValues.insert_or_assign(LocalIndex, LightValue); // Sunlight is light level 15    
+            Chunk->LightValues.insert_or_assign(LocalIndex, LightValue);
         } else {
             LightIterator->second = LightIterator->second >= LightValue ? LightIterator->second : LightValue;
         }
@@ -120,6 +120,7 @@ void SnazzCraft::World::ApplyLightingVoxel(int32_t LightOrigin[3], int32_t Light
         if (ChunkIterator == this->Chunks.end()) {
             this->GenerateChunk(ChunkCoordinates[0], ChunkCoordinates[1], true);
             ChunkIterator = this->Chunks.find(INDEX_2D(ChunkCoordinates[0], ChunkCoordinates[1], this->Size));
+            std::cout << "X Z| " << ChunkCoordinates[0] << " | " << ChunkCoordinates[1] << "\n";
         }
         if (ChunkIterator == this->Chunks.end()) continue;
 

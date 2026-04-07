@@ -18,6 +18,8 @@
 
 namespace SnazzCraft
 {
+    class World;
+
     constexpr int8_t VoxelCheckPositions[6][3] = {
         {  0,  0, -1 }, // Front
         { -1,  0,  0 }, // Left
@@ -54,7 +56,7 @@ namespace SnazzCraft
 
         SnazzCraft::Voxel* GetCollidingVoxel(const glm::vec3& Position, const SnazzCraft::Hitbox* Hitbox, int32_t LocalVoxelX, int32_t LocalVoxelY, int32_t LocalVoxelZ);
 
-        void UpdateLightingOnVertices(const std::unordered_map<uint32_t, SnazzCraft::Chunk*>& Chunks, uint32_t WorldSize);
+        void UpdateLightingOnVertices(SnazzCraft::World* World);
 
         inline void UpdateMesh()
         {
