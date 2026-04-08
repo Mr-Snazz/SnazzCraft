@@ -7,9 +7,9 @@
 #include <iostream>
 #include <string>
 
-#include "../../glm/glm.hpp"
-#include "../../glad.h"
-#include "../../shader_s.h"
+#include "glm/glm.hpp"
+#include "glad.h"
+#include "shader_s.h"
 
 #include "../vertice/voxel-vertice.hpp"
 

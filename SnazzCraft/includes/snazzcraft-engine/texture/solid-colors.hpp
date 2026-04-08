@@ -2,8 +2,6 @@
 
 #include <string>
 
-#include "texture.hpp"
-
 #define SNAZZCRAFT_COLOR_BLACK ("black")
 #define SNAZZCRAFT_COLOR_DARK_BLUE  ("dark-blue")
 #define SNAZZCRAFT_COLOR_DARK_GREEN ("dark-green")
@@ -16,6 +14,8 @@
 
 namespace SnazzCraft
 {
+    class Texture;
+
     SnazzCraft::Texture* GenerateSolidColorTexture(std::string ColorName); // Only give predefined color names
 } // SnazzCraft
 

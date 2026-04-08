@@ -2,22 +2,22 @@
 
 #include <vector>
 
-#include "../../glad.h"
-#include "../../shader_s.h"
-#include "../../glm/glm.hpp"
-#include "../../glm/gtc/matrix_transform.hpp"
-#include "../../glm/gtc/type_ptr.hpp"
+#include "glad.h"
+#include "glfw3.h"
+#include "shader_s.h"
+#include "stb_image.h"
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
 
-#include "button.hpp"
-#include "../input-handler/input-handler.hpp"
-#include "../input-handler/events.h"
-#include "widget-collection.hpp"
-#include "../input-handler/core-callback.hpp"
-#include "../texture/texture.hpp"
-#include "../world/world.hpp"
+#include "snazzcraft-engine/input-handler/input-handler.hpp"
 
 namespace SnazzCraft
 {
+    class WidgetCollection;
+    class InputHandler;
+    class Event;
+
     class GUI
     {
     public:

@@ -1,5 +1,11 @@
 #include "snazzcraft-engine/world/chunk.hpp"
 #include "snazzcraft-engine/world/world.hpp"
+#include "snazzcraft-engine/utilities/math.hpp"
+#include "snazzcraft-engine/texture/atlas.hpp"
+#include "snazzcraft-engine/hitbox/hitbox.hpp"
+#include "snazzcraft-engine/world/voxel-ids.h"
+#include "snazzcraft-engine/height-map/height-map.hpp"
+#include "snazzcraft-engine/hitbox/hitbox.hpp"
 
 SnazzCraft::Chunk::Chunk(int32_t X, int32_t Y)
 : ChunkMesh(nullptr), Voxels(std::unordered_map<uint32_t, SnazzCraft::Voxel>()), 
@@ -98,7 +104,7 @@ void SnazzCraft::Chunk::UpdateVerticesAndIndices()
             if (!VoxelPair.second.HasSide(SideIndex)) continue;
 
             for (uint32_t I = 0; I < 6; I++) {
-                this->Indices.push_back(SnazzCraft::VoxelMesh->Indices[INDEX_2D(I, SideIndex, 6)] + this->Vertices.size() - NewVerticesCount);
+                this->Indices.push_back(SnazzCraft::VoxelMesh->Indices[SnazzCraft::Index2D<uint32_t>(I, SideIndex, 6)] + this->Vertices.size() - NewVerticesCount);
             }
             
         }
@@ -151,7 +157,7 @@ bool SnazzCraft::Chunk::VoxelTouchingChunkBorder(uint32_t VoxelIndex, uint32_t* 
     return false;
 }
 
-SnazzCraft::Voxel* SnazzCraft::Chunk::GetCollidingVoxel(const glm::vec3& Position, const SnazzCraft::Hitbox* Hitbox)
+SnazzCraft::Voxel* SnazzCraft::Chunk::GetCollidingVoxel(const glm::vec3& Position, SnazzCraft::Hitbox* Hitbox)
 {
     int32_t Range[3] = {
         static_cast<int>(glm::ceil(Hitbox->HalfDimensions[0])),
@@ -190,7 +196,7 @@ SnazzCraft::Voxel* SnazzCraft::Chunk::GetCollidingVoxel(const glm::vec3& Positio
     return nullptr;
 }
 
-SnazzCraft::Voxel* SnazzCraft::Chunk::GetCollidingVoxel(const glm::vec3& Position, const SnazzCraft::Hitbox* Hitbox, int32_t LocalVoxelX, int32_t LocalVoxelY, int32_t LocalVoxelZ)
+SnazzCraft::Voxel* SnazzCraft::Chunk::GetCollidingVoxel(const glm::vec3& Position, SnazzCraft::Hitbox* Hitbox, int32_t LocalVoxelX, int32_t LocalVoxelY, int32_t LocalVoxelZ)
 {
     if (!SnazzCraft::Chunk::WithinChunkBounds(LocalVoxelX, LocalVoxelY, LocalVoxelZ)) return nullptr;
 
@@ -236,7 +242,7 @@ void SnazzCraft::Chunk::UpdateLightingOnVertices(SnazzCraft::World* World)
 
         if (TargetChunkX < 0 || TargetChunkZ < 0 || TargetChunkX >= static_cast<int32_t>(World->Size) || TargetChunkZ >= static_cast<int32_t>(World->Size)) return DefaultLightValue;
 
-        uint32_t ChunkIndex = INDEX_2D(static_cast<uint64_t>(TargetChunkX), static_cast<uint64_t>(TargetChunkZ), World->Size);
+        uint32_t ChunkIndex = SnazzCraft::Index2D<uint64_t>(static_cast<uint64_t>(TargetChunkX), static_cast<uint64_t>(TargetChunkZ), World->Size);
         auto ChunkIterator = World->Chunks.find(ChunkIndex);
         if (ChunkIterator == World->Chunks.end()) {
             World->GenerateChunk(TargetChunkX, TargetChunkZ, true);
@@ -255,13 +261,12 @@ void SnazzCraft::Chunk::UpdateLightingOnVertices(SnazzCraft::World* World)
     for (const auto& [Key, Voxel] : this->Voxels) {
         if (Voxel.GetSideCount() == 0) continue;
 
-        uint32_t VerticeIndex = VoxelCount * 24; // 24 vertices per voxel
-        for (uint32_t L = 0; L < 6; L++) { // 6 faces per voxel
+        for (uint8_t L = 0x00; L < 0x06; L++) { // 6 faces per voxel
             if (!Voxel.HasSide(L)) continue;
 
             float LightValue = GetLightValue(Voxel, L);
-            for (uint32_t J = 0; J < 4; J++) { // 4 vertices per face
-                this->Vertices[VerticeIndex + INDEX_2D(J, L, 4)].Brightness = LightValue;
+            for (uint8_t J = 0x00; J < 0x04; J++) { // 4 vertices per face
+                this->Vertices[(VoxelCount * 24) + SnazzCraft::Index2D<uint8_t>(J, L, 4)].Brightness = LightValue; // 24 vertices per voxel
             }
         }
 

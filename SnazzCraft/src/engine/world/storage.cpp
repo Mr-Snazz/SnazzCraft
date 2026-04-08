@@ -1,4 +1,7 @@
 #include "snazzcraft-engine/world/world.hpp"
+#include "snazzcraft-engine/world/chunk.hpp"
+#include "snazzcraft-engine/utilities/math.hpp"
+#include "snazzcraft-engine/utilities/text-file-handling.hpp"
 
 bool SnazzCraft::World::SaveWorldToFile(bool OverwriteExistingFile) const
 {
@@ -150,7 +153,7 @@ SnazzCraft::World* SnazzCraft::World::LoadWorldFromSaveFile(std::string FilePath
         NewChunk->UpdateVerticesAndIndices();
 
         NewChunk->UpdateMesh();
-        NewWorld->Chunks.insert_or_assign(INDEX_2D(NewChunkPosition.first, NewChunkPosition.second, NewWorld->Size), NewChunk);
+        NewWorld->Chunks.insert_or_assign(SnazzCraft::Index2D(static_cast<uint32_t>(NewChunkPosition.first), static_cast<uint32_t>(NewChunkPosition.second), NewWorld->Size), NewChunk);
     }
     
     for (auto& [Key, Chunk] : NewWorld->Chunks) {

@@ -1,4 +1,9 @@
 #include "snazzcraft-engine/entity/entity-type.hpp"
+#include "snazzcraft-engine/mesh/mesh.hpp"
+#include "snazzcraft-engine/entity/entity-ids.h"
+#include "snazzcraft-engine/texture/texture.hpp"
+#include "snazzcraft-engine/utilities/text-file-handling.hpp"
+#include "snazzcraft-engine/hitbox/hitbox.hpp"
 
 SnazzCraft::Mesh* SnazzCraft::EntityType::Meshes[256];
 uint8_t SnazzCraft::EntityType::MeshesLoaded = 0x00;

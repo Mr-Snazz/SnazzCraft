@@ -1,4 +1,15 @@
 #include "snazzcraft-engine/core/core.hpp"
+#include "snazzcraft-engine/vertice/voxel-vertice.hpp"
+#include "snazzcraft-engine/core/window.hpp"
+#include "snazzcraft-engine/texture/atlas.hpp"
+#include "snazzcraft-engine/texture/texture.hpp"
+#include "snazzcraft-engine/entity/entity-type.hpp"
+#include "snazzcraft-engine/mesh/mesh.hpp"
+#include "snazzcraft-engine/fps-tracker/fps-tracker.hpp"
+#include "snazzcraft-engine/entity/user.hpp"
+#include "snazzcraft-engine/world/world.hpp"
+#include "snazzcraft-engine/entity/entity-ids.h"
+#include "snazzcraft-engine/world/voxel-ids.h"
 
 Shader* SnazzCraft::VoxelShader = nullptr;
 

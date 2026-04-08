@@ -1,4 +1,9 @@
 #include "snazzcraft-engine/gui/button.hpp"
+#include "snazzcraft-engine/world/world.hpp"
+#include "snazzcraft-engine/input-handler/event.hpp"
+#include "snazzcraft-engine/input-handler/data-types.h"
+#include "snazzcraft-engine/core/mode.hpp"
+#include "snazzcraft-engine/input-handler/core-callback.hpp"
 
 SnazzCraft::Button::Button(uint32_t X, uint32_t Y, uint32_t Width, uint32_t Height)
 {

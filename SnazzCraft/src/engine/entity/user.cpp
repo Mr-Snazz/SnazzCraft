@@ -1,4 +1,6 @@
 #include "snazzcraft-engine/entity/user.hpp"
+#include "snazzcraft-engine/utilities/math.hpp"
+#include "snazzcraft-engine/entity/entity-ids.h"
 
 SnazzCraft::User* SnazzCraft::Player = new SnazzCraft::User({ -5.0f, 70.0f, -50.0f }, { 0.0f, 0.0f, 0.0f });
 

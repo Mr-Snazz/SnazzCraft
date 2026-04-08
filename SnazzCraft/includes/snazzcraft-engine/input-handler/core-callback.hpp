@@ -1,13 +1,12 @@
 #pragma once
 
-#include "../../glad.h"
-#include "../../glfw3.h"
-
-#include "../core/mode.hpp"
-#include "../world/world.hpp"
+#include "glad.h"
+#include "glfw3.h"
 
 namespace SnazzCraft
 {
+    class Event;
+
     void ChangeModeCallback(SnazzCraft::Event* Event);
 
     void CloseWindowCallback(SnazzCraft::Event* Event);

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "gui.hpp"
-#include "../input-handler/core-callback.hpp"
 
 #define SNAZZCRAFT_WORLD_GUI_HOTBAR_WIDGET_COLLECTION_INDEX    (0x01)
 #define SNAZZCRAFT_WORLD_GUI_INVENTORY_WIDGET_COLLECTION_INDEX (0x02)

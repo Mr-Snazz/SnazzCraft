@@ -1,4 +1,6 @@
 #include "snazzcraft-engine/height-map/height-map.hpp"
+#include "snazzcraft-engine/height-map/noise-module.hpp"
+#include "snazzcraft-engine/utilities/math.hpp"
 
 SnazzCraft::HeightMap::HeightMap(unsigned int Size, int HeightConstraintLow, int HeightConstraintHigh, int Seed, double Frequency, double Persistence, double Lacunarity, int OctaveCount)
 {
@@ -16,7 +18,7 @@ SnazzCraft::HeightMap::~HeightMap()
 
 void SnazzCraft::HeightMap::GenerateValue(unsigned int X, unsigned int Y)
 {
-    auto HeightValueIterator = this->HeightValues.find(INDEX_2D(X, Y, this->Size));
+    auto HeightValueIterator = this->HeightValues.find(SnazzCraft::Index2D(X, Y, this->Size));
     if (HeightValueIterator != this->HeightValues.end()) return;
 
     const double NX = (double)(X) * 0.005;
@@ -28,5 +30,5 @@ void SnazzCraft::HeightMap::GenerateValue(unsigned int X, unsigned int Y)
     HeightValue = HeightValue < this->HeightConstraintLow  ? this->HeightConstraintLow  : HeightValue;
     HeightValue = HeightValue > this->HeightConstraintHigh ? this->HeightConstraintHigh : HeightValue;
 
-    this->HeightValues[INDEX_2D(X, Y, this->Size)] = (int)HeightValue;
+    this->HeightValues[SnazzCraft::Index2D(X, Y, this->Size)] = (int)HeightValue;
 }

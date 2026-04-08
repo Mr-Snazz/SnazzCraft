@@ -1,11 +1,7 @@
 #pragma once
 
-#include "../../glm/glm.hpp"
+#include "glm/glm.hpp"
 
-#include "../mesh/mesh.hpp"
-#include "../utilities/math.hpp"
-#include "../hitbox/hitbox.hpp"
-#include "snazzcraft-engine/entity/entity-ids.h"
 #include "snazzcraft-engine/entity/entity-type.hpp"
 
 namespace SnazzCraft

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../glfw3.h"
+#include "glfw3.h"
 
 namespace SnazzCraft
 {

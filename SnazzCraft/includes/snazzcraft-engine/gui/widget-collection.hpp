@@ -2,11 +2,11 @@
 
 #include <vector>
 
-#include "panel.hpp"
-#include "button.hpp"
-
 namespace SnazzCraft
 {
+    class Panel;
+    class Button;
+
     struct WidgetCollection
     {
     public:

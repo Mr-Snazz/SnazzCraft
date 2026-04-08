@@ -1,4 +1,5 @@
 #include "snazzcraft-engine/entity/entity.hpp"
+#include "snazzcraft-engine/utilities/math.hpp"
 
 SnazzCraft::Entity::Entity(glm::vec3 IPosition, glm::vec3 IRotation, uint8_t IID)
     : Position(IPosition), Rotation(IRotation), ID(IID)

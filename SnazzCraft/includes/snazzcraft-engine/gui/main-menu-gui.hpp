@@ -1,8 +1,9 @@
 #pragma once
 
-#include "gui.hpp"
-#include "../input-handler/input-handler.hpp"
-#include "../core/window.hpp"
+#include "glad.h"
+#include "glfw3.h"
+
+#include "snazzcraft-engine/gui/gui.hpp"
 
 namespace SnazzCraft
 {

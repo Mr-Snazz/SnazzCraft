@@ -1,4 +1,6 @@
 #include "snazzcraft-engine/texture/atlas.hpp"
+#include "snazzcraft-engine/world/voxel-ids.h"
+#include "snazzcraft-engine/mesh/mesh.hpp"
 
 SnazzCraft::VoxelTextureApplier* SnazzCraft::EngineVoxelTextureApplier = new SnazzCraft::VoxelTextureApplier("textures/voxel/atlas-coordinates.txt");
 

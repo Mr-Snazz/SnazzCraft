@@ -1,5 +1,6 @@
 #include "snazzcraft-engine/world/voxel-type.hpp"
 #include "snazzcraft-engine/world/voxel.hpp"
+#include "snazzcraft-engine/world/voxel-ids.h"
 
 const SnazzCraft::VoxelType& SnazzCraft::VoxelType::GetVoxelType(uint8_t VoxelID)
 {

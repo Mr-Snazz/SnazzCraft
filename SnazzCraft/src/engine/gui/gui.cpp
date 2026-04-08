@@ -1,7 +1,9 @@
 #include "snazzcraft-engine/gui/gui.hpp"
+#include "snazzcraft-engine/gui/widget-collection.hpp"
+#include "snazzcraft-engine/gui/button.hpp"
 
-const char* GUIVertexShaderFilePath   = "src/engine/shaders/gui/vertex-shader.glsl";
-const char* GUIFragmentShaderFilePath = "src/engine/shaders/gui/fragment-shader.glsl";
+constexpr const char* GUIVertexShaderFilePath   = "src/engine/shaders/gui/vertex-shader.glsl";
+constexpr const char* GUIFragmentShaderFilePath = "src/engine/shaders/gui/fragment-shader.glsl";
 
 SnazzCraft::GUI::GUI(unsigned int WindowWidth, unsigned int WindowHeight)
 {

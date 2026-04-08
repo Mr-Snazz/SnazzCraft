@@ -5,20 +5,17 @@
 #include <array>
 #include <mutex>
 
-#include "../../glm/glm.hpp"
+#include "glm/glm.hpp"
 
-#include "../mesh/mesh.hpp"
-#include "voxel.hpp"
-#include "voxel-ids.h"
-#include "../texture/atlas.hpp"
-#include "../height-map/height-map.hpp"
-#include "../utilities/math.hpp"
-#include "../hitbox/hitbox.hpp"
-#include "../entity/entity.hpp"
+#include "snazzcraft-engine/world/voxel.hpp"
+#include "snazzcraft-engine/utilities/math.hpp"
+#include "snazzcraft-engine/mesh/mesh.hpp"
 
 namespace SnazzCraft
 {
     class World;
+    class HeightMap;
+    class Hitbox;
 
     constexpr int8_t VoxelCheckPositions[6][3] = {
         {  0,  0, -1 }, // Front
@@ -50,11 +47,11 @@ namespace SnazzCraft
 
         bool VoxelTouchingChunkBorder(uint32_t VoxelIndex, uint32_t* BorderDirection) const;
 
-        SnazzCraft::Voxel* GetCollidingVoxel(const glm::vec3& Position, const SnazzCraft::Hitbox* Hitbox); // Returns nullptr if no collision
+        SnazzCraft::Voxel* GetCollidingVoxel(const glm::vec3& Position, SnazzCraft::Hitbox* Hitbox); // Returns nullptr if no collision
 
         SnazzCraft::Voxel* GetCollidingVoxel(const glm::vec3& Position);
 
-        SnazzCraft::Voxel* GetCollidingVoxel(const glm::vec3& Position, const SnazzCraft::Hitbox* Hitbox, int32_t LocalVoxelX, int32_t LocalVoxelY, int32_t LocalVoxelZ);
+        SnazzCraft::Voxel* GetCollidingVoxel(const glm::vec3& Position, SnazzCraft::Hitbox* Hitbox, int32_t LocalVoxelX, int32_t LocalVoxelY, int32_t LocalVoxelZ);
 
         void UpdateLightingOnVertices(SnazzCraft::World* World);
 
@@ -116,17 +113,17 @@ namespace SnazzCraft
 
         static constexpr uint32_t LocalVoxelIndex(int32_t X, int32_t Y, int32_t Z)
         {
-            return INDEX_3D(X, Y, Z, SnazzCraft::Chunk::Width, SnazzCraft::Chunk::Height);
+            return SnazzCraft::Index3D<uint32_t>(X, Y, Z, static_cast<uint32_t>(SnazzCraft::Chunk::Width), static_cast<uint32_t>(SnazzCraft::Chunk::Height));
         }
 
         static constexpr uint32_t LocalVoxelIndex(uint32_t X, uint32_t Y, uint32_t Z)
         {
-            return INDEX_3D(X, Y, Z, SnazzCraft::Chunk::Width, SnazzCraft::Chunk::Height);
+            return SnazzCraft::Index3D<uint32_t>(X, Y, Z, static_cast<uint32_t>(SnazzCraft::Chunk::Width), static_cast<uint32_t>(SnazzCraft::Chunk::Height));
         }
 
         static inline uint32_t LocalVoxelIndex(const SnazzCraft::Voxel& Voxel)
         {
-            return INDEX_3D(Voxel.X, Voxel.Y, Voxel.Z, SnazzCraft::Chunk::Width, SnazzCraft::Chunk::Height);
+            return SnazzCraft::Index3D<uint32_t>(Voxel.X, Voxel.Y, Voxel.Z, static_cast<uint32_t>(SnazzCraft::Chunk::Width), static_cast<uint32_t>(SnazzCraft::Chunk::Height));
         }
 
         static constexpr bool WithinChunkBounds(int32_t X, int32_t Y, int32_t Z)

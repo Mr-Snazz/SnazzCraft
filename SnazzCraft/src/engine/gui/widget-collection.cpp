@@ -1,4 +1,6 @@
 #include "snazzcraft-engine/gui/widget-collection.hpp"
+#include "snazzcraft-engine/gui/panel.hpp"
+#include "snazzcraft-engine/gui/button.hpp"
 
 SnazzCraft::WidgetCollection::~WidgetCollection()
 {

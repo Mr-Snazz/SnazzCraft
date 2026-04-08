@@ -4,13 +4,14 @@
 
 #include "../../glfw3.h"
 
-#include "event.hpp"
 #include "keys.h"
 #include "events.h"
 #include "data-types.h"
 
 namespace SnazzCraft
 {
+    class Event;
+
     class InputHandler
     {
     public:

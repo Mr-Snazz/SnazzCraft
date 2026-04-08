@@ -4,11 +4,9 @@
 #include <string>
 #include <iostream>
 
-#include "../../glad.h"
-#include "../../stb_image.h"
-#include "../../glm/glm.hpp"
-
-#include "../utilities/text-file-handling.hpp"
+#include "glad.h"
+#include "stb_image.h"
+#include "glm/glm.hpp"
 
 #define SNAZZCRAFT_CHARACTER_BITWISE_WIDTH  (8)
 #define SNAZZCRAFT_CHARACTER_BITWISE_HEIGHT (8)

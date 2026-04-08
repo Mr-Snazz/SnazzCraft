@@ -1,8 +1,10 @@
 #include "snazzcraft-engine/input-handler/event.hpp"
+#include "snazzcraft-engine/input-handler/data.hpp"
 
-SnazzCraft::Event::Event(unsigned char Type)
+SnazzCraft::Event::Event(uint8_t IType)
+    : EventData(new SnazzCraft::Data()), Type(IType)
 {
-    this->Type = Type;
+
 }
 
 SnazzCraft::Event::~Event()

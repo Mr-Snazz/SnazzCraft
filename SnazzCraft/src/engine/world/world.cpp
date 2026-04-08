@@ -1,4 +1,7 @@
 #include "snazzcraft-engine/world/world.hpp"
+#include "snazzcraft-engine/world/chunk.hpp"
+#include "snazzcraft-engine/world/voxel-ids.h"
+#include "snazzcraft-engine/texture/atlas.hpp"
 
 SnazzCraft::World* SnazzCraft::CurrentWorld = nullptr;
 

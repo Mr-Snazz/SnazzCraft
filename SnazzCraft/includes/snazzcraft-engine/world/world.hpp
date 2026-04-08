@@ -13,15 +13,11 @@
 #include <stdint.h>
 #include <queue>
 
-#include "chunk.hpp"
-#include "../height-map/height-map.hpp"
-#include "../utilities/math.hpp"
-#include "../utilities/text-file-handling.hpp"
-#include "../hitbox/hitbox.hpp"
-#include "../entity/entity.hpp"
-#include "../entity/user.hpp"
-#include "../utilities/math.hpp"
-#include "snazzcraft-engine/texture/texture.hpp"
+#include "glm/glm.hpp"
+#include "snazzcraft-engine/entity/entity.hpp"
+#include "snazzcraft-engine/world/voxel.hpp"
+#include "snazzcraft-engine/height-map/height-map.hpp"
+#include "snazzcraft-engine/entity/user.hpp"
 
 #define WORLD_SAVE_FILE_DESCRIPTOR_NAME            ('0')
 #define WORLD_SAVE_FILE_DESCRIPTOR_SIZE            ('1')
@@ -32,6 +28,8 @@
 
 namespace SnazzCraft
 {
+    class Chunk;
+
     class World
     {
     public:
@@ -55,7 +53,7 @@ namespace SnazzCraft
 
         void Render() const;
 
-        SnazzCraft::Voxel* GetCollidingVoxel(const glm::vec3& Position, const SnazzCraft::Hitbox* Hitbox) const; // Returns nullptr if no collision 
+        SnazzCraft::Voxel* GetCollidingVoxel(const glm::vec3& Position, SnazzCraft::Hitbox* Hitbox) const; // Returns nullptr if no collision 
 
         SnazzCraft::Voxel* GetCollidingVoxel(const glm::vec3& Position) const; // Returns nullptr if no collision - Position should be in world space
 

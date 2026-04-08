@@ -1,4 +1,5 @@
 #include "snazzcraft-engine/input-handler/input-handler.hpp"
+#include "snazzcraft-engine/input-handler/event.hpp"
 
 SnazzCraft::InputHandler::InputHandler(GLFWwindow* Window)
 {

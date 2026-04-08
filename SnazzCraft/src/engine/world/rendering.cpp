@@ -1,5 +1,9 @@
 #include "snazzcraft-engine/world/world.hpp"
 #include "snazzcraft-engine/core/core.hpp"
+#include "snazzcraft-engine/utilities/math.hpp"
+#include "snazzcraft-engine/texture/texture.hpp"
+#include "snazzcraft-engine/mesh/mesh.hpp"
+#include "snazzcraft-engine/world/chunk.hpp"
 
 void SnazzCraft::World::Render() const
 {
@@ -54,7 +58,7 @@ void SnazzCraft::World::RenderChunks() const
     for (int32_t Z = PlayerChunkPosition[1] - static_cast<int32_t>(this->RenderDistance); Z <= PlayerChunkPosition[1] + static_cast<int32_t>(this->RenderDistance); Z++) {
         if (X < 0 || X >= static_cast<int32_t>(this->Size) || Z < 0 || Z >= static_cast<int32_t>(this->Size)) continue;
 
-        auto ChunkIterator = this->Chunks.find(INDEX_2D(X, Z, static_cast<int32_t>(this->Size)));
+        auto ChunkIterator = this->Chunks.find(SnazzCraft::Index2D<int32_t>(X, Z, static_cast<int32_t>(this->Size)));
         if (ChunkIterator == this->Chunks.end()) continue;
 
         if (ChunkIterator->second->ChunkMesh == nullptr) continue; 

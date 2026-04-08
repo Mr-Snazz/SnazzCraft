@@ -2,10 +2,9 @@
 
 #include <vector>
 #include <string>
+#include <stdint.h>
 
-#include "../../glm/glm.hpp"
-
-#include "data-types.h"
+#include "glm/glm.hpp"
 
 namespace SnazzCraft
 {
@@ -13,11 +12,11 @@ namespace SnazzCraft
     {
     public:
         std::vector<void*> Items;
-        std::vector<unsigned char> Types;
+        std::vector<uint8_t> Types;
 
         ~Data();
 
-        void* AccessDataType(unsigned char Type); // Returns first occurrence of data with specified type
+        void* AccessDataType(uint8_t Type); // Returns first occurrence of data with specified type
 
     private:
 

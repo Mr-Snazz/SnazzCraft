@@ -1,4 +1,5 @@
 #include "snazzcraft-engine/texture/solid-colors.hpp"
+#include "snazzcraft-engine/texture/texture.hpp"
 
 const char* SolidColorDirectory = "textures/solids/";
 const char* SolidColorExtension = ".png";

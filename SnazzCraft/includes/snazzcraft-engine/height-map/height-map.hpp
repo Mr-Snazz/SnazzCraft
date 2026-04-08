@@ -2,11 +2,10 @@
 
 #include <unordered_map>
 
-#include "noise-module.hpp"
-#include "../utilities/math.hpp"
-
 namespace SnazzCraft
 {
+    class PerlinNoiseModule;
+
     struct HeightMap
     {
     public:

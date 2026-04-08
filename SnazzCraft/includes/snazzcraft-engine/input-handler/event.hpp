@@ -1,18 +1,22 @@
 #pragma once
 
-#include "../../glfw3.h"
+#include <stdint.h>
+
+#include "glfw3.h"
 
 #include "data.hpp"
 
 namespace SnazzCraft
 {
+    class Data;
+
     class Event
     {
     public:
-        SnazzCraft::Data* EventData = new SnazzCraft::Data();
-        unsigned char Type;
+        SnazzCraft::Data* EventData;
+        uint8_t Type;
 
-        Event(unsigned char Type);
+        Event(uint8_t IType);
 
         virtual ~Event();
 

@@ -1,10 +1,12 @@
 #include "snazzcraft-engine/world/world.hpp"
+#include "snazzcraft-engine/world/chunk.hpp"
+#include "snazzcraft-engine/utilities/math.hpp"
 
 void SnazzCraft::World::GenerateChunk(uint32_t X, uint32_t Z, bool ApplyLighting)
 {
     if (X >= SnazzCraft::World::Size || Z >= SnazzCraft::World::Size) return;
 
-    uint32_t ChunkIndex = INDEX_2D(X, Z, this->Size);
+    uint32_t ChunkIndex = SnazzCraft::Index2D(X, Z, this->Size);
     auto Iterator = this->Chunks.find(ChunkIndex);
     if (Iterator != this->Chunks.end()) return;
     

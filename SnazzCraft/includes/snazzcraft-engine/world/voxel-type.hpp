@@ -1,6 +1,6 @@
 #pragma once
 
-#include "snazzcraft-engine/world/voxel.hpp"
+#include <stdint.h>
 
 namespace SnazzCraft
 {

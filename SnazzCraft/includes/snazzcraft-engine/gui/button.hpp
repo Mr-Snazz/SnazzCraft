@@ -2,19 +2,17 @@
 
 #include <vector>
 
-#include "../../glad.h"
-#include "../../glfw3.h"
-#include "../../glm/glm.hpp"
+#include "glad.h"
+#include "glfw3.h"
+#include "glm/glm.hpp"
 
-#include "../utilities/math.hpp"
-#include "panel.hpp"
-#include "../input-handler/event.hpp"
-#include "../input-handler/data-types.h"
-#include "../input-handler/core-callback.hpp"
-#include "../texture/texture.hpp"
+#include "snazzcraft-engine/gui/panel.hpp"
 
 namespace SnazzCraft
 {
+    class Event;
+    class Texture;
+
     class Button
     {
     public:
@@ -46,11 +44,18 @@ namespace SnazzCraft
     private:
 
 
+    public:
+        static inline SnazzCraft::Button* NewButtonLong(uint32_t X, uint32_t Y)
+        {
+            return new SnazzCraft::Button(X, Y, 275, 50);
+        }
+
+        static inline SnazzCraft::Button* NewButtonShort(uint32_t X, uint32_t Y)
+        {
+            return new SnazzCraft::Button(X, Y, 125, 50);
+        }
     };
 } // SnazzCraft
-
-#define SNAZZCRAFT_BUTTON_LONG(X, Y)  new SnazzCraft::Button(X, Y, 275, 50)
-#define SNAZZCRAFT_BUTTON_SHORT(X, Y) new SnazzCraft::Button(X, Y, 125, 50)
 
 void SetWorldModeButtonCallback(SnazzCraft::Event* Event);
 

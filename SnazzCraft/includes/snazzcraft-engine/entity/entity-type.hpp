@@ -6,14 +6,12 @@
 #include <string>
 #include <stdexcept>
 
-#include "snazzcraft-engine/mesh/mesh.hpp"
-#include "snazzcraft-engine/texture/texture.hpp"
-#include "snazzcraft-engine/entity/entity-ids.h"
-#include "snazzcraft-engine/hitbox/hitbox.hpp"
-#include "snazzcraft-engine/utilities/text-file-handling.hpp"
-
 namespace SnazzCraft
 {
+    class Mesh;
+    class Texture;
+    class Hitbox;
+
     class EntityType
     {
     public:

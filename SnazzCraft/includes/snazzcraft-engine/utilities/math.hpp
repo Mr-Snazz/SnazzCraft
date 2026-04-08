@@ -1,9 +1,8 @@
 #pragma once
 
-#include "../../glm/glm.hpp"
+#include <concepts>
 
-#define INDEX_2D(X, Y, Width) ((Y) * (Width) + (X))
-#define INDEX_3D(X, Y, Z, Width, Height) ((X) + (Y) * (Width) + (Z) * (Width) * (Height))
+#include "glm/glm.hpp"
 
 namespace SnazzCraft
 {
@@ -12,6 +11,20 @@ namespace SnazzCraft
     void MoveVector3D(glm::vec3& Vector, const glm::vec3& Rotation, float Distance);
 
     void MoveVector3DWithFront(glm::vec3& Vector, const glm::vec3& Front, float Distance);
+
+    template <typename T>
+    requires std::signed_integral<T> || std::unsigned_integral<T>
+    constexpr T Index2D(T X, T Y, T Width)
+    {
+        return Y * Width + X;
+    }
+
+    template <typename T>
+    requires std::signed_integral<T> || std::unsigned_integral<T>
+    constexpr T Index3D(T X, T Y, T Z, T Width, T Height)
+    {
+        return X + (Y * Width) + (Z * Width * Height);
+    }
 } // SnazzCraft
 
 

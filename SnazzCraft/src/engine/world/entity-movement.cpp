@@ -1,4 +1,5 @@
 #include "snazzcraft-engine/world/world.hpp"
+#include "snazzcraft-engine/entity/entity.hpp"
 
 void SnazzCraft::World::MoveEntity(SnazzCraft::Entity* Entity, const glm::vec3& Rotation, float Distance) const
 {

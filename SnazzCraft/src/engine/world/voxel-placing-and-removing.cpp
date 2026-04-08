@@ -1,4 +1,6 @@
 #include"snazzcraft-engine/world/world.hpp"
+#include "snazzcraft-engine/world/chunk.hpp"
+#include "snazzcraft-engine/utilities/math.hpp"
 
 bool GetNewPlacePosition(const glm::vec3& EndPosition, uint8_t FaceHit, SnazzCraft::Voxel* VoxelHit, int8_t OutNewPlacePosition[3], int32_t OutChunkCoordinates[2]);
 
@@ -33,7 +35,7 @@ bool SnazzCraft::World::PlaceVoxel(const glm::vec3& Position, const glm::vec3& R
     int32_t ChunkCoordinates[2];
     if (!GetNewPlacePosition(EndPosition, FaceHit, VoxelHit, NewPlacePosition, ChunkCoordinates)) return false;
     
-    auto ChunkIterator = this->Chunks.find(INDEX_2D(ChunkCoordinates[0], ChunkCoordinates[1], this->Size));
+    auto ChunkIterator = this->Chunks.find(SnazzCraft::Index2D(ChunkCoordinates[0], ChunkCoordinates[1], static_cast<int32_t>(this->Size)));
     if (ChunkIterator == this->Chunks.end() || ChunkCoordinates[0] < 0 || ChunkCoordinates[1] < 0 || ChunkCoordinates[0] >= static_cast<int32_t>(this->Size) || ChunkCoordinates[1] >= static_cast<int32_t>(this->Size)) return false;
     
     uint32_t LocalPlaceVoxelIndex = SnazzCraft::Chunk::LocalVoxelIndex(NewPlacePosition[0], NewPlacePosition[1], NewPlacePosition[2]);
@@ -61,7 +63,7 @@ void SnazzCraft::World::UpdateVoxelPlacementDisplayPosition()
     int32_t ChunkCoordinates[2];
     if (!GetNewPlacePosition(EndPosition, FaceHit, VoxelHit, NewPlacePosition, ChunkCoordinates)) { this->RenderVoxelPlacementDisplay = false; return; }
 
-    auto ChunkIterator = this->Chunks.find(INDEX_2D(ChunkCoordinates[0], ChunkCoordinates[1], this->Size));
+    auto ChunkIterator = this->Chunks.find(SnazzCraft::Index2D(ChunkCoordinates[0], ChunkCoordinates[1], static_cast<int32_t>(this->Size)));
     if (ChunkIterator == this->Chunks.end() || ChunkCoordinates[0] < 0 || ChunkCoordinates[1] < 0 || ChunkCoordinates[0] >= static_cast<int32_t>(this->Size) || ChunkCoordinates[1] >= static_cast<int32_t>(this->Size)) { this->RenderVoxelPlacementDisplay = false; return; }
 
     this->VoxelPlacementDisplayPosition = glm::vec3(

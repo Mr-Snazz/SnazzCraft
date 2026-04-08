@@ -1,4 +1,8 @@
 #include "snazzcraft-engine/input-handler/core-callback.hpp"
+#include "snazzcraft-engine/input-handler/event.hpp"
+#include "snazzcraft-engine/input-handler/data-types.h"
+#include "snazzcraft-engine/world/world.hpp"
+#include "snazzcraft-engine/core/mode.hpp"
 
 void SnazzCraft::ChangeModeCallback(SnazzCraft::Event* Event)
 {

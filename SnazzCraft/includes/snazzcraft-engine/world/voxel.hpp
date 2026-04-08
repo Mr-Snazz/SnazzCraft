@@ -4,7 +4,6 @@
 #include <stdint.h>
 
 #include "glm/glm.hpp"
-#include "snazzcraft-engine/world/voxel-ids.h"
 #include "snazzcraft-engine/world/voxel-type.hpp"
 #include "snazzcraft-engine/utilities/byte-handling.hpp"
 
