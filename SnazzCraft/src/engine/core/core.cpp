@@ -366,6 +366,8 @@ void WorldInputCallback(SnazzCraft::Event* Event)
                 Event->EventData->Types.push_back(SNAZZCRAFT_DATA_TYPE_GUI_ADDRESS);
 
                 SnazzCraft::WorldGUI->SendEventToButtons(Event);
+
+                SnazzCraft::CurrentWorld->DestroyVoxel(SnazzCraft::Player->Position, SnazzCraft::Player->Rotation);
             
                 break;
             }

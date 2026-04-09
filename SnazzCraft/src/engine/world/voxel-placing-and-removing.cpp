@@ -6,7 +6,27 @@ bool GetNewPlacePosition(const glm::vec3& EndPosition, uint8_t FaceHit, SnazzCra
 
 bool SnazzCraft::World::DestroyVoxel(const glm::vec3& Position, const glm::vec3& Rotation)
 {
-    return false;
+    glm::vec3 EndPosition = Position;
+    SnazzCraft::Voxel* VoxelHit;
+    this->RaycastToVoxel(EndPosition, Rotation, this->PlayerReach, nullptr, &VoxelHit);
+    
+    if (VoxelHit == nullptr) return false;
+
+    glm::vec3 VoxelSpacePosition = EndPosition / glm::vec3(SnazzCraft::Voxel::Size);
+    int32_t ChunkCoordinates[2];
+    SnazzCraft::Chunk::GetChunkPosition(VoxelSpacePosition, ChunkCoordinates);
+
+    auto ChunkIterator = this->Chunks.find(SnazzCraft::Index2D<int32_t>(ChunkCoordinates[0], ChunkCoordinates[1], static_cast<int32_t>(this->Size)));
+    if  (ChunkIterator == this->Chunks.end()) return false;
+
+    uint32_t LocalVoxelIndex = SnazzCraft::Chunk::LocalVoxelIndex(*VoxelHit);
+    ChunkIterator->second->Voxels.erase(LocalVoxelIndex);
+
+    ChunkIterator->second->CullVoxelFaces();
+    ChunkIterator->second->UpdateVerticesAndIndices();
+    this->UpdateChunkLighting(ChunkIterator->second, nullptr);
+
+    return true;
 }
 
 bool SnazzCraft::World::PlaceVoxel(const glm::vec3& Position, const glm::vec3& Rotation, uint8_t VoxelID)

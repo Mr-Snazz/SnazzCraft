@@ -114,6 +114,7 @@ void SnazzCraft::Chunk::UpdateVerticesAndIndices()
 void SnazzCraft::Chunk::CullVoxelFaces()
 {
     for (auto& VoxelPair : this->Voxels)  {
+        VoxelPair.second.SetAllSides();
         const SnazzCraft::VoxelType& PairType = VoxelPair.second.GetVoxelType();
 
         for (int8_t I = 5; I >= 0; I--) {
