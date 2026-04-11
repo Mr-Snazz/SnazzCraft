@@ -105,7 +105,7 @@ bool SnazzCraft::Initiate()
 
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
-    SnazzCraft::VoxelShader = new Shader("src/engine/shaders/voxel/vertex-shader.glsl", "src/engine/shaders/voxel/fragment-shader.glsl");
+    SnazzCraft::VoxelShader = new Shader("src/shaders/voxel/vertex-shader.glsl", "src/shaders/voxel/fragment-shader.glsl");
     SnazzCraft::VoxelShader->use();
 
     SnazzCraft::ProjectionLock = glGetUniformLocation(SnazzCraft::VoxelShader->ID, "projection");

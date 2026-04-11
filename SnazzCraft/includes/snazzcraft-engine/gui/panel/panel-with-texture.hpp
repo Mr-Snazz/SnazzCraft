@@ -4,6 +4,7 @@
 #include <string>
 
 #include "snazzcraft-engine/gui/panel/panel.hpp"
+#include "snazzcraft-engine/texture/text-texture.hpp"
 
 namespace SnazzCraft
 {
@@ -12,19 +13,18 @@ namespace SnazzCraft
     class PanelWithTexture : public Panel
     {
         public:
-            PanelWithTexture(uint8_t IX, uint8_t IY, uint32_t IWidth, uint32_t IHeight, std::string FilePathToTexture);
+            PanelWithTexture(float IX, float IY, float IWidth, float IHeight, float IScale, std::string IFilePathToTexture);
 
             virtual ~PanelWithTexture();
 
         protected:
-            SnazzCraft::Texture* Texture;
-
             virtual void ProtectedDraw() const override;
 
             virtual void Initiate() override;
 
         private:
-
+            std::string FilePathToTexture;
+            SnazzCraft::Texture* Texture;
 
     };
 } // SnazzCraft

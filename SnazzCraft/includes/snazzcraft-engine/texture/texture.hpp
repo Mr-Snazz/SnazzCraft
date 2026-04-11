@@ -35,6 +35,8 @@ namespace SnazzCraft
 
         Texture(std::string FilePath);
 
+        Texture(uint32_t IWidth, int32_t IHeight, uint8_t* IData, int32_t INRChannels, uint32_t* IID);
+
         virtual ~Texture();
 
         void LoadTexture(std::string FilePath);

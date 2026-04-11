@@ -9,6 +9,12 @@ SnazzCraft::Texture::Texture(std::string FilePath)
     this->LoadTexture(FilePath);
 }
 
+SnazzCraft::Texture::Texture(uint32_t IWidth, int32_t IHeight, uint8_t* IData, int32_t INRChannels, uint32_t* IID)
+    : Width(IWidth), Height(IHeight), Data(IData), NRChannels(INRChannels), ID(IID)
+{
+    this->SetTexture();
+}
+
 SnazzCraft::Texture::~Texture()
 {
     this->DeleteBoundData();

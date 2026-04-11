@@ -3,8 +3,8 @@
 
 #include "shader_s.h"
 
-constexpr const char* GUIVertexShaderFilePath   = "src/engine/shaders/gui/vertex-shader.glsl";
-constexpr const char* GUIFragmentShaderFilePath = "src/engine/shaders/gui/fragment-shader.glsl";
+constexpr const char* GUIVertexShaderFilePath   = "src/shaders/gui/vertex-shader.glsl";
+constexpr const char* GUIFragmentShaderFilePath = "src/shaders/gui/fragment-shader.glsl";
 
 SnazzCraft::GUI::GUI()
     : InputHandler(nullptr)
@@ -40,7 +40,5 @@ void SnazzCraft::GUI::ProtectedDraw() const
     for (SnazzCraft::Panel* Panel : this->Panels) {
         Panel->Draw();
     }
-
-
 }
 

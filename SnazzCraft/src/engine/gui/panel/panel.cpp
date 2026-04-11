@@ -27,12 +27,11 @@ void SnazzCraft::Panel::HandleEvent(SnazzCraft::Event* Event) const
 
 SnazzCraft::Panel::~Panel()
 {
-    glDeleteVertexArrays(1, &this->VAO);
-    glDeleteBuffers(1, &this->VBO);
+    this->DeleteBoundData();
 }
 
-SnazzCraft::Panel::Panel(uint8_t IX, uint8_t IY, uint32_t IWidth, uint32_t IHeight)
-    : X(IX), Y(IY), Width(IWidth), Height(IHeight)
+SnazzCraft::Panel::Panel(float IX, float IY, float IWidth, float IHeight, float IScale)
+    : X(IX), Y(IY), Width(IWidth), Height(IHeight), Scale(IScale), Callback(nullptr)
 {
     
     
@@ -44,23 +43,23 @@ void SnazzCraft::Panel::SetVertices()
 
     float Vertices[24];
     // Copy position data
-    Vertices[SnazzCraft::Index2D(0, 0, 4)] = static_cast<float>(X);          // Bottom Left X
-    Vertices[SnazzCraft::Index2D(1, 0, 4)] = static_cast<float>(Y + Height); // Bottom Left Y
+    Vertices[SnazzCraft::Index2D(0, 0, 4)] =  X ;                        // Bottom Left X
+    Vertices[SnazzCraft::Index2D(1, 0, 4)] = (Y + Height) * this->Scale; // Bottom Left Y
 
-    Vertices[SnazzCraft::Index2D(0, 1, 4)] = static_cast<float>(X);          // Top Left X
-    Vertices[SnazzCraft::Index2D(1, 1, 4)] = static_cast<float>(Y);          // Top Left Y
+    Vertices[SnazzCraft::Index2D(0, 1, 4)] = X;                          // Top Left X
+    Vertices[SnazzCraft::Index2D(1, 1, 4)] = Y;                          // Top Left Y
 
-    Vertices[SnazzCraft::Index2D(0, 2, 4)] = static_cast<float>(X + Width);  // Top Right X
-    Vertices[SnazzCraft::Index2D(1, 2, 4)] = static_cast<float>(Y);          // Top Right Y
+    Vertices[SnazzCraft::Index2D(0, 2, 4)] = (X + Width)  * this->Scale; // Top Right X
+    Vertices[SnazzCraft::Index2D(1, 2, 4)] =  Y;                         // Top Right Y
 
-    Vertices[SnazzCraft::Index2D(0, 3, 4)] = static_cast<float>(X + Width);  // Top Right X
-    Vertices[SnazzCraft::Index2D(1, 3, 4)] = static_cast<float>(Y);          // Top Right Y
+    Vertices[SnazzCraft::Index2D(0, 3, 4)] = (X + Width)  * this->Scale; // Top Right X
+    Vertices[SnazzCraft::Index2D(1, 3, 4)] =  Y;                         // Top Right Y
 
-    Vertices[SnazzCraft::Index2D(0, 4, 4)] = static_cast<float>(X);          // Bottom Left X
-    Vertices[SnazzCraft::Index2D(1, 4, 4)] = static_cast<float>(Y + Height); // Bottom Left Y
+    Vertices[SnazzCraft::Index2D(0, 4, 4)] =  X;                         // Bottom Left X
+    Vertices[SnazzCraft::Index2D(1, 4, 4)] = (Y + Height) * this->Scale; // Bottom Left Y
 
-    Vertices[SnazzCraft::Index2D(0, 5, 4)] = static_cast<float>(X + Width);  // Bottom Right X
-    Vertices[SnazzCraft::Index2D(1, 5, 4)] = static_cast<float>(Y + Height); // Bottom Right Y
+    Vertices[SnazzCraft::Index2D(0, 5, 4)] = (X + Width)  * this->Scale; // Bottom Right X
+    Vertices[SnazzCraft::Index2D(1, 5, 4)] = (Y + Height) * this->Scale; // Bottom Right Y
 
     // Copy texture coordinate data
     for (uint8_t Y = 0x00; Y < 0x06; Y++) {

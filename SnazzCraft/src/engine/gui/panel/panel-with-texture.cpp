@@ -1,10 +1,10 @@
 #include "snazzcraft-engine/gui/panel/panel-with-texture.hpp"
 #include "snazzcraft-engine/texture/texture.hpp"
+#include "snazzcraft-engine/utilities/math.hpp"
 
-SnazzCraft::PanelWithTexture::PanelWithTexture(uint8_t IX, uint8_t IY, uint32_t IWidth, uint32_t IHeight, std::string FilePathToTexture)
-    : Panel(IX, IY, IWidth, IHeight)
+SnazzCraft::PanelWithTexture::PanelWithTexture(float IX, float IY, float IWidth, float IHeight, float IScale, std::string IFilePathToTexture)
+    : Panel(IX, IY, IWidth, IHeight, IScale), FilePathToTexture(IFilePathToTexture), Texture(nullptr)
 {
-    this->Texture = new SnazzCraft::Texture(FilePathToTexture);
     this->Initiate();
 }
 
@@ -24,6 +24,9 @@ void SnazzCraft::PanelWithTexture::ProtectedDraw() const
 
 void SnazzCraft::PanelWithTexture::Initiate()
 {
+    delete this->Texture;
+    this->Texture = new SnazzCraft::Texture(this->FilePathToTexture);
+
     glGenVertexArrays(1, &this->VAO);
     glGenBuffers(1, &this->VBO);
 
