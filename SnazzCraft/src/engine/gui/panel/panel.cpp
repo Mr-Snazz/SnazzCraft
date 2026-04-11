@@ -2,6 +2,9 @@
 #include "snazzcraft-engine/utilities/math.hpp"
 
 #include "glad.h"
+#include "snazzcraft-engine/input-handler/event.hpp"
+
+#include "snazzcraft-engine/input-handler/data-types.h"
 
 constexpr float FullTextureCoordinates[12] = {
     0.0f, 1.0f, // Bottom Left
@@ -11,6 +14,16 @@ constexpr float FullTextureCoordinates[12] = {
     0.0f, 1.0f, // Bottom Left
     1.0f, 1.0f  // Bottom Right
 };
+
+void SnazzCraft::Panel::HandleEvent(SnazzCraft::Event* Event) const
+{
+    if (this->Callback == nullptr) return;
+
+    glm::dvec2* MousePosition = reinterpret_cast<glm::dvec2*>(Event->EventData->AccessDataType(SNAZZCRAFT_DATA_TYPE_DVEC2));
+    if (MousePosition == nullptr || !this->WithinPanel(MousePosition->x, MousePosition->y)) return;
+    
+    this->Callback(Event);
+}
 
 SnazzCraft::Panel::~Panel()
 {

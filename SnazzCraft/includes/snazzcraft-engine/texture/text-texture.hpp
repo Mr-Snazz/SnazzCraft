@@ -23,9 +23,17 @@ namespace SnazzCraft
 
         TextTexture(std::string IText, uint8_t IR, uint8_t IG, uint8_t IB);
 
+        virtual ~TextTexture() = default;
+
         virtual void Update();
 
-        virtual ~TextTexture() = default;
+        virtual inline bool BindTexture() const override
+        {
+            if (this->ID == nullptr) return false;
+
+            glBindTexture(GL_TEXTURE_2D, *this->ID);
+            return true;
+        }
         
     private:
 

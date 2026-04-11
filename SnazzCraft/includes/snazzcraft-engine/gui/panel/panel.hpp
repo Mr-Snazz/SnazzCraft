@@ -3,13 +3,28 @@
 #include <stdint.h>
 
 namespace SnazzCraft
-{
+{   
+    class Event;
+
     class Panel
     {
     public:  
+        virtual void HandleEvent(SnazzCraft::Event* Event) const;
+
         inline void Draw() const
         {
             this->ProtectedDraw();
+        }
+
+        inline bool WithinPanel(double X, double Y) const
+        {
+            return X >= static_cast<float>(this->X) && X <= static_cast<float>(this->X + this->Width) && 
+                Y >= static_cast<float>(this->Y) && Y <= static_cast<float>(this->Y + this->Height);
+        }
+
+        inline void SetCallback(void(*NewCallback)(SnazzCraft::Event* Event))
+        {
+            this->Callback = NewCallback;
         }
 
         virtual ~Panel();
@@ -38,8 +53,8 @@ namespace SnazzCraft
             X, Y, U, V
         */
         uint32_t VAO, VBO;
+        void(*Callback)(SnazzCraft::Event* Event);
     
-
         Panel(uint8_t IX, uint8_t IY, uint32_t IWidth, uint32_t IHeight);
 
         virtual void SetVertices(); 

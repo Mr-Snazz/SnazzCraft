@@ -6,25 +6,30 @@ namespace SnazzCraft
 {
     class Event;
 
-    class MainMenuGUI : public GUI
+    class WorldGUI : public GUI
     {
     public:
-        ~MainMenuGUI() = default;
+        bool InInventory;
+
+        ~WorldGUI() = default;
 
     protected:
-        MainMenuGUI();
+        WorldGUI();
 
     private:
 
-
+    
     public:
         static void Initialize(void(*InputHandlerCallback)(SnazzCraft::Event* Event)); // Only to be called after SnazzCraft::Window is set to the memory address of a created window
 
-        static inline MainMenuGUI& GetInstance()
+        static inline WorldGUI& GetInstance()
         {
-            static SnazzCraft::MainMenuGUI Instance;
+            static WorldGUI Instance;
             return Instance;
         }
 
+        
+
     };
+
 } // SnazzCraft

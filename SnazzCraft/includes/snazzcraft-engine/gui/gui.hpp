@@ -2,16 +2,19 @@
 
 #include <vector>
 
+#include "glad.h"
+#include "snazzcraft-engine/input-handler/input-handler.hpp"
+
+#include "snazzcraft-engine/gui/panel/panel.hpp"
+
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
 class Shader;
+class GLFWwindow;
 namespace SnazzCraft
 {
-    class Panel;
-    class Button;
-
     class GUI
     {
     public:
@@ -31,21 +34,49 @@ namespace SnazzCraft
             this->Panels.push_back(NewPanel);
         }
 
-        inline void AddButton(SnazzCraft::Button* NewButton)
+        inline void SetInputHandler(GLFWwindow* Window) 
         {
-            this->Buttons.push_back(NewButton);
+            this->InputHandler = SnazzCraft::InputHandler(Window);
+        }
+
+        inline void SetInputHandlerCallback(void(*NewCallback)(SnazzCraft::Event* Event))
+        {
+            this->InputHandler.Callback = NewCallback;
+        }
+
+        inline void PollEvents() 
+        {
+            this->InputHandler.PollEvents();
+        }
+
+        inline void HandleEvents()
+        {
+            this->InputHandler.HandleEvents();
+        }
+
+        inline void AddEvent(SnazzCraft::Event* Event) 
+        {
+            this->InputHandler.EventQueue.push_back(Event);
+        }
+
+        inline void SendEventToPanels(SnazzCraft::Event* Event) const
+        {
+            for (SnazzCraft::Panel* Panel : this->Panels) {
+                Panel->HandleEvent(Event);
+            }
         }
 
     protected:
         std::vector<SnazzCraft::Panel*>  Panels;
-        std::vector<SnazzCraft::Button*> Buttons;
 
         Shader* GUIShader;
         glm::mat4 OrthographicProjectionMatrix;
         int OrthographicLock;
+        
+        SnazzCraft::InputHandler InputHandler;
 
     private:
-        virtual void ProtectedDraw() const; // Panels are drawn first
+        virtual void ProtectedDraw() const; 
 
     };
 } // SnazzCraft

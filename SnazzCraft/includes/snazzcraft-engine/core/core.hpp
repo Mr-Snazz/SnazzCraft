@@ -13,6 +13,7 @@
 #include "glm/gtc/type_ptr.hpp"
 
 #include "snazzcraft-engine/gui/main-menu-gui.hpp"
+#include "snazzcraft-engine/gui/world-gui.hpp"
 #include "snazzcraft-engine/input-handler/events.h"
 #include "snazzcraft-engine/input-handler/event.hpp"
 #include "snazzcraft-engine/input-handler/data-types.h"
@@ -29,6 +30,8 @@
 
 namespace SnazzCraft
 {
+    class World;
+
     extern Shader* VoxelShader;
 
     extern glm::mat4 ProjectionMatrix;
@@ -41,6 +44,8 @@ namespace SnazzCraft
     extern int ViewLock;
 
     extern bool CloseApplication;
+
+    extern World* CurrentWorld;
 
     bool Initiate();
 
@@ -74,19 +79,22 @@ inline void MouseButtonCallback(GLFWwindow* Window, int Button, int Action, int 
 
     switch (SnazzCraft::UserMode) {
         case SNAZZCRAFT_USER_MODE_WORLD:
-            //NewEvent->EventData->Items.push_back(static_cast<void*>(SnazzCraft::WorldGUI));
-            //NewEvent->EventData->Types.push_back(SNAZZCRAFT_DATA_TYPE_GUI_ADDRESS);
+        {
+            SnazzCraft::WorldGUI& Instance = SnazzCraft::WorldGUI::GetInstance();
 
-            //SnazzCraft::WorldGUI->GUIInputHandler->EventQueue.push_back(NewEvent);
+            Instance.AddEvent(NewEvent);
 
             break;
+        }
 
         case SNAZZCRAFT_USER_MODE_MAIN_MENU:
-            //NewEvent->EventData->Items.push_back(static_cast<void*>(SnazzCraft::MenuGUI));
-            //NewEvent->EventData->Types.push_back(SNAZZCRAFT_DATA_TYPE_GUI_ADDRESS);
+        {
+            SnazzCraft::MainMenuGUI& Instance = SnazzCraft::MainMenuGUI::GetInstance();
 
-            //SnazzCraft::MenuGUI->GUIInputHandler->EventQueue.push_back(NewEvent); 
+            Instance.AddEvent(NewEvent);
 
             break;
+        }
+            
     }
 }

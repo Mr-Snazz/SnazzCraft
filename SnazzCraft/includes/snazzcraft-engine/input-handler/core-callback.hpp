@@ -7,7 +7,11 @@ namespace SnazzCraft
 {
     class Event;
 
-    void ChangeModeCallback(SnazzCraft::Event* Event);
+    void CreateWorldAndChangeModeToWorld(SnazzCraft::Event* Event);
+
+    void ChangeModeToWorldCallback(SnazzCraft::Event* Event);
+
+    void ChangeModeToMainMenuCallback(SnazzCraft::Event* Event);
 
     void CloseWindowCallback(SnazzCraft::Event* Event);
 

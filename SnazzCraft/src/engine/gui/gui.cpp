@@ -1,14 +1,13 @@
 #include "snazzcraft-engine/gui/gui.hpp"
 #include "snazzcraft-engine/gui/panel/panel.hpp"
-#include "snazzcraft-engine/gui/button/button.hpp"
 
 #include "shader_s.h"
-#include "glad.h"
 
 constexpr const char* GUIVertexShaderFilePath   = "src/engine/shaders/gui/vertex-shader.glsl";
 constexpr const char* GUIFragmentShaderFilePath = "src/engine/shaders/gui/fragment-shader.glsl";
 
 SnazzCraft::GUI::GUI()
+    : InputHandler(nullptr)
 {
     this->GUIShader = new Shader(GUIVertexShaderFilePath, GUIFragmentShaderFilePath);
     this->GUIShader->use();
@@ -24,10 +23,7 @@ SnazzCraft::GUI::~GUI()
         delete Panel;
     }
 
-    for (SnazzCraft::Button* Button : this->Buttons) {
-        delete Button;
-    }
-
+    delete this->GUIShader;
 }
 
 void SnazzCraft::GUI::Resize(uint32_t Width, uint32_t Height)
@@ -45,8 +41,6 @@ void SnazzCraft::GUI::ProtectedDraw() const
         Panel->Draw();
     }
 
-    for (SnazzCraft::Button* Button : this->Buttons) {
-        Button->Draw();
-    }
+
 }
 

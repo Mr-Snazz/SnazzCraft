@@ -4,31 +4,26 @@
 #include "snazzcraft-engine/world/world.hpp"
 #include "snazzcraft-engine/core/mode.hpp"
 
-void SnazzCraft::ChangeModeCallback(SnazzCraft::Event* Event)
+void SnazzCraft::CreateWorldAndChangeModeToWorld(SnazzCraft::Event* Event)
 {
-    unsigned char* Mode = static_cast<unsigned char*>(Event->EventData->AccessDataType(SNAZZCRAFT_DATA_TYPE_SWITCH_MODE));
-    if (Mode == nullptr) return;
- 
-    switch (*Mode) 
-    {
-        case SNAZZCRAFT_USER_MODE_WORLD:
-        {
-            SnazzCraft::UserMode = SNAZZCRAFT_USER_MODE_WORLD;
+    if (SnazzCraft::CurrentWorld != nullptr) return;
 
-            SnazzCraft::World* LoadedWorld = static_cast<SnazzCraft::World*>(Event->EventData->AccessDataType(SNAZZCRAFT_DATA_TYPE_WORLD_ADDRESS));
-            if (LoadedWorld == nullptr) return;
+    SnazzCraft::CurrentWorld = SnazzCraft::World::CreateWorld("TEST WORLD", 6, 50058);
+    SnazzCraft::UserMode = SNAZZCRAFT_USER_MODE_WORLD;
+}
 
-            SnazzCraft::CurrentWorld = LoadedWorld;
+void SnazzCraft::ChangeModeToWorldCallback(SnazzCraft::Event* Event)
+{
+    if (SnazzCraft::UserMode == SNAZZCRAFT_USER_MODE_WORLD) return;
 
-            break;
-        }
-            
-        case SNAZZCRAFT_USER_MODE_MAIN_MENU:
-        {
-            SnazzCraft::UserMode = SNAZZCRAFT_USER_MODE_MAIN_MENU;
-            break;
-        }  
-    }
+    SnazzCraft::UserMode = SNAZZCRAFT_USER_MODE_WORLD;
+}
+
+void SnazzCraft::ChangeModeToMainMenuCallback(SnazzCraft::Event* Event)
+{
+    if (SnazzCraft::UserMode == SNAZZCRAFT_USER_MODE_MAIN_MENU) return;
+
+    SnazzCraft::UserMode = SNAZZCRAFT_USER_MODE_MAIN_MENU;
 }
 
 void SnazzCraft::CloseWindowCallback(SnazzCraft::Event* Event)
