@@ -22,7 +22,7 @@ namespace SnazzCraft
 
         ~GUI();
 
-        virtual void Resize(uint32_t Width, uint32_t Height);
+        virtual void Resize(float Width, float Height);
 
         inline void Draw() const
         {

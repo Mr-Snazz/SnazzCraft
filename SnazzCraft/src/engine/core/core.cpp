@@ -133,14 +133,8 @@ bool SnazzCraft::Initiate()
 
     SnazzCraft::VoxelMesh->ScaleVector = { (float)(SnazzCraft::Voxel::Size) / 2, (float)(SnazzCraft::Voxel::Size) / 2, (float)(SnazzCraft::Voxel::Size) / 2 };
 
-    //SnazzCraft::MenuGUI = new SnazzCraft::MainMenuGUI(900, 900, SnazzCraft::Window);
-    //SnazzCraft::MenuGUI->GUIInputHandler->Callback = MainMenuInputCallback;
     SnazzCraft::MainMenuGUI::Initialize(MainMenuInputCallback);
-    
     SnazzCraft::WorldGUI::Initialize(WorldInputCallback);
-
-    //SnazzCraft::WorldGUI = new SnazzCraft::InWorldGUI(900, 900, SnazzCraft::Window);
-    //SnazzCraft::WorldGUI->GUIInputHandler->Callback = WorldInputCallback;
 
     return true;
 }
@@ -220,7 +214,7 @@ void SnazzCraft::FreeResources()
 void RenderWorld()
 {
     if (SnazzCraft::CurrentWorld->Entities.size() == 0) {
-        SnazzCraft::CurrentWorld->Entities.push_back(new SnazzCraft::Entity(glm::vec3(10.0f, 95.0f, 10.0f), glm::vec3(0.0f, 45.0f, 0.0f), ID_ENTITY_SHEEP));
+        SnazzCraft::CurrentWorld->Entities.push_back(new SnazzCraft::Entity(glm::vec3(10.0f, 95.0f, 10.0f), glm::vec3(0.0f, 45.0f, 0.0f), ID_ENTITY_TEST));
     } else {
         //SnazzCraft::CurrentWorld->MoveEntity(SnazzCraft::CurrentWorld->Entities[0], glm::vec3(0.0f), 0.01f);
         //SnazzCraft::CurrentWorld->Entities[0]->Rotation.x += 0.5f;
@@ -371,6 +365,7 @@ void WorldInputCallback(SnazzCraft::Event* Event)
 
             case SNAZZCRAFT_EVENT_MOUSE_CLICK_LEFT_PRESS:
             {
+                WorldGUIInstance.SendEventToPanels(Event);
                 SnazzCraft::CurrentWorld->DestroyVoxel(SnazzCraft::Player->Position, SnazzCraft::Player->Rotation);
             
                 break;
@@ -400,7 +395,7 @@ void WorldInputCallback(SnazzCraft::Event* Event)
             case SNAZZCRAFT_EVENT_MOUSE_CLICK_LEFT_PRESS:
             {
                 WorldGUIInstance.SendEventToPanels(Event);
-            
+                
                 break;
             }
 
@@ -412,13 +407,13 @@ void WorldInputCallback(SnazzCraft::Event* Event)
 
 void MainMenuInputCallback(SnazzCraft::Event* Event)
 {
-    const SnazzCraft::MainMenuGUI& Instance = SnazzCraft::MainMenuGUI::GetInstance();
+    const SnazzCraft::MainMenuGUI& MainMenuGUIInstance = SnazzCraft::MainMenuGUI::GetInstance();
 
     switch (Event->Type)
     {
         case SNAZZCRAFT_EVENT_MOUSE_CLICK_LEFT_PRESS:
         {
-            Instance.SendEventToPanels(Event);
+            MainMenuGUIInstance.SendEventToPanels(Event);
             break;
         }
     }

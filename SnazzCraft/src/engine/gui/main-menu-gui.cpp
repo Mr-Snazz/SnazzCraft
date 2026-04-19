@@ -1,6 +1,6 @@
 #include "snazzcraft-engine/gui/main-menu-gui.hpp"
 #include "snazzcraft-engine/gui/panel/panel-with-texture.hpp"
-#include "snazzcraft-engine/input-handler/core-callback.hpp"
+#include "snazzcraft-engine/core/core-callback.hpp"
 #include "snazzcraft-engine/core/window.hpp"
 #include "snazzcraft-engine/gui/panel/panel-with-text-texture.hpp"
 

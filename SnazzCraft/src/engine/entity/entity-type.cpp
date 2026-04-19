@@ -7,8 +7,9 @@
 
 SnazzCraft::Mesh* SnazzCraft::EntityType::Meshes[256];
 uint8_t SnazzCraft::EntityType::MeshesLoaded = 0x00;
-#define MESH_TEST_RECTANGULAR_PRISM (0x00)
+#define MESH_RECTANGULAR_PRISM (0x00)
 #define MESH_CATTLE                 (0x01)
+#define MESH_HUMANOID               (0x02)
 
 SnazzCraft::Texture* SnazzCraft::EntityType::Textures[256];
 uint8_t SnazzCraft::EntityType::TexturesLoaded = 0x00;
@@ -47,9 +48,9 @@ void SnazzCraft::EntityType::FreeResources()
 
 const SnazzCraft::EntityType& SnazzCraft::EntityType::GetEntityType(uint8_t ID)
 {
-    static const SnazzCraft::EntityType Player(Meshes[MESH_TEST_RECTANGULAR_PRISM], Textures[TEXTURE_LIGHT_GREEN], SnazzCraft::EntityType::Hitboxes[HITBOX_HUMANONOID]);
-    static const SnazzCraft::EntityType Test  (Meshes[MESH_TEST_RECTANGULAR_PRISM], Textures[TEXTURE_DARK_BLUE],   SnazzCraft::EntityType::Hitboxes[HITBOX_HUMANONOID]);
-    static const SnazzCraft::EntityType Sheep (Meshes[MESH_CATTLE],                 Textures[TEXTURE_WHITE],       SnazzCraft::EntityType::Hitboxes[HITBOX_CATTLE]);
+    static const SnazzCraft::EntityType Player(Meshes[MESH_RECTANGULAR_PRISM], Textures[TEXTURE_LIGHT_GREEN], SnazzCraft::EntityType::Hitboxes[HITBOX_HUMANONOID]);
+    static const SnazzCraft::EntityType Test  (Meshes[MESH_HUMANOID],          Textures[TEXTURE_DARK_BLUE],   SnazzCraft::EntityType::Hitboxes[HITBOX_HUMANONOID]);
+    static const SnazzCraft::EntityType Sheep (Meshes[MESH_CATTLE],            Textures[TEXTURE_WHITE],       SnazzCraft::EntityType::Hitboxes[HITBOX_CATTLE]);
 
     switch (ID)
     {
@@ -111,6 +112,8 @@ void SnazzCraft::EntityType::LoadHitboxes()
     float NewDimensions[3];
     while (std::getline(ListFile, Line))
     {
+        if (Line.empty()) continue;
+
         uint32_t LineIndex = 0;
         for (uint8_t I = 0x00; I < 0x03; I++) {
             std::string NewValue;
@@ -118,8 +121,8 @@ void SnazzCraft::EntityType::LoadHitboxes()
 
             NewDimensions[I] = std::stof(NewValue);
             LineIndex++;
-        }
-
+        }   
+     
         SnazzCraft::EntityType::Hitboxes[SnazzCraft::EntityType::HitboxesLoaded++] = new SnazzCraft::Hitbox({ NewDimensions[0], NewDimensions[1], NewDimensions[2] });
     }
 

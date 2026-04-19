@@ -5,6 +5,7 @@
 #include "snazzcraft-engine/input-handler/event.hpp"
 
 #include "snazzcraft-engine/input-handler/data-types.h"
+#include "snazzcraft-engine/core/core-callback.hpp"
 
 constexpr float FullTextureCoordinates[12] = {
     0.0f, 1.0f, // Bottom Left
@@ -43,23 +44,23 @@ void SnazzCraft::Panel::SetVertices()
 
     float Vertices[24];
     // Copy position data
-    Vertices[SnazzCraft::Index2D(0, 0, 4)] =  X ;                        // Bottom Left X
-    Vertices[SnazzCraft::Index2D(1, 0, 4)] = (Y + Height) * this->Scale; // Bottom Left Y
+    Vertices[SnazzCraft::Index2D(0, 0, 4)] = X ;                         // Bottom Left X
+    Vertices[SnazzCraft::Index2D(1, 0, 4)] = Y + (Height * this->Scale); // Bottom Left Y
 
     Vertices[SnazzCraft::Index2D(0, 1, 4)] = X;                          // Top Left X
     Vertices[SnazzCraft::Index2D(1, 1, 4)] = Y;                          // Top Left Y
 
-    Vertices[SnazzCraft::Index2D(0, 2, 4)] = (X + Width)  * this->Scale; // Top Right X
-    Vertices[SnazzCraft::Index2D(1, 2, 4)] =  Y;                         // Top Right Y
+    Vertices[SnazzCraft::Index2D(0, 2, 4)] = X + (Width  * this->Scale); // Top Right X
+    Vertices[SnazzCraft::Index2D(1, 2, 4)] = Y;                          // Top Right Y
 
-    Vertices[SnazzCraft::Index2D(0, 3, 4)] = (X + Width)  * this->Scale; // Top Right X
-    Vertices[SnazzCraft::Index2D(1, 3, 4)] =  Y;                         // Top Right Y
+    Vertices[SnazzCraft::Index2D(0, 3, 4)] = X + (Width  * this->Scale); // Top Right X
+    Vertices[SnazzCraft::Index2D(1, 3, 4)] = Y;                          // Top Right Y
 
-    Vertices[SnazzCraft::Index2D(0, 4, 4)] =  X;                         // Bottom Left X
-    Vertices[SnazzCraft::Index2D(1, 4, 4)] = (Y + Height) * this->Scale; // Bottom Left Y
+    Vertices[SnazzCraft::Index2D(0, 4, 4)] = X;                          // Bottom Left X
+    Vertices[SnazzCraft::Index2D(1, 4, 4)] = Y + (Height * this->Scale); // Bottom Left Y
 
-    Vertices[SnazzCraft::Index2D(0, 5, 4)] = (X + Width)  * this->Scale; // Bottom Right X
-    Vertices[SnazzCraft::Index2D(1, 5, 4)] = (Y + Height) * this->Scale; // Bottom Right Y
+    Vertices[SnazzCraft::Index2D(0, 5, 4)] = X + (Width  * this->Scale); // Bottom Right X
+    Vertices[SnazzCraft::Index2D(1, 5, 4)] = Y + (Height * this->Scale); // Bottom Right Y
 
     // Copy texture coordinate data
     for (uint8_t Y = 0x00; Y < 0x06; Y++) {
@@ -78,7 +79,9 @@ void SnazzCraft::Panel::SetVertices()
 
 void SnazzCraft::Panel::ProtectedDraw() const
 {
-
+    glBindVertexArray(this->VAO);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glBindVertexArray(0);
 }
 
 void SnazzCraft::Panel::Initiate()

@@ -20,13 +20,33 @@ namespace SnazzCraft
 
         inline bool WithinPanel(double X, double Y) const
         {
-            return X >= this->X && X <= (this->X + this->Width)  * this->Scale && 
-                   Y >= this->Y && Y <= (this->Y + this->Height) * this->Scale;
+            return X >= this->X && X <= this->X + (this->Width  * this->Scale) && 
+                   Y >= this->Y && Y <= this->Y + (this->Height * this->Scale);
         }
 
         inline void SetCallback(void(*NewCallback)(SnazzCraft::Event* Event))
         {
             this->Callback = NewCallback;
+        }
+
+        inline float GetWidth() const
+        {
+            return this->Width * this->Scale;
+        }
+
+        inline float GetHeight() const
+        {
+            return this->Height * this->Scale;
+        }
+
+        inline float GetX() const
+        {
+            return this->X;
+        }
+
+        inline float GetY() const
+        {
+            return this->Y;
         }
 
         virtual ~Panel();

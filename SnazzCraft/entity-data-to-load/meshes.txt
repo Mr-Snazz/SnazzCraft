@@ -1,2 +1,3 @@
-entity-meshes/test-rectangular-prism.obj
+entity-meshes/rectangular-prism.obj
 entity-meshes/cattle.obj
+entity-meshes/humanoid.obj

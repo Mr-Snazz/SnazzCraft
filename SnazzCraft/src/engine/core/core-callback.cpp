@@ -1,4 +1,4 @@
-#include "snazzcraft-engine/input-handler/core-callback.hpp"
+#include "snazzcraft-engine/core/core-callback.hpp"
 #include "snazzcraft-engine/input-handler/event.hpp"
 #include "snazzcraft-engine/input-handler/data-types.h"
 #include "snazzcraft-engine/world/world.hpp"
@@ -6,9 +6,11 @@
 
 void SnazzCraft::CreateWorldAndChangeModeToWorld(SnazzCraft::Event* Event)
 {
-    if (SnazzCraft::CurrentWorld != nullptr) return;
+    if (SnazzCraft::CurrentWorld != nullptr) goto SwitchMode;
 
     SnazzCraft::CurrentWorld = SnazzCraft::World::CreateWorld("TEST WORLD", 6, 80085);
+
+    SwitchMode:
     SnazzCraft::UserMode = SNAZZCRAFT_USER_MODE_WORLD;
 }
 
