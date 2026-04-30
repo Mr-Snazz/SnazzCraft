@@ -12,6 +12,7 @@
 #include <mutex>
 #include <stdint.h>
 #include <queue>
+#include <functional>
 
 #include "glm/glm.hpp"
 #include "snazzcraft-engine/entity/entity.hpp"

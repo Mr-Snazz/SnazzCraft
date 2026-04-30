@@ -80,10 +80,7 @@ void SnazzCraft::EntityType::LoadMeshes()
     if (!ListFile.is_open()) throw std::runtime_error("SNAZZCRAFT| Unable to open entity mesh list file\n");
 
     std::string ObjectFileToLoad;
-    while (std::getline(ListFile, ObjectFileToLoad))
-    {
-        SnazzCraft::EntityType::Meshes[SnazzCraft::EntityType::MeshesLoaded++] = SnazzCraft::Mesh::LoadMeshFromObjectFile(ObjectFileToLoad.c_str());
-    }
+    while (std::getline(ListFile, ObjectFileToLoad)) SnazzCraft::EntityType::Meshes[SnazzCraft::EntityType::MeshesLoaded++] = SnazzCraft::Mesh::LoadMeshFromObjectFile(ObjectFileToLoad.c_str());
 
     ListFile.close();
 }
@@ -94,10 +91,7 @@ void SnazzCraft::EntityType::LoadTextures()
     if (!ListFile.is_open()) throw std::runtime_error("SNAZZCRAFT| Unable to open entity texture list file\n");
 
     std::string TextureToLoad;
-    while (std::getline(ListFile, TextureToLoad))
-    {
-        SnazzCraft::EntityType::Textures[SnazzCraft::EntityType::TexturesLoaded++] = new SnazzCraft::Texture(TextureToLoad.c_str());
-    }
+    while (std::getline(ListFile, TextureToLoad)) SnazzCraft::EntityType::Textures[SnazzCraft::EntityType::TexturesLoaded++] = new SnazzCraft::Texture(TextureToLoad.c_str());
 
     ListFile.close();
 }
