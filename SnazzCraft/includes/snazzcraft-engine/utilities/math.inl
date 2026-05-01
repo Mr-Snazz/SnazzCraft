@@ -18,7 +18,10 @@ template <typename T>
 requires std::signed_integral<T> && (sizeof(T) <= 4u)
 constexpr uint64_t SnazzCraft::IntegerHash(T X, T Y)
 {
-    uint64_t Low  = static_cast<uint64_t>(X);
-    uint64_t High = static_cast<uint64_t>(Y);
-    return uint64_t((High << 32) | Low);
+    using Unsigned = std::make_unsigned_t<T>;
+
+    uint64_t Low  = static_cast<Unsigned>(X);
+    uint64_t High = static_cast<Unsigned>(Y);
+
+    return (High << 32u) | Low;
 }
