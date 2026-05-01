@@ -32,17 +32,17 @@ SnazzCraft::Chunk::~Chunk()
 
 void SnazzCraft::Chunk::Generate(SnazzCraft::HeightMap* HeightMap, uint32_t MapWidth)
 {
-    uint32_t HeightMapOffsetX = this->Position[0] * SnazzCraft::Chunk::Width;
-    uint32_t HeightMapOffsetZ = this->Position[1] * SnazzCraft::Chunk::Depth;
+    int32_t HeightMapOffsetX = this->Position[0] * SnazzCraft::Chunk::Width;
+    int32_t HeightMapOffsetZ = this->Position[1] * SnazzCraft::Chunk::Depth;
 
-    for (uint32_t X = 0; X < SnazzCraft::Chunk::Width; X++) {
-    for (uint32_t Z = 0; Z < SnazzCraft::Chunk::Depth; Z++) {
+    for (int32_t X = 0; X < SnazzCraft::Chunk::Width; X++) {
+    for (int32_t Z = 0; Z < SnazzCraft::Chunk::Depth; Z++) {
         HeightMap->GenerateValue(X + HeightMapOffsetX, Z + HeightMapOffsetZ);
-        auto HeightAtPositionIterator = HeightMap->HeightValues.find((Z + HeightMapOffsetZ) * MapWidth + (X + HeightMapOffsetX));
+        auto HeightAtPositionIterator = HeightMap->HeightValues.find(SnazzCraft::IntegerHash(X + HeightMapOffsetX, Z + HeightMapOffsetZ));
         if (HeightAtPositionIterator == HeightMap->HeightValues.end()) continue;
 
-        uint32_t HeightToGenerate = HeightAtPositionIterator->second + SnazzCraft::Chunk::OceanLevel;
-        uint32_t Y = 0;
+        int32_t HeightToGenerate = HeightAtPositionIterator->second + SnazzCraft::Chunk::OceanLevel;
+        int32_t Y = 0;
         while (true)
         {
             uint32_t NewVoxelID = ID_VOXEL_STONE;

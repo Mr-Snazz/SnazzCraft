@@ -16,19 +16,18 @@ SnazzCraft::HeightMap::~HeightMap()
     delete this->NoiseModule;
 }
 
-void SnazzCraft::HeightMap::GenerateValue(uint32_t X, uint32_t Y)
+void SnazzCraft::HeightMap::GenerateValue(int32_t X, int32_t Y)
 {
-    auto HeightValueIterator = this->HeightValues.find(SnazzCraft::Index2D(X, Y, this->Size));
+    auto HeightValueIterator = this->HeightValues.find(SnazzCraft::IntegerHash(X, Y));
     if (HeightValueIterator != this->HeightValues.end()) return;
 
     const double NX = (double)(X) * 0.005;
     const double NY = (double)(Y) * 0.005;
 
-    double HeightValue = this->NoiseModule->NoiseModule.GetValue(NX, NY, 0.0);
-    HeightValue *= 16.0;
+    double HeightValue = this->NoiseModule->NoiseModule.GetValue(NX, NY, 0.0) * 16.0;
 
     HeightValue = HeightValue < this->HeightConstraintLow  ? this->HeightConstraintLow  : HeightValue;
     HeightValue = HeightValue > this->HeightConstraintHigh ? this->HeightConstraintHigh : HeightValue;
 
-    this->HeightValues[SnazzCraft::Index2D(X, Y, this->Size)] = (int32_t)HeightValue;
+    this->HeightValues[SnazzCraft::IntegerHash(X, Y)] = (int32_t)HeightValue;
 }
