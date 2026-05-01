@@ -41,30 +41,18 @@ namespace SnazzCraft
 
         void LoadTexture(std::string FilePath);
 
-        virtual inline bool BindTexture() const
-        {
-            if (this->ID == nullptr) return false;
-
-            glBindTexture(GL_TEXTURE_2D, *this->ID);
-            return true;
-        }
+        virtual inline bool BindTexture() const;
 
     protected:
         Texture(); // Emmediatly load texture for newly created object for safety
 
         void SetTexture();
         
-        inline void DeleteBoundData()
-        {
-            if (this->Data == nullptr) return;
-
-            delete this->Data;
-            glDeleteTextures(1, this->ID);
-        }
+        inline void DeleteBoundData();
     };
 
     extern SnazzCraft::Texture* VoxelTextureAtlas;
 } // SnazzCraft
 
-
+#include "snazzcraft-engine/texture/texture.inl"
 

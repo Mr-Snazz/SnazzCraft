@@ -32,22 +32,13 @@ namespace SnazzCraft
 
         TextTexture(std::string IText, uint8_t IR, uint8_t IG, uint8_t IB, uint8_t IPerCharacterWidth, uint8_t IPerCharacterHeight);
 
-        inline uint32_t GetWidth() const
-        {
-            return this->Text.size() * this->PerCharacterWidth;
-        }
-
         virtual ~TextTexture() = default;
 
         virtual void Update();
 
-        virtual inline bool BindTexture() const override
-        {
-            if (this->ID == nullptr) return false;
+        inline uint32_t GetWidth() const;
 
-            glBindTexture(GL_TEXTURE_2D, *this->ID);
-            return true;
-        }
+        virtual inline bool BindTexture() const override;
 
     protected:
         
@@ -61,3 +52,6 @@ namespace SnazzCraft
 
     };
 } // SnazzCraft
+
+#include "snazzcraft-engine/texture/text-texture.inl"
+

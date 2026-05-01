@@ -5,9 +5,6 @@
 
 #include "external/glm/glm.hpp"
 
-#include "snazzcraft-engine/world/voxel-type.hpp"
-#include "snazzcraft-engine/utilities/byte-handling.hpp"
-
 namespace SnazzCraft
 {
     class VoxelType;
@@ -35,35 +32,15 @@ namespace SnazzCraft
 
         const SnazzCraft::VoxelType& GetVoxelType() const;
 
-        inline bool HasSide(uint8_t SideIndex) const
-        {
-            return SnazzCraft::AccessBitValue(this->Sides, SideIndex);
-        }
+        inline bool HasSide(uint8_t SideIndex) const;
 
-        inline void ChangeSideValue(uint8_t SideIndex, bool Value)
-        {
-            SnazzCraft::ChangeValueInByte(this->Sides, SideIndex, Value);
-        }
+        inline void ChangeSideValue(uint8_t SideIndex, bool Value);
 
-        inline void SetAllSides()
-        {
-            this->Sides = 0x3F;
-        }
+        inline void SetAllSides();
 
-        inline void ClearAllSides()
-        {
-            this->Sides = 0x00;
-        }
+        inline void ClearAllSides();
 
-        inline uint8_t GetSideCount() const
-        {
-            uint8_t Count = 0;
-            for (uint8_t I = 0; I < 6; I++) {
-                if (this->HasSide(I)) Count++;
-            }
-
-            return Count;
-        }
+        inline uint8_t GetSideCount() const;
 
     private:
         // Bit order:
@@ -73,3 +50,4 @@ namespace SnazzCraft
     };
 } // SnazzCraft
 
+#include "snazzcraft-engine/world/voxel.inl"

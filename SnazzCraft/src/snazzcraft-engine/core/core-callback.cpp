@@ -1,5 +1,8 @@
 #include "snazzcraft-engine/core/core-callback.hpp"
+
+#include "external/glad.h"
 #include "snazzcraft-engine/input-handler/event.hpp"
+
 #include "snazzcraft-engine/input-handler/data-types.h"
 #include "snazzcraft-engine/world/world.hpp"
 #include "snazzcraft-engine/core/mode.hpp"

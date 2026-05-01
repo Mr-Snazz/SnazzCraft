@@ -7,6 +7,7 @@
 #include "snazzcraft-engine/height-map/height-map.hpp"
 #include "snazzcraft-engine/hitbox/hitbox.hpp"
 #include "snazzcraft-engine/utilities/math.hpp"
+#include "snazzcraft-engine/world/voxel-type.hpp"
 
 SnazzCraft::Chunk::Chunk(int32_t X, int32_t Y)
 : ChunkMesh(nullptr), Voxels(std::unordered_map<uint32_t, SnazzCraft::Voxel>()), 

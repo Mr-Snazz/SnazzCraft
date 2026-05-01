@@ -19,9 +19,11 @@ SnazzCraft::World::~World()
     delete this->VoxelPlacementDisplayMesh;
 }
 
-SnazzCraft::World::World(std::string IName, int32_t ISize, int32_t ISeed)
-    : Name(IName), Size(ISize), Seed(ISeed), Chunks(std::unordered_map<uint64_t, SnazzCraft::Chunk*>()), VoxelPlacementDisplayPosition(glm::vec3(0.0f))
+SnazzCraft::World::World(std::string IName, uint32_t ISize, int32_t ISeed)
+    : Name(IName), Seed(ISeed), Chunks(std::unordered_map<uint64_t, SnazzCraft::Chunk*>()), VoxelPlacementDisplayPosition(glm::vec3(0.0f))
 {
+    this->Size = (ISize > SnazzCraft::World::MaxSize || ISize <= 0) ? SnazzCraft::World::MaxSize : ISize;
+
     this->WorldHeightMap = new SnazzCraft::HeightMap(static_cast<uint32_t>(this->Size * SnazzCraft::Chunk::Width), -SnazzCraft::Chunk::MaxOceanDepth, SnazzCraft::Chunk::Height - SnazzCraft::Chunk::OceanLevel, this->Seed, 1.0, 0.5, 2.0, 6);
 
     this->VoxelPlacementDisplayMesh = new SnazzCraft::Mesh(SnazzCraft::EngineVoxelTextureApplier->GetTexturedVertices(SnazzCraft::Voxel(0, 0, 0, ID_VOXEL_BARRIER)), SnazzCraft::VoxelMesh->Indices);

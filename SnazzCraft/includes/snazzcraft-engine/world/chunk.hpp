@@ -55,13 +55,7 @@ namespace SnazzCraft
 
         void UpdateLightingOnVertices(SnazzCraft::World* World);
 
-        inline void UpdateMesh()
-        {
-            delete this->ChunkMesh;
-            if (this->Vertices.empty() || this->Indices.empty()) { this->ChunkMesh = nullptr; return; }
-
-            this->ChunkMesh = new SnazzCraft::Mesh(this->Vertices, this->Indices);
-        }
+        inline void UpdateMesh();
 
     private:
         glm::vec3 ChunkWorldOffset;
@@ -71,19 +65,9 @@ namespace SnazzCraft
 
         SnazzCraft::Hitbox* VoxelCollisionHitbox;
 
-        inline glm::vec3 LocalVoxelPositionToWorldPosition(uint32_t X, uint32_t Y, uint32_t Z) const
-        {
-            return glm::vec3((float)X, (float)Y, (float)Z) * glm::vec3((float)SnazzCraft::Voxel::Size, (float)SnazzCraft::Voxel::Size, (float)SnazzCraft::Voxel::Size) + this->ChunkWorldOffset;
-        }
+        inline glm::vec3 LocalVoxelPositionToWorldPosition(uint32_t X, uint32_t Y, uint32_t Z) const;
 
-        inline void WorldSpaceToVoxelSpace(const glm::vec3& WorldPosition, int32_t VoxelPosition[3]) const
-        {
-            glm::vec3 LocalPosition = WorldPosition - this->ChunkWorldOffset;
-
-            VoxelPosition[0] = static_cast<int>(LocalPosition.x / SnazzCraft::Voxel::Size);
-            VoxelPosition[1] = static_cast<int>(LocalPosition.y / SnazzCraft::Voxel::Size);
-            VoxelPosition[2] = static_cast<int>(LocalPosition.z / SnazzCraft::Voxel::Size);
-        }
+        inline void WorldSpaceToVoxelSpace(const glm::vec3& WorldPosition, int32_t VoxelPosition[3]) const;
 
     public:
         static constexpr int16_t Width  = 16;
@@ -92,54 +76,26 @@ namespace SnazzCraft
         static constexpr int16_t OceanLevel = 20; // 125
         static constexpr int16_t MaxOceanDepth = 40;
 
-        static inline void GetChunkPosition(const glm::vec3& Position, int32_t OutChunkPosition[2]) // Voxel space coordinates
-        {
-            OutChunkPosition[0] = static_cast<int>(Position.x) / SnazzCraft::Chunk::Width;
-            OutChunkPosition[1] = static_cast<int>(Position.z) / SnazzCraft::Chunk::Depth;
-        }
+        static inline void GetChunkPosition(const glm::vec3& Position, int32_t OutChunkPosition[2]); // Voxel space coordinates
 
-        static inline void GetChunkPosition(int32_t X, int32_t Z, int32_t OutChunkPosition[2]) // Voxel space coordinates
-        {
-            OutChunkPosition[0] = X / SnazzCraft::Chunk::Width;
-            OutChunkPosition[1] = Z / SnazzCraft::Chunk::Depth;
-        }
+        static inline void GetChunkPosition(int32_t X, int32_t Z, int32_t OutChunkPosition[2]); // Voxel space coordinates
 
-        static inline void GetLocalVoxelPosition(int32_t X, int32_t Y, int32_t Z, int32_t OutLocalVoxelPosition[3]) // Voxel space coordinates
-        {
-            OutLocalVoxelPosition[0] = X % SnazzCraft::Chunk::Width;
-            OutLocalVoxelPosition[1] = Y % SnazzCraft::Chunk::Height;
-            OutLocalVoxelPosition[2] = Z % SnazzCraft::Chunk::Depth;
-        }
+        static inline void GetLocalVoxelPosition(int32_t X, int32_t Y, int32_t Z, int32_t OutLocalVoxelPosition[3]); // Voxel space coordinates
 
-        static constexpr uint32_t LocalVoxelIndex(int32_t X, int32_t Y, int32_t Z)
-        {
-            return SnazzCraft::Index3D<uint32_t>(X, Y, Z, static_cast<uint32_t>(SnazzCraft::Chunk::Width), static_cast<uint32_t>(SnazzCraft::Chunk::Height));
-        }
+        static constexpr uint32_t LocalVoxelIndex(int32_t X, int32_t Y, int32_t Z);
 
-        static constexpr uint32_t LocalVoxelIndex(uint32_t X, uint32_t Y, uint32_t Z)
-        {
-            return SnazzCraft::Index3D<uint32_t>(X, Y, Z, static_cast<uint32_t>(SnazzCraft::Chunk::Width), static_cast<uint32_t>(SnazzCraft::Chunk::Height));
-        }
+        static constexpr uint32_t LocalVoxelIndex(uint32_t X, uint32_t Y, uint32_t Z);
 
-        static inline uint32_t LocalVoxelIndex(const SnazzCraft::Voxel& Voxel)
-        {
-            return SnazzCraft::Index3D<uint32_t>(Voxel.X, Voxel.Y, Voxel.Z, static_cast<uint32_t>(SnazzCraft::Chunk::Width), static_cast<uint32_t>(SnazzCraft::Chunk::Height));
-        }
+        static inline uint32_t LocalVoxelIndex(const SnazzCraft::Voxel& Voxel);
 
-        static constexpr bool WithinChunkBounds(int32_t X, int32_t Y, int32_t Z)
-        {
-            return X >= 0 && Y >= 0 && Z >= 0 && X < SnazzCraft::Chunk::Width && Y < SnazzCraft::Chunk::Height && Z < SnazzCraft::Chunk::Depth;
-        }
+        static constexpr bool WithinChunkBounds(int32_t X, int32_t Y, int32_t Z);
 
-        static constexpr bool WithinChunkBounds(uint32_t X, uint32_t Y, uint32_t Z)
-        {
-            return X < SnazzCraft::Chunk::Width && Y < SnazzCraft::Chunk::Height && Z < SnazzCraft::Chunk::Depth;
-        }
+        static constexpr bool WithinChunkBounds(uint32_t X, uint32_t Y, uint32_t Z);
 
     };
 } // SnazzCraft
 
-
+#include "snazzcraft-engine/world/chunk.inl"
 
 
 

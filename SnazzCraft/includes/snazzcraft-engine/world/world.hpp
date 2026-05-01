@@ -47,7 +47,7 @@ namespace SnazzCraft
         std::unordered_map<uint64_t, SnazzCraft::Chunk*> Chunks; // Uses SnazzCraft::IntegerHash for hasing
         std::vector<SnazzCraft::Entity*> Entities;
 
-        World(std::string IName, int32_t ISize, int32_t ISeed);
+        World(std::string IName, uint32_t ISize, int32_t ISeed);
 
         ~World();
 
@@ -65,16 +65,6 @@ namespace SnazzCraft
 
         bool SaveWorldToFile(bool OverwriteExistingFile) const;
 
-        inline void ApplyGravityToAllEntities()
-        {
-            constexpr float MoveDistance = 0.2f;
-
-            this->MoveEntity(glm::vec3(0.0f, -MoveDistance, 0.0f), SnazzCraft::Player);
-            for (SnazzCraft::Entity* Entity : this->Entities) {
-                this->MoveEntity(glm::vec3(0.0f, -MoveDistance, 0.0f), Entity);
-            }
-        }
-
         /*
         Calls UpdateVerticesAndIndices & UpdateMesh on all chunks affected
         If the Chunk in the address given has no light producing voxels then no member functions of that chunk will be called to update its vertices, indices, or mesh
@@ -87,11 +77,13 @@ namespace SnazzCraft
 
         void UpdateVoxelPlacementDisplay();
 
-        inline const glm::vec3& GetVoxelPlacementDisplayPosition() const
-        {
-            static const glm::vec3 DefaultReturnPosition(-100.0f, -100.0f, -100.0f);
-            return this->ShouldRenderVoxelPlacementDisplay ? this->VoxelPlacementDisplayPosition : DefaultReturnPosition;
-        }
+        inline void ApplyGravityToAllEntities() const;
+
+        inline const glm::vec3& GetVoxelPlacementDisplayPosition() const;
+
+        inline bool ChunkWithinWorld(SnazzCraft::Chunk* Chunk) const;
+
+        inline bool ChunkWithinWorld(int32_t ChunkX, int32_t ChunkZ) const;
 
     private:
         struct LightNode
@@ -151,3 +143,5 @@ namespace SnazzCraft
     
     extern SnazzCraft::World* CurrentWorld;
 } // SnazzCraft
+
+#include "snazzcraft-engine/world/world.inl"
