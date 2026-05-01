@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 
-#include "glad.h"
+#include "external/glad.h"
 
 namespace SnazzCraft
 {   

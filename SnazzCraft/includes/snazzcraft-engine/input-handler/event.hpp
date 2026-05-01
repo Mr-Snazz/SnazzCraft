@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 
-#include "glfw3.h"
+#include "external/glfw3.h"
 
 #include "data.hpp"
 

@@ -1,7 +1,7 @@
 #ifndef SNAZZCRAFT_KEYS_H
 #define SNAZZCRAFT_KEYS_H
 
-#include "../../glfw3.h"
+#include "external/glfw3.h"
 
 // Printable keys
 #define SNAZZCRAFT_KEY_A (0x00)

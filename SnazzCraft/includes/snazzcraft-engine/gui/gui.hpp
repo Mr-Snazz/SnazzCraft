@@ -2,14 +2,13 @@
 
 #include <vector>
 
-#include "glad.h"
+#include "external/glm/glm.hpp"
+#include "external/glm/gtc/matrix_transform.hpp"
+#include "external/glm/gtc/type_ptr.hpp"
+#include "external/glad.h"
 #include "snazzcraft-engine/input-handler/input-handler.hpp"
 
 #include "snazzcraft-engine/gui/panel/panel.hpp"
-
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtc/type_ptr.hpp"
 
 class Shader;
 class GLFWwindow;

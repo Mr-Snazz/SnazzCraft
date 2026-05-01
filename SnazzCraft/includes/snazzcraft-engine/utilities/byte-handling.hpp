@@ -4,7 +4,7 @@
 
 namespace SnazzCraft
 {
-    inline void ChangeValueInByte(uint8_t& Byte, uint8_t Index, bool Value)
+    inline void ChangeValueInByte(uint8_t& Byte, const uint8_t& Index, const bool& Value)
     {
         if (Index > 7) return;
         if (Value) {
@@ -14,7 +14,7 @@ namespace SnazzCraft
         }
     }
 
-    inline bool AccessBitValue(const uint8_t& Byte, uint8_t Index)
+    inline bool AccessBitValue(const uint8_t& Byte, const uint8_t& Index)
     {
         if (Index > 7) return false;
         return (Byte >> Index) & true;

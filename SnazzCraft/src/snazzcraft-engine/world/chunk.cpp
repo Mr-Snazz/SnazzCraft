@@ -241,9 +241,9 @@ void SnazzCraft::Chunk::UpdateLightingOnVertices(SnazzCraft::World* World)
             TargetChunkZ++; 
         }
 
-        if (TargetChunkX < 0 || TargetChunkZ < 0 || TargetChunkX >= static_cast<int32_t>(World->Size) || TargetChunkZ >= static_cast<int32_t>(World->Size)) return DefaultLightValue;
+        if (TargetChunkX < 0 || TargetChunkZ < 0 || TargetChunkX >= World->Size || TargetChunkZ >= World->Size) return DefaultLightValue;
 
-        uint32_t ChunkIndex = SnazzCraft::Index2D<uint64_t>(static_cast<uint64_t>(TargetChunkX), static_cast<uint64_t>(TargetChunkZ), World->Size);
+        uint32_t ChunkIndex = static_cast<uint32_t>(SnazzCraft::Index2D<int32_t>(TargetChunkX, TargetChunkZ, World->Size));
         auto ChunkIterator = World->Chunks.find(ChunkIndex);
         if (ChunkIterator == World->Chunks.end()) {
             World->GenerateChunk(TargetChunkX, TargetChunkZ, true);

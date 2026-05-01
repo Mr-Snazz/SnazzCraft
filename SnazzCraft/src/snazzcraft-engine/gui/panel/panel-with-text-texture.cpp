@@ -1,7 +1,7 @@
 #include "snazzcraft-engine/gui/panel/panel-with-text-texture.hpp"
 #include "snazzcraft-engine/texture/text-texture.hpp"
 
-#include "glad.h"
+#include "external/glad.h"
 
 SnazzCraft::PanelWithTextTexture::PanelWithTextTexture(float IX, float IY, std::string IText, uint8_t IR, uint8_t IG, uint8_t IB, float IScale)
     : Panel(IX, IY, 0.0f, 0.0f, IScale)

@@ -3,14 +3,13 @@
 #include <vector>
 #include <stdint.h>
 
-#include "glad.h"
-#include "glfw3.h"
-#include "shader_s.h"
-#include "stb_image.h"
-
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtc/type_ptr.hpp"
+#include "external/glad.h"
+#include "external/glfw3.h"
+#include "external/shader_s.h"
+#include "external/stb_image.h"
+#include "external/glm/glm.hpp"
+#include "external/glm/gtc/matrix_transform.hpp"
+#include "external/glm/gtc/type_ptr.hpp"
 
 #include "snazzcraft-engine/gui/main-menu-gui.hpp"
 #include "snazzcraft-engine/gui/world-gui.hpp"

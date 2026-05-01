@@ -1,7 +1,7 @@
 #include "snazzcraft-engine/gui/gui.hpp"
 #include "snazzcraft-engine/gui/panel/panel.hpp"
 
-#include "shader_s.h"
+#include "external/shader_s.h"
 
 constexpr const char* GUIVertexShaderFilePath   = "src/shaders/gui/vertex-shader.glsl";
 constexpr const char* GUIFragmentShaderFilePath = "src/shaders/gui/fragment-shader.glsl";

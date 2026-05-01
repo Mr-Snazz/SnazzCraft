@@ -1,6 +1,6 @@
 #pragma once
 
-#include "noise/noise.h"
+#include "external/noise/noise.h"
 
 namespace SnazzCraft
 {

@@ -14,7 +14,8 @@
 #include <queue>
 #include <functional>
 
-#include "glm/glm.hpp"
+#include "external/glm/glm.hpp"
+
 #include "snazzcraft-engine/entity/entity.hpp"
 #include "snazzcraft-engine/world/voxel.hpp"
 #include "snazzcraft-engine/height-map/height-map.hpp"
@@ -37,7 +38,7 @@ namespace SnazzCraft
         static constexpr uint32_t MaxSize = 2147483647u;
 
         std::string Name = "UNASSIGNED";
-        uint32_t Size; // Size^2 = #Chunks
+        int32_t Size; // Size^2 = #Chunks
         int32_t Seed;
         
         uint32_t RenderDistance = 50;
@@ -46,7 +47,7 @@ namespace SnazzCraft
         std::unordered_map<uint32_t, SnazzCraft::Chunk*> Chunks;
         std::vector<SnazzCraft::Entity*> Entities;
 
-        World(std::string IName, uint32_t ISize, int32_t ISeed);
+        World(std::string IName, int32_t ISize, int32_t ISeed);
 
         ~World();
 
@@ -77,7 +78,6 @@ namespace SnazzCraft
         /*
         Calls UpdateVerticesAndIndices & UpdateMesh on all chunks affected
         If the Chunk in the address given has no light producing voxels then no member functions of that chunk will be called to update its vertices, indices, or mesh
-        Not thread safe
         */
         void UpdateChunkLighting(SnazzCraft::Chunk* Chunk, bool* UpatedInputChunk);
 

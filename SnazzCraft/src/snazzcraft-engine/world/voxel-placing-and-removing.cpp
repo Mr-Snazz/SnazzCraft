@@ -16,7 +16,7 @@ bool SnazzCraft::World::DestroyVoxel(const glm::vec3& Position, const glm::vec3&
     int32_t ChunkCoordinates[2];
     SnazzCraft::Chunk::GetChunkPosition(VoxelSpacePosition, ChunkCoordinates);
 
-    auto ChunkIterator = this->Chunks.find(SnazzCraft::Index2D<int32_t>(ChunkCoordinates[0], ChunkCoordinates[1], static_cast<int32_t>(this->Size)));
+    auto ChunkIterator = this->Chunks.find(SnazzCraft::Index2D<int32_t>(ChunkCoordinates[0], ChunkCoordinates[1], this->Size));
     if  (ChunkIterator == this->Chunks.end()) return false;
 
     uint32_t LocalVoxelIndex = SnazzCraft::Chunk::LocalVoxelIndex(*VoxelHit);
@@ -55,8 +55,8 @@ bool SnazzCraft::World::PlaceVoxel(const glm::vec3& Position, const glm::vec3& R
     int32_t ChunkCoordinates[2];
     if (!GetNewPlacePosition(EndPosition, FaceHit, VoxelHit, NewPlacePosition, ChunkCoordinates)) return false;
     
-    auto ChunkIterator = this->Chunks.find(SnazzCraft::Index2D(ChunkCoordinates[0], ChunkCoordinates[1], static_cast<int32_t>(this->Size)));
-    if (ChunkIterator == this->Chunks.end() || ChunkCoordinates[0] < 0 || ChunkCoordinates[1] < 0 || ChunkCoordinates[0] >= static_cast<int32_t>(this->Size) || ChunkCoordinates[1] >= static_cast<int32_t>(this->Size)) return false;
+    auto ChunkIterator = this->Chunks.find(SnazzCraft::Index2D(ChunkCoordinates[0], ChunkCoordinates[1], this->Size));
+    if (ChunkIterator == this->Chunks.end() || ChunkCoordinates[0] < 0 || ChunkCoordinates[1] < 0 || ChunkCoordinates[0] >= this->Size || ChunkCoordinates[1] >= this->Size) return false;
     
     uint32_t LocalPlaceVoxelIndex = SnazzCraft::Chunk::LocalVoxelIndex(NewPlacePosition[0], NewPlacePosition[1], NewPlacePosition[2]);
     ChunkIterator->second->Voxels.insert_or_assign(LocalPlaceVoxelIndex, SnazzCraft::Voxel(static_cast<uint8_t>(NewPlacePosition[0]), static_cast<uint8_t>(NewPlacePosition[1]), static_cast<uint8_t>(NewPlacePosition[2]), VoxelID));
@@ -83,8 +83,8 @@ void SnazzCraft::World::UpdateVoxelPlacementDisplay()
     int32_t ChunkCoordinates[2];
     SnazzCraft::Chunk::GetChunkPosition(VoxelSpaceEndPosition, ChunkCoordinates);
 
-    auto ChunkIterator = this->Chunks.find(SnazzCraft::Index2D(ChunkCoordinates[0], ChunkCoordinates[1], static_cast<int32_t>(this->Size)));
-    if (ChunkIterator == this->Chunks.end() || ChunkCoordinates[0] < 0 || ChunkCoordinates[1] < 0 || ChunkCoordinates[0] >= static_cast<int32_t>(this->Size) || ChunkCoordinates[1] >= static_cast<int32_t>(this->Size)) { this->ShouldRenderVoxelPlacementDisplay = false; return; }
+    auto ChunkIterator = this->Chunks.find(SnazzCraft::Index2D(ChunkCoordinates[0], ChunkCoordinates[1], this->Size));
+    if (ChunkIterator == this->Chunks.end() || ChunkCoordinates[0] < 0 || ChunkCoordinates[1] < 0 || ChunkCoordinates[0] >= this->Size || ChunkCoordinates[1] >= this->Size) { this->ShouldRenderVoxelPlacementDisplay = false; return; }
 
     this->VoxelPlacementDisplayPosition = glm::vec3(
         (static_cast<float>(ChunkIterator->second->Position[0] * SnazzCraft::Chunk::Width) + VoxelHit->X) * SnazzCraft::Voxel::Size,

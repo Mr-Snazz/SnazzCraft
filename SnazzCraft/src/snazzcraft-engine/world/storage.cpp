@@ -153,7 +153,7 @@ SnazzCraft::World* SnazzCraft::World::LoadWorldFromSaveFile(std::string FilePath
         NewChunk->UpdateVerticesAndIndices();
 
         NewChunk->UpdateMesh();
-        NewWorld->Chunks.insert_or_assign(SnazzCraft::Index2D(static_cast<uint32_t>(NewChunkPosition.first), static_cast<uint32_t>(NewChunkPosition.second), NewWorld->Size), NewChunk);
+        NewWorld->Chunks.insert_or_assign(SnazzCraft::Index2D(NewChunkPosition.first, NewChunkPosition.second, NewWorld->Size), NewChunk);
     }
     
     for (auto& [Key, Chunk] : NewWorld->Chunks) {

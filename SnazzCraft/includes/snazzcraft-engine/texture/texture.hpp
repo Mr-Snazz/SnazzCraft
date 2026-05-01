@@ -5,9 +5,9 @@
 #include <iostream>
 #include <stdint.h>
 
-#include "glad.h"
-#include "stb_image.h"
-#include "glm/glm.hpp"
+#include "external/glad.h"
+#include "external/stb_image.h"
+#include "external/glm/glm.hpp"
 
 #define SNAZZCRAFT_CHARACTER_BITWISE_WIDTH  (8)
 #define SNAZZCRAFT_CHARACTER_BITWISE_HEIGHT (8)

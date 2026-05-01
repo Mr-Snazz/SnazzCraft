@@ -4,15 +4,15 @@
 
 void SnazzCraft::World::GenerateChunk(uint32_t X, uint32_t Z, bool ApplyLighting)
 {
-    if (X >= SnazzCraft::World::Size || Z >= SnazzCraft::World::Size) return;
+    if (X >= static_cast<uint32_t>(SnazzCraft::World::Size) || Z >= static_cast<uint32_t>(SnazzCraft::World::Size)) return;
 
-    uint32_t ChunkIndex = SnazzCraft::Index2D(X, Z, this->Size);
+    uint32_t ChunkIndex = SnazzCraft::Index2D(X, Z, static_cast<uint32_t>(this->Size));
     auto Iterator = this->Chunks.find(ChunkIndex);
     if (Iterator != this->Chunks.end()) return;
     
     SnazzCraft::Chunk* NewChunk = new SnazzCraft::Chunk(X, Z);
 
-    NewChunk->Generate(this->WorldHeightMap, this->Size * SnazzCraft::Chunk::Width);
+    NewChunk->Generate(this->WorldHeightMap, static_cast<uint32_t>(this->Size) * SnazzCraft::Chunk::Width);
     NewChunk->CullVoxelFaces();
     NewChunk->UpdateVerticesAndIndices();   
 
@@ -36,8 +36,8 @@ SnazzCraft::World* SnazzCraft::World::CreateWorld(std::string Name, uint32_t Siz
 
     SnazzCraft::World* NewWorld = new SnazzCraft::World(Name, GenerateSize, Seed);
 
-    for (uint32_t X = 0; X < NewWorld->Size; X++) {
-    for (uint32_t Z = 0; Z < NewWorld->Size; Z++) {
+    for (uint32_t X = 0; X < static_cast<uint32_t>(NewWorld->Size); X++) {
+    for (uint32_t Z = 0; Z < static_cast<uint32_t>(NewWorld->Size); Z++) {
         NewWorld->GenerateChunk(X, Z, true);
     } 
     }

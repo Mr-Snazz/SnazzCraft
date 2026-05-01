@@ -3,7 +3,8 @@
 #include <vector>
 #include <stdint.h>
 
-#include "glm/glm.hpp"
+#include "external/glm/glm.hpp"
+
 #include "snazzcraft-engine/world/voxel-type.hpp"
 #include "snazzcraft-engine/utilities/byte-handling.hpp"
 

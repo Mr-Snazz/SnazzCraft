@@ -1,7 +1,7 @@
 #include "snazzcraft-engine/gui/panel/panel.hpp"
 #include "snazzcraft-engine/utilities/math.hpp"
 
-#include "glad.h"
+#include "external/glad.h"
 #include "snazzcraft-engine/input-handler/event.hpp"
 
 #include "snazzcraft-engine/input-handler/data-types.h"

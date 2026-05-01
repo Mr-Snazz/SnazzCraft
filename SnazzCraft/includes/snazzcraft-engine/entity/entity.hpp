@@ -1,6 +1,6 @@
 #pragma once
 
-#include "glm/glm.hpp"
+#include "external/glm/glm.hpp"
 
 #include "snazzcraft-engine/entity/entity-type.hpp"
 

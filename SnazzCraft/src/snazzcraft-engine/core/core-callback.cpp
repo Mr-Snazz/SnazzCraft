@@ -8,7 +8,7 @@ void SnazzCraft::CreateWorldAndChangeModeToWorld(SnazzCraft::Event* Event)
 {
     if (SnazzCraft::CurrentWorld != nullptr) goto SwitchMode;
 
-    SnazzCraft::CurrentWorld = SnazzCraft::World::CreateWorld("TEST WORLD", 6, 80085);
+    SnazzCraft::CurrentWorld = SnazzCraft::World::CreateWorld("TEST WORLD", 4, 80085);
 
     SwitchMode:
     SnazzCraft::UserMode = SNAZZCRAFT_USER_MODE_WORLD;
@@ -26,14 +26,6 @@ void SnazzCraft::ChangeModeToMainMenuCallback(SnazzCraft::Event* Event)
     if (SnazzCraft::UserMode == SNAZZCRAFT_USER_MODE_MAIN_MENU) return;
 
     SnazzCraft::UserMode = SNAZZCRAFT_USER_MODE_MAIN_MENU;
-}
-
-void SnazzCraft::CloseWindowCallback(SnazzCraft::Event* Event)
-{
-    void* Window = Event->EventData->AccessDataType(SNAZZCRAFT_DATA_TYPE_GLFW_WINDOW);
-    if (Window == nullptr) return;
-
-    glfwSetWindowShouldClose(static_cast<GLFWwindow*>(Window), GLFW_TRUE);
 }
 
 void SnazzCraft::ToggleWireframeCallback(SnazzCraft::Event* Event)

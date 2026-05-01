@@ -1,13 +1,13 @@
 CPPC = g++
 CC = gcc
-INCLUDES = includes
+INCLUDES_DIRECTORY = includes
 
-CPPFLAGS = -I$(INCLUDES) -Werror -Wall -std=c++23 -MMD -MP
-CFLAGS = -I$(INCLUDES) -Werror -Wall -MMD -MP 
+CPPFLAGS = -I$(INCLUDES_DIRECTORY) -Werror -Wall -std=c++23 -MMD -MP
+CFLAGS   = -I$(INCLUDES_DIRECTORY) -Werror -Wall -MMD -MP 
 LDFLAGS = -lglfw -ldl -lGL -lnoise -lm 
 
-CPP_SOURCES := $(shell find src -name '*.cpp')
-C_SOURCES := $(shell find src -name '*.c')
+CPP_SOURCES := $(shell find src      -name '*.cpp')
+C_SOURCES   := $(shell find src      -name '*.c')
 GLAD_SOURCE := $(shell find includes -name 'glad.c')
 
 OBJS := $(CPP_SOURCES:%.cpp=build/%.o) $(C_SOURCES:%.c=build/%.o) $(GLAD_SOURCE:%.c=build/%.o) 

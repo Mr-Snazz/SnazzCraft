@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "../../glfw3.h"
+#include "external/glfw3.h"
 
 #include "keys.h"
 #include "events.h"

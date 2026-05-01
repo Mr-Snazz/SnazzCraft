@@ -5,7 +5,7 @@
 #include <array>
 #include <mutex>
 
-#include "glm/glm.hpp"
+#include "external/glm/glm.hpp"
 
 #include "snazzcraft-engine/world/voxel.hpp"
 #include "snazzcraft-engine/utilities/math.hpp"
