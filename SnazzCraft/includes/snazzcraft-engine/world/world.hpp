@@ -18,7 +18,6 @@
 
 #include "snazzcraft-engine/entity/entity.hpp"
 #include "snazzcraft-engine/world/voxel.hpp"
-#include "snazzcraft-engine/height-map/height-map.hpp"
 #include "snazzcraft-engine/entity/user.hpp"
 
 #define WORLD_SAVE_FILE_DESCRIPTOR_NAME            ('0')
@@ -31,6 +30,7 @@
 namespace SnazzCraft
 {
     class Chunk;
+    class HeightMap;
 
     class World
     {

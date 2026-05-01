@@ -1,6 +1,7 @@
 #include "snazzcraft-engine/world/world.hpp"
 #include "snazzcraft-engine/world/chunk.hpp"
 #include "snazzcraft-engine/utilities/math.hpp"
+#include "snazzcraft-engine/height-map/height-map.hpp"
 
 void SnazzCraft::World::GenerateChunk(int32_t X, int32_t Z, bool ApplyLighting)
 {

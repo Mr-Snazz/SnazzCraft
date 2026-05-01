@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdint.h>
 #include <unordered_map>
 
 namespace SnazzCraft
@@ -9,19 +10,18 @@ namespace SnazzCraft
     struct HeightMap
     {
     public:
-        std::unordered_map<unsigned int, int> HeightValues = std::unordered_map<unsigned int, int>();
+        std::unordered_map<uint32_t, int32_t> HeightValues = std::unordered_map<uint32_t, int>();
         SnazzCraft::PerlinNoiseModule* NoiseModule = nullptr;
         
-
-        HeightMap(unsigned int Size, int HeightConstraintLow, int HeightConstraintHigh, int Seed, double Frequency, double Persistence, double Lacunarity, int OctaveCount);
+        HeightMap(uint32_t Size, int32_t HeightConstraintLow, int32_t HeightConstraintHigh, int32_t Seed, double Frequency, double Persistence, double Lacunarity, int OctaveCount);
         ~HeightMap();
 
-        void GenerateValue(unsigned int X, unsigned int Y);
+        void GenerateValue(uint32_t X, uint32_t Y);
 
     private:
-        unsigned int Size;
-        int HeightConstraintLow;
-        int HeightConstraintHigh;
+        uint32_t Size;
+        int32_t HeightConstraintLow;
+        int32_t HeightConstraintHigh;
 
     };
 } // SnazzCraft

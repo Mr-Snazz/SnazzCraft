@@ -2,7 +2,7 @@
 #include "snazzcraft-engine/height-map/noise-module.hpp"
 #include "snazzcraft-engine/utilities/math.hpp"
 
-SnazzCraft::HeightMap::HeightMap(unsigned int Size, int HeightConstraintLow, int HeightConstraintHigh, int Seed, double Frequency, double Persistence, double Lacunarity, int OctaveCount)
+SnazzCraft::HeightMap::HeightMap(uint32_t Size, int32_t HeightConstraintLow, int32_t HeightConstraintHigh, int32_t Seed, double Frequency, double Persistence, double Lacunarity, int OctaveCount)
 {
     this->NoiseModule = new SnazzCraft::PerlinNoiseModule(Seed, Frequency, Persistence, Lacunarity, OctaveCount);
 
@@ -16,7 +16,7 @@ SnazzCraft::HeightMap::~HeightMap()
     delete this->NoiseModule;
 }
 
-void SnazzCraft::HeightMap::GenerateValue(unsigned int X, unsigned int Y)
+void SnazzCraft::HeightMap::GenerateValue(uint32_t X, uint32_t Y)
 {
     auto HeightValueIterator = this->HeightValues.find(SnazzCraft::Index2D(X, Y, this->Size));
     if (HeightValueIterator != this->HeightValues.end()) return;
@@ -30,5 +30,5 @@ void SnazzCraft::HeightMap::GenerateValue(unsigned int X, unsigned int Y)
     HeightValue = HeightValue < this->HeightConstraintLow  ? this->HeightConstraintLow  : HeightValue;
     HeightValue = HeightValue > this->HeightConstraintHigh ? this->HeightConstraintHigh : HeightValue;
 
-    this->HeightValues[SnazzCraft::Index2D(X, Y, this->Size)] = (int)HeightValue;
+    this->HeightValues[SnazzCraft::Index2D(X, Y, this->Size)] = (int32_t)HeightValue;
 }
