@@ -20,7 +20,7 @@ SnazzCraft::World::~World()
 }
 
 SnazzCraft::World::World(std::string IName, int32_t ISize, int32_t ISeed)
-    : Name(IName), Size(ISize), Seed(ISeed), Chunks(std::unordered_map<uint32_t, SnazzCraft::Chunk*>()), VoxelPlacementDisplayPosition(glm::vec3(0.0f))
+    : Name(IName), Size(ISize), Seed(ISeed), Chunks(std::unordered_map<uint64_t, SnazzCraft::Chunk*>()), VoxelPlacementDisplayPosition(glm::vec3(0.0f))
 {
     this->WorldHeightMap = new SnazzCraft::HeightMap(static_cast<uint32_t>(this->Size * SnazzCraft::Chunk::Width), -SnazzCraft::Chunk::MaxOceanDepth, SnazzCraft::Chunk::Height - SnazzCraft::Chunk::OceanLevel, this->Seed, 1.0, 0.5, 2.0, 6);
 

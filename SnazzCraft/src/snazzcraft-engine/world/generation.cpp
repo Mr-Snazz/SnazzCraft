@@ -2,11 +2,11 @@
 #include "snazzcraft-engine/world/chunk.hpp"
 #include "snazzcraft-engine/utilities/math.hpp"
 
-void SnazzCraft::World::GenerateChunk(uint32_t X, uint32_t Z, bool ApplyLighting)
+void SnazzCraft::World::GenerateChunk(int32_t X, int32_t Z, bool ApplyLighting)
 {
-    if (X >= static_cast<uint32_t>(SnazzCraft::World::Size) || Z >= static_cast<uint32_t>(SnazzCraft::World::Size)) return;
+    if (X >= SnazzCraft::World::Size || Z >= SnazzCraft::World::Size) return;
 
-    uint32_t ChunkIndex = SnazzCraft::Index2D(X, Z, static_cast<uint32_t>(this->Size));
+    uint64_t ChunkIndex = SnazzCraft::IntegerHash(X, Z);
     auto Iterator = this->Chunks.find(ChunkIndex);
     if (Iterator != this->Chunks.end()) return;
     
@@ -36,8 +36,8 @@ SnazzCraft::World* SnazzCraft::World::CreateWorld(std::string Name, uint32_t Siz
 
     SnazzCraft::World* NewWorld = new SnazzCraft::World(Name, GenerateSize, Seed);
 
-    for (uint32_t X = 0; X < static_cast<uint32_t>(NewWorld->Size); X++) {
-    for (uint32_t Z = 0; Z < static_cast<uint32_t>(NewWorld->Size); Z++) {
+    for (int32_t X = 0; X < NewWorld->Size; X++) {
+    for (int32_t Z = 0; Z < NewWorld->Size; Z++) {
         NewWorld->GenerateChunk(X, Z, true);
     } 
     }
@@ -45,7 +45,7 @@ SnazzCraft::World* SnazzCraft::World::CreateWorld(std::string Name, uint32_t Siz
     return NewWorld;
 }
 
-void SnazzCraft::World::UpdateChunkVerticeLightingAndMesh(uint32_t Index)
+void SnazzCraft::World::UpdateChunkVerticeLightingAndMesh(uint64_t Index)
 {
     auto ChunkIterator = this->Chunks.find(Index);
     if (ChunkIterator == this->Chunks.end()) return;

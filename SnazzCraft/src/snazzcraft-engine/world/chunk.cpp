@@ -6,6 +6,7 @@
 #include "snazzcraft-engine/world/voxel-ids.h"
 #include "snazzcraft-engine/height-map/height-map.hpp"
 #include "snazzcraft-engine/hitbox/hitbox.hpp"
+#include "snazzcraft-engine/utilities/math.hpp"
 
 SnazzCraft::Chunk::Chunk(int32_t X, int32_t Y)
 : ChunkMesh(nullptr), Voxels(std::unordered_map<uint32_t, SnazzCraft::Voxel>()), 
@@ -243,7 +244,7 @@ void SnazzCraft::Chunk::UpdateLightingOnVertices(SnazzCraft::World* World)
 
         if (TargetChunkX < 0 || TargetChunkZ < 0 || TargetChunkX >= World->Size || TargetChunkZ >= World->Size) return DefaultLightValue;
 
-        uint32_t ChunkIndex = static_cast<uint32_t>(SnazzCraft::Index2D<int32_t>(TargetChunkX, TargetChunkZ, World->Size));
+        uint64_t ChunkIndex = SnazzCraft::IntegerHash<int32_t>(TargetChunkX, TargetChunkZ);
         auto ChunkIterator = World->Chunks.find(ChunkIndex);
         if (ChunkIterator == World->Chunks.end()) {
             World->GenerateChunk(TargetChunkX, TargetChunkZ, true);

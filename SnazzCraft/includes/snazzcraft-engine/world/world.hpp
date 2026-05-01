@@ -38,20 +38,20 @@ namespace SnazzCraft
         static constexpr uint32_t MaxSize = 2147483647u;
 
         std::string Name = "UNASSIGNED";
-        int32_t Size; // Size^2 = #Chunks
+        int32_t Size;
         int32_t Seed;
         
         uint32_t RenderDistance = 50;
         float PlayerReach = static_cast<float>(SnazzCraft::Voxel::Size * 5);
 
-        std::unordered_map<uint32_t, SnazzCraft::Chunk*> Chunks;
+        std::unordered_map<uint64_t, SnazzCraft::Chunk*> Chunks; // Uses SnazzCraft::IntegerHash for hasing
         std::vector<SnazzCraft::Entity*> Entities;
 
         World(std::string IName, int32_t ISize, int32_t ISeed);
 
         ~World();
 
-        void GenerateChunk(uint32_t X, uint32_t Z, bool ApplyLighting); 
+        void GenerateChunk(int32_t X, int32_t Z, bool ApplyLighting); 
 
         void Render() const;
 
@@ -127,17 +127,17 @@ namespace SnazzCraft
         */
         bool RaycastToVoxel(glm::vec3& Position, const glm::vec3& Rotation, float MaxDistance, uint8_t* FaceHit, SnazzCraft::Voxel** VoxelHit); 
 
-        void ApplySunLightingToChunk(SnazzCraft::Chunk* Chunk, std::unordered_set<uint32_t>* ChunksToUpdate);
+        void ApplySunLightingToChunk(SnazzCraft::Chunk* Chunk, std::unordered_set<uint64_t>* ChunksToUpdate);
 
-        void ApplySunLightingToColumn(SnazzCraft::Chunk* Chunk, uint32_t LocalChunkX, uint32_t LocalChunkZ, uint32_t StartY, int32_t StartLightValue, std::unordered_set<uint32_t>* ChunksToUpdate);
+        void ApplySunLightingToColumn(SnazzCraft::Chunk* Chunk, uint32_t LocalChunkX, uint32_t LocalChunkZ, uint32_t StartY, int32_t StartLightValue, std::unordered_set<uint64_t>* ChunksToUpdate);
         
         /*
         Only to be called trough UpdateChunkLighting
         Generates currently ungenerated Chunks when light values would affect them
         */
-        void ApplyLightingVoxel(int32_t LightOrigin[3], int32_t LightProducingLevel, std::unordered_set<uint32_t>* ChunksToUpdate);
+        void ApplyLightingVoxel(int32_t LightOrigin[3], int32_t LightProducingLevel, std::unordered_set<uint64_t>* ChunksToUpdate);
 
-        void UpdateChunkVerticeLightingAndMesh(uint32_t Index);
+        void UpdateChunkVerticeLightingAndMesh(uint64_t Index);
 
         void UpdateChunkVerticeLightingAndMesh(SnazzCraft::Chunk* Chunk);
         
@@ -145,6 +145,8 @@ namespace SnazzCraft
         static SnazzCraft::World* CreateWorld(std::string Name, uint32_t Size, int32_t Seed);
 
         static SnazzCraft::World* LoadWorldFromSaveFile(std::string FilePath);
+
+    
     };
     
     extern SnazzCraft::World* CurrentWorld;

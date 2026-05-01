@@ -54,7 +54,7 @@ void SnazzCraft::World::RenderChunks() const
     for (int32_t Z = PlayerChunkPosition[1] - static_cast<int32_t>(this->RenderDistance); Z <= PlayerChunkPosition[1] + static_cast<int32_t>(this->RenderDistance); Z++) {
         if (X < 0 || X >= this->Size || Z < 0 || Z >= this->Size) continue;
 
-        auto ChunkIterator = this->Chunks.find(SnazzCraft::Index2D<int32_t>(X, Z, this->Size));
+        auto ChunkIterator = this->Chunks.find(SnazzCraft::IntegerHash(X, Z));
         if (ChunkIterator == this->Chunks.end()) continue;
 
         if (ChunkIterator->second->ChunkMesh == nullptr) continue; 
