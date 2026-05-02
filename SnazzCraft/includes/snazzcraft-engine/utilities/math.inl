@@ -1,5 +1,16 @@
 #include "snazzcraft-engine/utilities/math.hpp"
 
+inline void SnazzCraft::MoveVector3D(glm::vec3& Vector, const glm::vec3& Rotation, float Distance)
+{
+    glm::vec3 Front = SnazzCraft::CalculateFrontVector(Rotation, true);
+    Vector += Front * Distance;
+}
+
+inline void SnazzCraft::MoveVector3DWithFront(glm::vec3& Vector, const glm::vec3& Front, float Distance)
+{
+    Vector += Front * Distance;
+}
+
 template <typename T>
 requires std::signed_integral<T> || std::unsigned_integral<T>
 constexpr T SnazzCraft::Index2D(T X, T Y, T Width)

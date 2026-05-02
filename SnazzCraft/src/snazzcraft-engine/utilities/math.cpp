@@ -15,18 +15,7 @@ glm::vec3 SnazzCraft::CalculateFrontVector(const glm::vec3& Rotation, bool Norma
     Front.y = SinPitch;
     Front.z = SinYaw * CosPitch;
 
-    if (Normalize) Front = glm::normalize(Front);
-    
-    return Front;
+    return Normalize ? glm::normalize(Front) : Front;
 }
 
-void SnazzCraft::MoveVector3D(glm::vec3& Vector, const glm::vec3& Rotation, float Distance)
-{
-    glm::vec3 Front = SnazzCraft::CalculateFrontVector(Rotation, true);
-    Vector += Front * Distance;
-}
 
-void SnazzCraft::MoveVector3DWithFront(glm::vec3& Vector, const glm::vec3& Front, float Distance)
-{
-    Vector += Front * Distance;
-}

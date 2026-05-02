@@ -10,8 +10,11 @@ in vec3 FragPosition;
 // Texture Sampler
 uniform sampler2D texture1;
 uniform vec3 LightPosition;
+uniform vec3 ViewPosition;
 
 vec2 AdjustVoxelTextureCoordinate(inout vec2 TextureCoordinate);
+
+const float SpecularStrength = 0.5f;
 
 void main()
 {
@@ -23,11 +26,14 @@ void main()
     // Apply diffuse lighting
     vec3 NormalizedNormal = normalize(Normal);
     vec3 LightDirection = normalize(LightPosition - FragPosition);
+    vec3 ViewDirection = normalize(ViewPosition - FragPosition);
+    vec3 ReflectDirection = reflect(-LightDirection, NormalizedNormal);
 
     float Diffuse = max(dot(NormalizedNormal, LightDirection), 0.0);
-    float Ambient = 0.3; // Add some ambient lighting
+    float Ambient = 0.7; // Add some ambient lighting
+    float Specular = pow(max(dot(ViewDirection, ReflectDirection), 0.0), 32.0) * SpecularStrength;
 
-    float FinalBrightness = max(Diffuse, Ambient) * Brightness;
+    float FinalBrightness = (Ambient + Diffuse + Specular) * Brightness;
     TextureColor.rgb *= FinalBrightness;
 
     if (TextureColor.a < 0.1) {

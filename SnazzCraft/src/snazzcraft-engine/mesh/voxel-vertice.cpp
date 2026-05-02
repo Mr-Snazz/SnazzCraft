@@ -1,4 +1,4 @@
-#include "snazzcraft-engine/vertice/voxel-vertice.hpp"
+#include "snazzcraft-engine/mesh/voxel-vertice.hpp"
 
 SnazzCraft::VoxelVertice::VoxelVertice()
     : Position(glm::vec3(0.0f)), Normal(glm::vec3(0.0f)), TextureCoordinate(glm::vec2(0.0f)), Brightness(1.0f)

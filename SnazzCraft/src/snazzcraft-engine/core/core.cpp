@@ -1,5 +1,5 @@
 #include "snazzcraft-engine/core/core.hpp"
-#include "snazzcraft-engine/vertice/voxel-vertice.hpp"
+#include "snazzcraft-engine/mesh/voxel-vertice.hpp"
 #include "snazzcraft-engine/core/window.hpp"
 #include "snazzcraft-engine/texture/atlas.hpp"
 #include "snazzcraft-engine/texture/texture.hpp"
@@ -111,6 +111,7 @@ bool SnazzCraft::Initiate()
     SnazzCraft::VoxelShader->use();
 
     SnazzCraft::VoxelShader->setVec3("LightPosition", glm::vec3(0.0f, 50.0f, 0.0f));
+    SnazzCraft::VoxelShader->setVec3("ViewPosition", SnazzCraft::Player->Position);
 
     SnazzCraft::ProjectionLock = glGetUniformLocation(SnazzCraft::VoxelShader->ID, "projection");
     SnazzCraft::ModelLock = glGetUniformLocation(SnazzCraft::VoxelShader->ID, "model");
@@ -164,7 +165,7 @@ void SnazzCraft::MainLoop()
                 WorldGUIInstance.PollEvents();
                 WorldGUIInstance.HandleEvents();
 
-                //SnazzCraft::CurrentWorld->ApplyGravityToAllEntities();
+                SnazzCraft::CurrentWorld->ApplyGravityToAllEntities();
 
                 // Render
                 SnazzCraft::VoxelShader->use(); 
@@ -218,9 +219,11 @@ void SnazzCraft::FreeResources()
 void RenderWorld()
 {
     if (SnazzCraft::CurrentWorld->Entities.size() == 0) {
-        SnazzCraft::CurrentWorld->Entities.push_back(new SnazzCraft::Entity(glm::vec3(0.0f, 45.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), ID_ENTITY_TEST));
+        SnazzCraft::CurrentWorld->Entities.push_back(new SnazzCraft::Entity(glm::vec3(0.0f, 46.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), ID_ENTITY_TEST));
     } else {
-        //SnazzCraft::CurrentWorld->MoveEntity(SnazzCraft::CurrentWorld->Entities[0], glm::vec3(0.0f), 0.01f);
+        SnazzCraft::CurrentWorld->MoveEntity(SnazzCraft::CurrentWorld->Entities[0], glm::vec3(0.0f), 0.01f);
+        SnazzCraft::VoxelShader->setVec3("LightPosition", SnazzCraft::CurrentWorld->Entities[0]->Position);
+
         //SnazzCraft::CurrentWorld->Entities[0]->Rotation.x += 0.5f;
         //SnazzCraft::CurrentWorld->Entities[0]->Rotation.y += 1.0f;
         //SnazzCraft::CurrentWorld->Entities[0]->Rotation.z += 1.5f;
@@ -228,7 +231,8 @@ void RenderWorld()
 
     if (!SnazzCraft::VoxelTextureAtlas->BindTexture()) return;
 
-    SnazzCraft::VoxelShader->use(); 
+    SnazzCraft::VoxelShader->use();
+    SnazzCraft::VoxelShader->setVec3("ViewPosition", SnazzCraft::Player->Position); 
 
     glEnable(GL_DEPTH_TEST);
     glCullFace(GL_FRONT); 

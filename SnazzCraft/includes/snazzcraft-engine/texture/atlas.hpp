@@ -5,7 +5,7 @@
 #include <fstream>
 #include <string>
 
-#include "snazzcraft-engine/vertice/voxel-vertice.hpp"
+#include "snazzcraft-engine/mesh/voxel-vertice.hpp"
 #include "snazzcraft-engine/world/voxel.hpp"
 
 #define ATLAS_SIZE (5)

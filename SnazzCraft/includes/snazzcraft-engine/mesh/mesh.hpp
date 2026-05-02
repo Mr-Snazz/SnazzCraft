@@ -11,7 +11,7 @@
 #include "external/glad.h"
 #include "external/shader_s.h"
 
-#include "snazzcraft-engine/vertice/voxel-vertice.hpp"
+#include "snazzcraft-engine/mesh/voxel-vertice.hpp"
 
 namespace SnazzCraft
 {
