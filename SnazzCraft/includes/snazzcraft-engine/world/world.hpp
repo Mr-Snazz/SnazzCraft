@@ -128,10 +128,6 @@ namespace SnazzCraft
         Generates currently ungenerated Chunks when light values would affect them
         */
         void ApplyLightingVoxel(int32_t LightOrigin[3], int32_t LightProducingLevel, std::unordered_set<uint64_t>* ChunksToUpdate);
-
-        void UpdateChunkVerticeLightingAndMesh(uint64_t Index);
-
-        void UpdateChunkVerticeLightingAndMesh(SnazzCraft::Chunk* Chunk);
         
     public:
         static SnazzCraft::World* CreateWorld(std::string Name, uint32_t Size, int32_t Seed);

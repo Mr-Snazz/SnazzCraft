@@ -31,7 +31,7 @@ void SnazzCraft::World::GenerateChunk(int32_t X, int32_t Z, bool ApplyLighting)
 
 SnazzCraft::World* SnazzCraft::World::CreateWorld(std::string Name, uint32_t Size, int32_t Seed)
 {
-    uint32_t GenerateSize = Size == 0 || Size > SnazzCraft::World::MaxSize ? 
+    uint32_t GenerateSize = Size == 0u || Size > SnazzCraft::World::MaxSize ? 
         SnazzCraft::World::MaxSize : 
         Size;
 
@@ -46,16 +46,3 @@ SnazzCraft::World* SnazzCraft::World::CreateWorld(std::string Name, uint32_t Siz
     return NewWorld;
 }
 
-void SnazzCraft::World::UpdateChunkVerticeLightingAndMesh(uint64_t Index)
-{
-    auto ChunkIterator = this->Chunks.find(Index);
-    if (ChunkIterator == this->Chunks.end()) return;
-
-    this->UpdateChunkVerticeLightingAndMesh(ChunkIterator->second);
-}
-
-void SnazzCraft::World::UpdateChunkVerticeLightingAndMesh(SnazzCraft::Chunk* Chunk)
-{
-    Chunk->UpdateLightingOnVertices(this);
-    Chunk->UpdateMesh();
-}

@@ -9,7 +9,7 @@ SnazzCraft::Voxel* SnazzCraft::World::GetCollidingVoxel(const glm::vec3& Positio
 
     for (int32_t X = ChunkX - 1; X <= ChunkX + 1; X++) {
     for (int32_t Z = ChunkZ - 1; Z <= ChunkZ + 1; Z++) {
-        if (X < 0 || Z < 0 || X >= this->Size || Z >= this->Size) continue;
+        if (!this->ChunkWithinWorld(X, Z)) return nullptr;
         
         auto ChunkIterator = this->Chunks.find(SnazzCraft::IntegerHash(X, Z));
         if (ChunkIterator == this->Chunks.end()) continue;
@@ -27,7 +27,7 @@ SnazzCraft::Voxel* SnazzCraft::World::GetCollidingVoxel(const glm::vec3& Positio
     const int32_t ChunkX = static_cast<int32_t>(Position.x / (SnazzCraft::Chunk::Width * SnazzCraft::Voxel::Size));
     const int32_t ChunkZ = static_cast<int32_t>(Position.z / (SnazzCraft::Chunk::Depth * SnazzCraft::Voxel::Size));
 
-    if (ChunkX < 0 || ChunkZ < 0 || ChunkX >= this->Size || ChunkZ >= this->Size) return nullptr;
+    if (!this->ChunkWithinWorld(ChunkX, ChunkZ)) return nullptr;
 
     auto ChunkIterator = this->Chunks.find(SnazzCraft::IntegerHash(ChunkX, ChunkZ));
     if (ChunkIterator == this->Chunks.end()) return nullptr;

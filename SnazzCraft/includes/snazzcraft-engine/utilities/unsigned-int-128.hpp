@@ -18,11 +18,9 @@ namespace SnazzCraft
         UnsignedInt128 operator+(const UnsignedInt128& Addend) const
         {
             UnsignedInt128 Result;
-            
-            bool Carry;
-            UnsignedInt128::Add(this->Low, Addend.Low, Result.Low, Carry);
+            Result.Low = this->Low + Addend.Low;
+            Result.High = this->High + Addend.High + ((Result.Low < this->Low) ? 1u : 0u);
 
-            Result.High = this->High + Addend.High + (Carry ? 1u : 0u);
             return Result;
         }
 
@@ -49,15 +47,6 @@ namespace SnazzCraft
     private:
         
 
-    public:
-
-
-    private:
-        static inline void Add(uint64_t A, uint64_t B, uint64_t& Result, bool& Carry)
-        {
-            Result = A + B;
-            Carry = (Result < A);
-        }
 
     };
 }
