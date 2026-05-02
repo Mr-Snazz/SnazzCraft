@@ -7,17 +7,17 @@ void SnazzCraft::World::GenerateChunk(int32_t X, int32_t Z, bool ApplyLighting)
 {
     if (X >= SnazzCraft::World::Size || Z >= SnazzCraft::World::Size) return;
 
-    uint64_t ChunkIndex = SnazzCraft::IntegerHash(X, Z);
-    auto Iterator = this->Chunks.find(ChunkIndex);
+    uint64_t ChunkHash = SnazzCraft::IntegerHash(X, Z);
+    auto Iterator = this->Chunks.find(ChunkHash);
     if (Iterator != this->Chunks.end()) return;
     
     SnazzCraft::Chunk* NewChunk = new SnazzCraft::Chunk(X, Z);
 
-    NewChunk->Generate(this->WorldHeightMap, static_cast<uint32_t>(this->Size) * SnazzCraft::Chunk::Width);
+    NewChunk->Generate(this->WorldHeightMap, static_cast<uint32_t>(this->Size * SnazzCraft::Chunk::Width));
     NewChunk->CullVoxelFaces();
     NewChunk->UpdateVerticesAndIndices();   
 
-    this->Chunks[ChunkIndex] = NewChunk;
+    this->Chunks[ChunkHash] = NewChunk;
     bool UpdatedChunk;
     if (ApplyLighting) { 
         this->UpdateChunkLighting(NewChunk, &UpdatedChunk); 

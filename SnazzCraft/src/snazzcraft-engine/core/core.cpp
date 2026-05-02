@@ -13,7 +13,7 @@
 
 Shader* SnazzCraft::VoxelShader = nullptr;
 
-glm::mat4 SnazzCraft::ProjectionMatrix = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 1000000.0f);
+glm::mat4 SnazzCraft::ProjectionMatrix = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 1000.0f);
 int SnazzCraft::ProjectionLock;
 
 glm::mat4 SnazzCraft::ModelMatrix = glm::mat4(1.0f);
