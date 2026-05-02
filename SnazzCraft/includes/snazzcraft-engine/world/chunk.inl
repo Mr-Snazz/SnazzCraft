@@ -23,23 +23,37 @@ inline void SnazzCraft::Chunk::WorldSpaceToVoxelSpace(const glm::vec3& WorldPosi
 }
 
 
+inline int32_t SnazzCraft::Chunk::FloorDivide(int32_t Value, int32_t Divisor)
+{
+    if (Value >= 0) return Value / Divisor;
+    return -(((-Value - 1) / Divisor) + 1);
+}
+
 inline void SnazzCraft::Chunk::GetChunkPosition(const glm::vec3& Position, int32_t OutChunkPosition[2]) // Voxel space coordinates
 {
-    OutChunkPosition[0] = static_cast<int>(Position.x) / SnazzCraft::Chunk::Width;
-    OutChunkPosition[1] = static_cast<int>(Position.z) / SnazzCraft::Chunk::Depth;
+    int32_t X = static_cast<int32_t>(glm::floor(Position.x));
+    int32_t Z = static_cast<int32_t>(glm::floor(Position.z));
+
+    OutChunkPosition[0] = SnazzCraft::Chunk::FloorDivide(X, SnazzCraft::Chunk::Width);
+    OutChunkPosition[1] = SnazzCraft::Chunk::FloorDivide(Z, SnazzCraft::Chunk::Depth);
 }
 
 inline void SnazzCraft::Chunk::GetChunkPosition(int32_t X, int32_t Z, int32_t OutChunkPosition[2]) // Voxel space coordinates
 {
-    OutChunkPosition[0] = X / SnazzCraft::Chunk::Width;
-    OutChunkPosition[1] = Z / SnazzCraft::Chunk::Depth;
+    OutChunkPosition[0] = SnazzCraft::Chunk::FloorDivide(X, SnazzCraft::Chunk::Width);
+    OutChunkPosition[1] = SnazzCraft::Chunk::FloorDivide(Z, SnazzCraft::Chunk::Depth);
 }
 
 inline void SnazzCraft::Chunk::GetLocalVoxelPosition(int32_t X, int32_t Y, int32_t Z, int32_t OutLocalVoxelPosition[3]) // Voxel space coordinates
 {
     OutLocalVoxelPosition[0] = X % SnazzCraft::Chunk::Width;
+    if (OutLocalVoxelPosition[0] < 0) OutLocalVoxelPosition[0] += SnazzCraft::Chunk::Width;
+
     OutLocalVoxelPosition[1] = Y % SnazzCraft::Chunk::Height;
+    if (OutLocalVoxelPosition[1] < 0) OutLocalVoxelPosition[1] += SnazzCraft::Chunk::Height;
+
     OutLocalVoxelPosition[2] = Z % SnazzCraft::Chunk::Depth;
+    if (OutLocalVoxelPosition[2] < 0) OutLocalVoxelPosition[2] += SnazzCraft::Chunk::Depth;
 }
 
 constexpr uint32_t SnazzCraft::Chunk::LocalVoxelIndex(int32_t X, int32_t Y, int32_t Z)

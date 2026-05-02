@@ -76,6 +76,8 @@ namespace SnazzCraft
         static constexpr int16_t OceanLevel = 20; // 125
         static constexpr int16_t MaxOceanDepth = 40;
 
+        static inline int32_t FloorDivide(int32_t Value, int32_t Divisor);
+
         static inline void GetChunkPosition(const glm::vec3& Position, int32_t OutChunkPosition[2]); // Voxel space coordinates
 
         static inline void GetChunkPosition(int32_t X, int32_t Z, int32_t OutChunkPosition[2]); // Voxel space coordinates
