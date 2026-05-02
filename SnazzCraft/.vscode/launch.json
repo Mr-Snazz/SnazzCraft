@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/home/mr_snazz/Documents/SnazzCraft/SnazzCraft/src/snazzcraft-engine/world",
-      "program": "/home/mr_snazz/Documents/SnazzCraft/SnazzCraft/src/snazzcraft-engine/world/build/Debug/outDebug",
+      "cwd": "/home/mr_snazz/Documents/SnazzCraft/SnazzCraft/src",
+      "program": "/home/mr_snazz/Documents/SnazzCraft/SnazzCraft/src/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

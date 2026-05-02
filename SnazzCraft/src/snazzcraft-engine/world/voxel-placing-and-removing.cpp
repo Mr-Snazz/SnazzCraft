@@ -45,10 +45,10 @@ bool SnazzCraft::World::PlaceVoxel(const glm::vec3& Position, const glm::vec3& R
     };
 
     glm::vec3 EndPosition = Position;
-    uint8_t FaceHit;
-    SnazzCraft::Voxel* VoxelHit;
-
+    uint8_t FaceHit = 0x00;
+    SnazzCraft::Voxel* VoxelHit = nullptr;
     this->RaycastToVoxel(EndPosition, Rotation, this->PlayerReach, &FaceHit, &VoxelHit);
+
     if (VoxelHit == nullptr || EndPosition == Position) return false;
 
     int8_t NewPlacePosition[3];
@@ -84,7 +84,7 @@ void SnazzCraft::World::UpdateVoxelPlacementDisplay()
     SnazzCraft::Chunk::GetChunkPosition(VoxelSpaceEndPosition, ChunkCoordinates);
 
     auto ChunkIterator = this->Chunks.find(SnazzCraft::IntegerHash(ChunkCoordinates[0], ChunkCoordinates[1]));
-    if (!this->ChunkWithinWorld(ChunkIterator->second)) { this->ShouldRenderVoxelPlacementDisplay = false; return; }
+    if (ChunkIterator == this->Chunks.end() || !this->ChunkWithinWorld(ChunkIterator->second)) { this->ShouldRenderVoxelPlacementDisplay = false; return; }
 
     this->VoxelPlacementDisplayPosition = glm::vec3(
         (static_cast<float>(ChunkIterator->second->Position[0] * SnazzCraft::Chunk::Width) + VoxelHit->X) * SnazzCraft::Voxel::Size,

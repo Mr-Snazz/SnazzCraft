@@ -5,7 +5,7 @@
 
 void SnazzCraft::World::GenerateChunk(int32_t X, int32_t Z, bool ApplyLighting)
 {
-    if (X >= SnazzCraft::World::Size || Z >= SnazzCraft::World::Size) return;
+    if (X < -SnazzCraft::World::Size || X > SnazzCraft::World::Size || Z < -SnazzCraft::World::Size || Z > SnazzCraft::World::Size) return;
 
     uint64_t ChunkHash = SnazzCraft::IntegerHash(X, Z);
     auto Iterator = this->Chunks.find(ChunkHash);
