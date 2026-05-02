@@ -6,7 +6,6 @@
 #include "external/glad.h"
 #include "external/glfw3.h"
 #include "external/shader_s.h"
-#include "external/stb_image.h"
 #include "external/glm/glm.hpp"
 #include "external/glm/gtc/matrix_transform.hpp"
 #include "external/glm/gtc/type_ptr.hpp"
@@ -30,8 +29,6 @@
 namespace SnazzCraft
 {
     class World;
-
-    extern Shader* VoxelShader;
 
     extern glm::mat4 ProjectionMatrix;
     extern int ProjectionLock;

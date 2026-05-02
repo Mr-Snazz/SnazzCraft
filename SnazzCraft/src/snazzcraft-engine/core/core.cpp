@@ -10,8 +10,7 @@
 #include "snazzcraft-engine/world/world.hpp"
 #include "snazzcraft-engine/entity/entity-ids.h"
 #include "snazzcraft-engine/world/voxel-ids.h"
-
-Shader* SnazzCraft::VoxelShader = nullptr;
+#include "snazzcraft-engine/shader/voxel-shader.hpp"
 
 glm::mat4 SnazzCraft::ProjectionMatrix = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 1000.0f);
 int SnazzCraft::ProjectionLock;
@@ -107,18 +106,16 @@ bool SnazzCraft::Initiate()
 
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
-    SnazzCraft::VoxelShader = new Shader("src/shaders/voxel/vertex-shader.glsl", "src/shaders/voxel/fragment-shader.glsl");
-    SnazzCraft::VoxelShader->use();
+    const VoxelShader& VoxelShaderInstance = VoxelShader::GetInstance();
+    VoxelShaderInstance.use();
 
-    SnazzCraft::VoxelShader->setVec3("ViewPosition", SnazzCraft::Player->Position);
-    SnazzCraft::VoxelShader->setVec3("DirectionalLight.Direction", glm::vec3(-3.0f, -1.0f, -2.0f));
-    SnazzCraft::VoxelShader->setVec3("DirectionalLight.Ambient", glm::vec3(0.1f));
-    SnazzCraft::VoxelShader->setVec3("DirectionalLight.Diffuse", glm::vec3(0.5f));
-    SnazzCraft::VoxelShader->setVec3("DirectionalLight.Specular", glm::vec3(1.0f));
+    VoxelShaderInstance.setVec3("LightPosition", glm::vec3(0.0f, 50.0f, 0.0f));
+    VoxelShaderInstance.setVec3("ViewPosition", SnazzCraft::Player->Position);
+    VoxelShaderInstance.setFloat("Ambient", 0.1f);
 
-    SnazzCraft::ProjectionLock = glGetUniformLocation(SnazzCraft::VoxelShader->ID, "projection");
-    SnazzCraft::ModelLock = glGetUniformLocation(SnazzCraft::VoxelShader->ID, "model");
-    SnazzCraft::ViewLock = glGetUniformLocation(SnazzCraft::VoxelShader->ID, "view");
+    SnazzCraft::ProjectionLock = glGetUniformLocation(VoxelShaderInstance.ID, "projection");
+    SnazzCraft::ModelLock = glGetUniformLocation(VoxelShaderInstance.ID, "model");
+    SnazzCraft::ViewLock = glGetUniformLocation(VoxelShaderInstance.ID, "view");
 
     glUniformMatrix4fv(SnazzCraft::ProjectionLock, 1, GL_FALSE, glm::value_ptr(ProjectionMatrix));
     glUniformMatrix4fv(SnazzCraft::ModelLock, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
@@ -170,12 +167,6 @@ void SnazzCraft::MainLoop()
 
                 SnazzCraft::CurrentWorld->ApplyGravityToAllEntities();
 
-                // Render
-                SnazzCraft::VoxelShader->use(); 
-
-                SnazzCraft::ViewMatrix = glm::lookAt(SnazzCraft::Player->Position, SnazzCraft::Player->Position + SnazzCraft::Player->Front, glm::vec3(0.0, 1.0, 0.0));
-                glUniformMatrix4fv(SnazzCraft::ViewLock, 1, GL_FALSE, glm::value_ptr(SnazzCraft::ViewMatrix));
-                
                 RenderWorld();
                 WorldGUIInstance.Draw();
 
@@ -209,7 +200,6 @@ void SnazzCraft::FreeResources()
     SnazzCraft::EntityType::FreeResources();
 
     delete SnazzCraft::Player;
-    delete SnazzCraft::VoxelShader;
     delete SnazzCraft::VoxelMesh;
     delete SnazzCraft::EngineVoxelTextureApplier;
     delete SnazzCraft::CurrentWorld;
@@ -222,14 +212,13 @@ void SnazzCraft::FreeResources()
 void RenderWorld()
 {
     if (SnazzCraft::CurrentWorld->Entities.size() == 0) {
-        SnazzCraft::CurrentWorld->Entities.push_back(new SnazzCraft::Entity(glm::vec3(0.0f, 46.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), ID_ENTITY_TEST));
+        SnazzCraft::CurrentWorld->Entities.push_back(new SnazzCraft::Entity(glm::vec3(0.0f, 80.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), ID_ENTITY_TEST));
     } else {
         //SnazzCraft::CurrentWorld->MoveEntity(SnazzCraft::CurrentWorld->Entities[0], glm::vec3(0.0f), 0.01f);
-        //SnazzCraft::VoxelShader->setVec3("LightPosition", SnazzCraft::CurrentWorld->Entities[0]->Position);
 
-        SnazzCraft::CurrentWorld->Entities[0]->Rotation.x += 0.5f;
-        SnazzCraft::CurrentWorld->Entities[0]->Rotation.y += 1.0f;
-        SnazzCraft::CurrentWorld->Entities[0]->Rotation.z += 1.5f;
+        //SnazzCraft::CurrentWorld->Entities[0]->Rotation.x += 0.5f;
+        //SnazzCraft::CurrentWorld->Entities[0]->Rotation.y += 1.0f;
+        //SnazzCraft::CurrentWorld->Entities[0]->Rotation.z += 1.5f;
     }
 
     if (!SnazzCraft::VoxelTextureAtlas->BindTexture()) return;

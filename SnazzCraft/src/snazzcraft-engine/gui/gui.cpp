@@ -1,15 +1,16 @@
 #include "snazzcraft-engine/gui/gui.hpp"
 #include "snazzcraft-engine/gui/panel/panel.hpp"
+#include "snazzcraft-engine/shader/gui-shader.hpp"
 
 #include "external/shader_s.h"
 
-constexpr const char* GUIVertexShaderFilePath   = "src/shaders/gui/vertex-shader.glsl";
-constexpr const char* GUIFragmentShaderFilePath = "src/shaders/gui/fragment-shader.glsl";
+constexpr const char* GUIVertexShaderFilePath   = "src/glsl-shaders/gui/gui-vertex-shader.glsl";
+constexpr const char* GUIFragmentShaderFilePath = "src/glsl-shaders/gui/gui-fragment-shader.glsl";
 
 SnazzCraft::GUI::GUI()
     : InputHandler(nullptr)
 {
-    this->GUIShader = new Shader(GUIVertexShaderFilePath, GUIFragmentShaderFilePath);
+    this->GUIShader = new SnazzCraft::GUIShader(GUIVertexShaderFilePath, GUIFragmentShaderFilePath);
     this->GUIShader->use();
     
     this->OrthographicLock = glGetUniformLocation(this->GUIShader->ID, "OrthographicProjection");

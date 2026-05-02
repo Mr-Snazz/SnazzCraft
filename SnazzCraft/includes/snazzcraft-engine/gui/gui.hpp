@@ -10,10 +10,11 @@
 
 #include "snazzcraft-engine/gui/panel/panel.hpp"
 
-class Shader;
 class GLFWwindow;
 namespace SnazzCraft
 {
+    class GUIShader;
+
     class GUI
     {
     public:
@@ -68,7 +69,7 @@ namespace SnazzCraft
     protected:
         std::vector<SnazzCraft::Panel*>  Panels;
 
-        Shader* GUIShader;
+        SnazzCraft::GUIShader* GUIShader;
         glm::mat4 OrthographicProjectionMatrix;
         int OrthographicLock;
         

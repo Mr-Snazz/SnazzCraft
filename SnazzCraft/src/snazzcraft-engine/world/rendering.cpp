@@ -4,11 +4,17 @@
 #include "snazzcraft-engine/texture/texture.hpp"
 #include "snazzcraft-engine/mesh/mesh.hpp"
 #include "snazzcraft-engine/world/chunk.hpp"
+#include "snazzcraft-engine/shader/voxel-shader.hpp"
 
 void SnazzCraft::World::Render() const
 {
-    SnazzCraft::VoxelShader->use();
-    SnazzCraft::VoxelShader->setVec3("ViewPosition", SnazzCraft::Player->Position);
+    const VoxelShader& VoxelShaderInstance = VoxelShader::GetInstance();
+    VoxelShaderInstance.use();
+    VoxelShaderInstance.setVec3("LightPosition", SnazzCraft::CurrentWorld->Entities[0]->Position);
+    VoxelShaderInstance.setVec3("ViewPosition", SnazzCraft::Player->Position);
+
+    SnazzCraft::ViewMatrix = glm::lookAt(SnazzCraft::Player->Position, SnazzCraft::Player->Position + SnazzCraft::Player->Front, glm::vec3(0.0, 1.0, 0.0));
+    glUniformMatrix4fv(SnazzCraft::ViewLock, 1, GL_FALSE, glm::value_ptr(SnazzCraft::ViewMatrix));
 
     // Render voxels in chunks & voxel placement display
     SnazzCraft::VoxelTextureAtlas->BindTexture();
@@ -49,8 +55,6 @@ void SnazzCraft::World::RenderAllEntities() const
 
 void SnazzCraft::World::RenderChunks() const
 { 
-    SnazzCraft::VoxelShader->use();
-
     int32_t PlayerChunkPosition[2];
     SnazzCraft::Chunk::GetChunkPosition(Player->Position, PlayerChunkPosition);
 
