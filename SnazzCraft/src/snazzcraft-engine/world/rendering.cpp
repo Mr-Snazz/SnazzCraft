@@ -7,6 +7,9 @@
 
 void SnazzCraft::World::Render() const
 {
+    SnazzCraft::VoxelShader->use();
+    SnazzCraft::VoxelShader->setVec3("ViewPosition", SnazzCraft::Player->Position);
+
     // Render voxels in chunks & voxel placement display
     SnazzCraft::VoxelTextureAtlas->BindTexture();
     

@@ -8,7 +8,6 @@ layout(location = 3) in float aBrightness;
 out vec3 Normal;
 out vec2 TexCoord;
 out float Brightness;
-
 out vec3 FragPosition;
   
 uniform mat4 model;
