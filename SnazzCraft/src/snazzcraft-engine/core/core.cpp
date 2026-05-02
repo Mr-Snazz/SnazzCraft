@@ -25,41 +25,43 @@ int SnazzCraft::ViewLock;
 bool SnazzCraft::CloseApplication = false;
 
 const std::vector<SnazzCraft::VoxelVertice> VoxelMeshVertices = {
+    //   Position             // Normal             // Texture Coords
+
     // Front
-    { { -1.0f, -1.0f, -1.0f }, { 0.0f, 0.2f } },
-    { { -1.0f,  1.0f, -1.0f }, { 0.0f, 0.0f } },
-    { {  1.0f,  1.0f, -1.0f }, { 0.2f, 0.0f } },
-    { {  1.0f, -1.0f, -1.0f }, { 0.2f, 0.2f } },
+    { { -1.0f, -1.0f, -1.0f }, { 0.0f, 0.0f, -1.0f }, { 0.0f, 0.2f } },
+    { { -1.0f,  1.0f, -1.0f }, { 0.0f, 0.0f, -1.0f }, { 0.0f, 0.0f } },
+    { {  1.0f,  1.0f, -1.0f }, { 0.0f, 0.0f, -1.0f }, { 0.2f, 0.0f } },
+    { {  1.0f, -1.0f, -1.0f }, { 0.0f, 0.0f, -1.0f }, { 0.2f, 0.2f } },
 
     // Left 
-    { { -1.0f, -1.0f,  1.0f }, { 0.0f, 0.2f } },
-    { { -1.0f,  1.0f,  1.0f }, { 0.0f, 0.0f } },
-    { { -1.0f,  1.0f, -1.0f }, { 0.2f, 0.0f } },
-    { { -1.0f, -1.0f, -1.0f }, { 0.2f, 0.2f } },
+    { { -1.0f, -1.0f,  1.0f }, { -1.0f, 0.0f, 0.0f }, { 0.0f, 0.2f } },
+    { { -1.0f,  1.0f,  1.0f }, { -1.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } },
+    { { -1.0f,  1.0f, -1.0f }, { -1.0f, 0.0f, 0.0f }, { 0.2f, 0.0f } },
+    { { -1.0f, -1.0f, -1.0f }, { -1.0f, 0.0f, 0.0f }, { 0.2f, 0.2f } },
 
     // Right 
-    { { 1.0f, -1.0f, -1.0f }, { 0.0f, 0.2f } },
-    { { 1.0f,  1.0f, -1.0f }, { 0.0f, 0.0f } },
-    { { 1.0f,  1.0f,  1.0f }, { 0.2f, 0.0f } },
-    { { 1.0f, -1.0f,  1.0f }, { 0.2f, 0.2f } },
+    { { 1.0f, -1.0f, -1.0f }, { 1.0f, 0.0f, 0.0f }, { 0.0f, 0.2f } },
+    { { 1.0f,  1.0f, -1.0f }, { 1.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } },
+    { { 1.0f,  1.0f,  1.0f }, { 1.0f, 0.0f, 0.0f }, { 0.2f, 0.0f } },
+    { { 1.0f, -1.0f,  1.0f }, { 1.0f, 0.0f, 0.0f }, { 0.2f, 0.2f } },
     
     // Back
-    { {  1.0f, -1.0f,  1.0f }, { 0.0f, 0.2f } },
-    { {  1.0f,  1.0f,  1.0f }, { 0.0f, 0.0f } },
-    { { -1.0f,  1.0f,  1.0f }, { 0.2f, 0.0f } },
-    { { -1.0f, -1.0f,  1.0f }, { 0.2f, 0.2f } },
+    { {  1.0f, -1.0f,  1.0f }, { 0.0f, 0.0f, 1.0f }, { 0.0f, 0.2f } },
+    { {  1.0f,  1.0f,  1.0f }, { 0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f } },
+    { { -1.0f,  1.0f,  1.0f }, { 0.0f, 0.0f, 1.0f }, { 0.2f, 0.0f } },
+    { { -1.0f, -1.0f,  1.0f }, { 0.0f, 0.0f, 1.0f }, { 0.2f, 0.2f } },
 
     // Top
-    { { -1.0f, 1.0f, -1.0f }, { 0.0f, 0.2f } },
-    { { -1.0f, 1.0f,  1.0f }, { 0.0f, 0.0f } },
-    { {  1.0f, 1.0f,  1.0f }, { 0.2f, 0.0f } },
-    { {  1.0f, 1.0f, -1.0f }, { 0.2f, 0.2f } },
+    { { -1.0f, 1.0f, -1.0f }, { 0.0f, 1.0f, 0.0f }, { 0.0f, 0.2f } },
+    { { -1.0f, 1.0f,  1.0f }, { 0.0f, 1.0f, 0.0f }, { 0.0f, 0.0f } },
+    { {  1.0f, 1.0f,  1.0f }, { 0.0f, 1.0f, 0.0f }, { 0.2f, 0.0f } },
+    { {  1.0f, 1.0f, -1.0f }, { 0.0f, 1.0f, 0.0f }, { 0.2f, 0.2f } },
 
     // Bottom
-    { { -1.0f, -1.0f,  1.0f }, { 0.0f, 0.2f } },
-    { { -1.0f, -1.0f, -1.0f }, { 0.0f, 0.0f } },
-    { {  1.0f, -1.0f, -1.0f }, { 0.2f, 0.0f } },
-    { {  1.0f, -1.0f,  1.0f }, { 0.2f, 0.2f } },
+    { { -1.0f, -1.0f,  1.0f }, { 0.0f, -1.0f, 0.0f }, { 0.0f, 0.2f } },
+    { { -1.0f, -1.0f, -1.0f }, { 0.0f, -1.0f, 0.0f }, { 0.0f, 0.0f } },
+    { {  1.0f, -1.0f, -1.0f }, { 0.0f, -1.0f, 0.0f }, { 0.2f, 0.0f } },
+    { {  1.0f, -1.0f,  1.0f }, { 0.0f, -1.0f, 0.0f }, { 0.2f, 0.2f } },
 };
 
 const std::vector<uint32_t> VoxelMeshIndices = {
@@ -107,6 +109,8 @@ bool SnazzCraft::Initiate()
 
     SnazzCraft::VoxelShader = new Shader("src/shaders/voxel/vertex-shader.glsl", "src/shaders/voxel/fragment-shader.glsl");
     SnazzCraft::VoxelShader->use();
+
+    SnazzCraft::VoxelShader->setVec3("LightPosition", glm::vec3(0.0f, 50.0f, 0.0f));
 
     SnazzCraft::ProjectionLock = glGetUniformLocation(SnazzCraft::VoxelShader->ID, "projection");
     SnazzCraft::ModelLock = glGetUniformLocation(SnazzCraft::VoxelShader->ID, "model");
@@ -160,7 +164,7 @@ void SnazzCraft::MainLoop()
                 WorldGUIInstance.PollEvents();
                 WorldGUIInstance.HandleEvents();
 
-                SnazzCraft::CurrentWorld->ApplyGravityToAllEntities();
+                //SnazzCraft::CurrentWorld->ApplyGravityToAllEntities();
 
                 // Render
                 SnazzCraft::VoxelShader->use(); 
@@ -214,7 +218,7 @@ void SnazzCraft::FreeResources()
 void RenderWorld()
 {
     if (SnazzCraft::CurrentWorld->Entities.size() == 0) {
-        SnazzCraft::CurrentWorld->Entities.push_back(new SnazzCraft::Entity(glm::vec3(10.0f, 95.0f, 10.0f), glm::vec3(0.0f, 45.0f, 0.0f), ID_ENTITY_TEST));
+        SnazzCraft::CurrentWorld->Entities.push_back(new SnazzCraft::Entity(glm::vec3(0.0f, 45.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), ID_ENTITY_TEST));
     } else {
         //SnazzCraft::CurrentWorld->MoveEntity(SnazzCraft::CurrentWorld->Entities[0], glm::vec3(0.0f), 0.01f);
         //SnazzCraft::CurrentWorld->Entities[0]->Rotation.x += 0.5f;

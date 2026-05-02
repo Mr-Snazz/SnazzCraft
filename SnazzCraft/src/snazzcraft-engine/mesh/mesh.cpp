@@ -43,17 +43,21 @@ void SnazzCraft::Mesh::Initiate()
 
     // Set vertex attribute pointers
 
-    // layout (location = 0) ? vec3 position
+    // layout (location = 0) vec3 position
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(SnazzCraft::VoxelVertice), (void*)0);
     glEnableVertexAttribArray(0);
 
-    // layout (location = 1) ? vec2 texCoord
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(SnazzCraft::VoxelVertice), (void*)offsetof(SnazzCraft::VoxelVertice, SnazzCraft::VoxelVertice::TextureCoordinate));
+    // layout (location = 1) vec3 normal
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(SnazzCraft::VoxelVertice), (void*)offsetof(SnazzCraft::VoxelVertice, SnazzCraft::VoxelVertice::Normal));
     glEnableVertexAttribArray(1);
 
-    // layout (location = 2) ? float brightness
-    glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(SnazzCraft::VoxelVertice), (void*)offsetof(SnazzCraft::VoxelVertice, SnazzCraft::VoxelVertice::Brightness));
+    // layout (location = 2) vec2 texCoord
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(SnazzCraft::VoxelVertice), (void*)offsetof(SnazzCraft::VoxelVertice, SnazzCraft::VoxelVertice::TextureCoordinate));
     glEnableVertexAttribArray(2);
+
+    // layout (location = 3) float brightness
+    glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(SnazzCraft::VoxelVertice), (void*)offsetof(SnazzCraft::VoxelVertice, SnazzCraft::VoxelVertice::Brightness));
+    glEnableVertexAttribArray(3);
 
     // Unbind (optional safety)
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -122,6 +126,7 @@ SnazzCraft::Mesh* SnazzCraft::Mesh::LoadMeshFromObjectFile(const char* FilePath)
                     
                     // Wavefront indices are 1-based, so we subtract 1 for zero-based vectors
                     Vertex.Position  = TempPositions[PIdx - 1];
+                    Vertex.Normal    = glm::vec3(0.0f);
                     Vertex.TextureCoordinate = TempUVs[UIdx - 1];
 
                     OutVertices.push_back(Vertex);

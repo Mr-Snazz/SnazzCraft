@@ -49,7 +49,7 @@ void SnazzCraft::EntityType::FreeResources()
 const SnazzCraft::EntityType& SnazzCraft::EntityType::GetEntityType(uint8_t ID)
 {
     static const SnazzCraft::EntityType Player(Meshes[MESH_RECTANGULAR_PRISM], Textures[TEXTURE_LIGHT_GREEN], SnazzCraft::EntityType::Hitboxes[HITBOX_HUMANONOID]);
-    static const SnazzCraft::EntityType Test  (Meshes[MESH_HUMANOID],          Textures[TEXTURE_DARK_BLUE],   SnazzCraft::EntityType::Hitboxes[HITBOX_HUMANONOID]);
+    static const SnazzCraft::EntityType Test  (Meshes[MESH_RECTANGULAR_PRISM], Textures[TEXTURE_DARK_BLUE],   SnazzCraft::EntityType::Hitboxes[HITBOX_HUMANONOID]);
     static const SnazzCraft::EntityType Sheep (Meshes[MESH_CATTLE],            Textures[TEXTURE_WHITE],       SnazzCraft::EntityType::Hitboxes[HITBOX_CATTLE]);
 
     switch (ID)

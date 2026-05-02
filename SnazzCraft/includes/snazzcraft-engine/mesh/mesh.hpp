@@ -11,7 +11,7 @@
 #include "external/glad.h"
 #include "external/shader_s.h"
 
-#include "../vertice/voxel-vertice.hpp"
+#include "snazzcraft-engine/vertice/voxel-vertice.hpp"
 
 namespace SnazzCraft
 {
@@ -24,7 +24,7 @@ namespace SnazzCraft
 
         uint32_t VAO;
 
-        Mesh(std::vector<SnazzCraft::VoxelVertice> Vertices, std::vector<uint32_t> Indices); // Use shader before initializing
+        Mesh(std::vector<SnazzCraft::VoxelVertice> Vertices, std::vector<uint32_t> Indices); // Use shader before constructing
 
         virtual ~Mesh();
 

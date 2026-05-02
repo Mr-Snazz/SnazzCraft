@@ -9,14 +9,13 @@ void SnazzCraft::World::Render() const
 {
     // Render voxels in chunks & voxel placement display
     SnazzCraft::VoxelTextureAtlas->BindTexture();
-
+    
     SnazzCraft::ModelMatrix = glm::mat4(1.0f);
     glUniformMatrix4fv(SnazzCraft::ModelLock, 1, GL_FALSE, glm::value_ptr(SnazzCraft::ModelMatrix));
     this->RenderChunks();
 
     this->RenderVoxelPlacementDisplay();
     
-    // Render entities
     this->RenderAllEntities();
 }
 
@@ -47,6 +46,8 @@ void SnazzCraft::World::RenderAllEntities() const
 
 void SnazzCraft::World::RenderChunks() const
 { 
+    SnazzCraft::VoxelShader->use();
+
     int32_t PlayerChunkPosition[2];
     SnazzCraft::Chunk::GetChunkPosition(Player->Position, PlayerChunkPosition);
 

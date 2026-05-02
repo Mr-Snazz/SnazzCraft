@@ -23,7 +23,7 @@ std::vector<SnazzCraft::VoxelVertice> SnazzCraft::VoxelTextureApplier::GetTextur
 
     std::vector<SnazzCraft::VoxelVertice> Vertices;
     for (const SnazzCraft::VoxelVertice& V : SnazzCraft::VoxelMesh->Vertices) { // Currently vertices are in mesh space
-        Vertices.push_back(SnazzCraft::VoxelVertice((V.Position * SnazzCraft::VoxelMesh->ScaleVector), V.TextureCoordinate + AtlasCoordinates));
+        Vertices.push_back(SnazzCraft::VoxelVertice((V.Position * SnazzCraft::VoxelMesh->ScaleVector), V.Normal, V.TextureCoordinate + AtlasCoordinates));
     }
 
     switch (Voxel.ID) // Special cases

@@ -1,29 +1,40 @@
 #version 330 core
 out vec4 FragColor;
 
+in vec3 Normal;
 in vec2 TexCoord;
 in float Brightness;
 
+in vec3 FragPosition;
+
 // Texture Sampler
 uniform sampler2D texture1;
+uniform vec3 LightPosition;
 
 vec2 AdjustVoxelTextureCoordinate(inout vec2 TextureCoordinate);
-
-vec4 ApplyBrightness(inout vec4 Color, float Brightness);
 
 void main()
 {
     vec2 TextureCoordinate = TexCoord;
     TextureCoordinate = AdjustVoxelTextureCoordinate(TextureCoordinate);
 
-	vec4 texColor = texture(texture1, TextureCoordinate);
-    texColor = ApplyBrightness(texColor, Brightness);
+	vec4 TextureColor = texture(texture1, TextureCoordinate);
 
-    if (texColor.a < 0.1) {
+    // Apply diffuse lighting
+    vec3 NormalizedNormal = normalize(Normal);
+    vec3 LightDirection = normalize(LightPosition - FragPosition);
+
+    float Diffuse = max(dot(NormalizedNormal, LightDirection), 0.0);
+    float Ambient = 0.3; // Add some ambient lighting
+
+    float FinalBrightness = max(Diffuse, Ambient) * Brightness;
+    TextureColor.rgb *= FinalBrightness;
+
+    if (TextureColor.a < 0.1) {
         discard;
     }
        
-    FragColor = texColor;
+    FragColor = TextureColor;
 }
 
 vec2 AdjustVoxelTextureCoordinate(inout vec2 TextureCoordinate)
@@ -34,11 +45,3 @@ vec2 AdjustVoxelTextureCoordinate(inout vec2 TextureCoordinate)
     return TextureCoordinate;
 }
 
-vec4 ApplyBrightness(inout vec4 Color, float Brightness)
-{
-    Color[0] *= Brightness;
-    Color[1] *= Brightness;
-    Color[2] *= Brightness;
-
-    return Color;
-}
