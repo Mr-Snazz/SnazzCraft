@@ -80,7 +80,9 @@ void SnazzCraft::World::ApplyLightingVoxel(int32_t LightOrigin[3], int32_t Light
 {
     auto IsOutsideWorld = [this](int32_t X, int32_t Y, int32_t Z) -> bool
     {
-        return X < 0 || Y < 0 || Z < 0 || X >= this->Size * SnazzCraft::Chunk::Width || Y >= SnazzCraft::Chunk::Height || Z >= this->Size * SnazzCraft::Chunk::Depth;
+        //return X < 0 || Y < 0 || Z < 0 || X >= this->Size * SnazzCraft::Chunk::Width || Y >= SnazzCraft::Chunk::Height || Z >= this->Size * SnazzCraft::Chunk::Depth;
+        return X < -this->Size * SnazzCraft::Chunk::Width || Y <  0                         || Z < -this->Size * SnazzCraft::Chunk::Depth || 
+               X >  this->Size * SnazzCraft::Chunk::Width || Y >= SnazzCraft::Chunk::Height || Z >= this->Size * SnazzCraft::Chunk::Depth;
     };
 
     auto AddLightNodes = [this](std::queue<SnazzCraft::World::LightNode>& Queue, const SnazzCraft::World::LightNode& OriginNode, int LightPropagationDecrease) -> void

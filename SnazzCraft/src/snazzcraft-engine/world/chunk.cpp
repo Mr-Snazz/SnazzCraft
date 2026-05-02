@@ -18,9 +18,9 @@ SnazzCraft::Chunk::Chunk(int32_t X, int32_t Y)
     this->Position[1] = Y;
 
     this->ChunkWorldOffset = {
-        this->Position[0] * SnazzCraft::Chunk::Width * SnazzCraft::Voxel::Size,
+        static_cast<float>(this->Position[0] * SnazzCraft::Chunk::Width * static_cast<int32_t>(SnazzCraft::Voxel::Size)),
         0.0f,
-        this->Position[1] * SnazzCraft::Chunk::Depth * SnazzCraft::Voxel::Size 
+        static_cast<float>(this->Position[1] * SnazzCraft::Chunk::Depth * static_cast<int32_t>(SnazzCraft::Voxel::Size))
     };
 }
 

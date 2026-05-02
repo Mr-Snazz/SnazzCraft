@@ -37,8 +37,8 @@ SnazzCraft::World* SnazzCraft::World::CreateWorld(std::string Name, uint32_t Siz
 
     SnazzCraft::World* NewWorld = new SnazzCraft::World(Name, GenerateSize, Seed);
 
-    for (int32_t X = 0; X < NewWorld->Size; X++) {
-    for (int32_t Z = 0; Z < NewWorld->Size; Z++) {
+    for (int32_t X = -NewWorld->Size; X <= NewWorld->Size; X++) {
+    for (int32_t Z = -NewWorld->Size; Z <= NewWorld->Size; Z++) {
         NewWorld->GenerateChunk(X, Z, true);
     } 
     }

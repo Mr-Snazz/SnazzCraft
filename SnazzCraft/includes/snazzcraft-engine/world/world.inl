@@ -19,12 +19,12 @@ inline const glm::vec3& SnazzCraft::World::GetVoxelPlacementDisplayPosition() co
 
 inline bool SnazzCraft::World::ChunkWithinWorld(SnazzCraft::Chunk* Chunk) const
 {
-    return Chunk != nullptr && Chunk->Position[0] >= 0 && Chunk->Position[0] < this->Size && Chunk->Position[1] >= 0 && Chunk->Position[1] < this->Size;
+    return Chunk != nullptr && Chunk->Position[0] >= -this->Size && Chunk->Position[0] <= this->Size && Chunk->Position[1] >= -this->Size && Chunk->Position[1] <= this->Size;
 }
 
 inline bool SnazzCraft::World::ChunkWithinWorld(int32_t ChunkX, int32_t ChunkZ) const
 {
-    return ChunkX >= 0 && ChunkX < this->Size && ChunkZ >= 0 && ChunkZ < this->Size;
+    return ChunkX >= -this->Size && ChunkX <= this->Size && ChunkZ >= -this->Size && ChunkZ <= this->Size;
 }
 
 
