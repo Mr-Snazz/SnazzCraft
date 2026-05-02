@@ -11,20 +11,20 @@ out float Brightness;
 
 out vec3 FragPosition;
   
-uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
+uniform mat4 Model;
+uniform mat4 View;
+uniform mat4 Projection;
 
 void main()
 {
-    gl_Position = projection * view * model * vec4(aPos, 1.0);
+    gl_Position = Projection * View * Model * vec4(aPos, 1.0);
 
-    // Transform normal by normal matrix (inverse transpose of model matrix)
-    Normal = mat3(transpose(inverse(model))) * aNormal;
+    // Transform normal by normal matrix (inverse transpose of Model matrix)
+    Normal = mat3(transpose(inverse(Model))) * aNormal;
     TexCoord = aTexCoord;
     Brightness = aBrightness;
 
-    FragPosition = vec3(model * vec4(aPos, 1.0));
+    FragPosition = vec3(Model * vec4(aPos, 1.0));
 } 
 
 

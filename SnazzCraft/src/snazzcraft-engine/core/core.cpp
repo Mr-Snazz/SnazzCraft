@@ -106,16 +106,19 @@ bool SnazzCraft::Initiate()
 
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
-    const VoxelShader& VoxelShaderInstance = VoxelShader::GetInstance();
-    VoxelShaderInstance.use();
+    const SnazzCraft::VoxelShader& VoxelShaderInstance = SnazzCraft::VoxelShader::GetInstance();
+    VoxelShaderInstance.SetLightPosition(glm::vec3(0.0f, 50.0f, 0.0f), true);
+    VoxelShaderInstance.SetViewPosition(SnazzCraft::Player->Position, false);
+    VoxelShaderInstance.SetAmbient(0.1f, false);
 
-    VoxelShaderInstance.setVec3("LightPosition", glm::vec3(0.0f, 50.0f, 0.0f));
-    VoxelShaderInstance.setVec3("ViewPosition", SnazzCraft::Player->Position);
-    VoxelShaderInstance.setFloat("Ambient", 0.1f);
+    const uint32_t& VoxelShaderID = VoxelShaderInstance.GetID();
+    SnazzCraft::ProjectionLock = glGetUniformLocation(VoxelShaderID, "projection");
+    SnazzCraft::ModelLock = glGetUniformLocation(VoxelShaderID, "model");
+    SnazzCraft::ViewLock = glGetUniformLocation(VoxelShaderID, "view");
 
-    SnazzCraft::ProjectionLock = glGetUniformLocation(VoxelShaderInstance.ID, "projection");
-    SnazzCraft::ModelLock = glGetUniformLocation(VoxelShaderInstance.ID, "model");
-    SnazzCraft::ViewLock = glGetUniformLocation(VoxelShaderInstance.ID, "view");
+    VoxelShaderInstance.SetProjectionMatrix(SnazzCraft::ProjectionMatrix, false);
+    VoxelShaderInstance.SetModelMatrix(SnazzCraft::ModelMatrix, false);
+    VoxelShaderInstance.SetViewMatrix(SnazzCraft::ViewMatrix, false);
 
     glUniformMatrix4fv(SnazzCraft::ProjectionLock, 1, GL_FALSE, glm::value_ptr(ProjectionMatrix));
     glUniformMatrix4fv(SnazzCraft::ModelLock, 1, GL_FALSE, glm::value_ptr(ModelMatrix));

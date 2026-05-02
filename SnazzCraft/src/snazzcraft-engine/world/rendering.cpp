@@ -9,12 +9,12 @@
 void SnazzCraft::World::Render() const
 {
     const VoxelShader& VoxelShaderInstance = VoxelShader::GetInstance();
-    VoxelShaderInstance.use();
-    VoxelShaderInstance.setVec3("LightPosition", SnazzCraft::CurrentWorld->Entities[0]->Position);
-    VoxelShaderInstance.setVec3("ViewPosition", SnazzCraft::Player->Position);
+    VoxelShaderInstance.SetLightPosition(SnazzCraft::CurrentWorld->Entities[0]->Position, true);
+    VoxelShaderInstance.SetViewPosition(SnazzCraft::Player->Position, false);
 
     SnazzCraft::ViewMatrix = glm::lookAt(SnazzCraft::Player->Position, SnazzCraft::Player->Position + SnazzCraft::Player->Front, glm::vec3(0.0, 1.0, 0.0));
     glUniformMatrix4fv(SnazzCraft::ViewLock, 1, GL_FALSE, glm::value_ptr(SnazzCraft::ViewMatrix));
+    VoxelShaderInstance.SetViewMatrix(SnazzCraft::ViewMatrix, false);
 
     // Render voxels in chunks & voxel placement display
     SnazzCraft::VoxelTextureAtlas->BindTexture();
