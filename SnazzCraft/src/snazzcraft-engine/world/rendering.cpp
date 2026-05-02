@@ -8,7 +8,7 @@
 
 void SnazzCraft::World::Render() const
 {
-    const VoxelShader& VoxelShaderInstance = VoxelShader::GetInstance();
+    const SnazzCraft::VoxelShader& VoxelShaderInstance = VoxelShader::GetInstance();
     VoxelShaderInstance.SetLightPosition(SnazzCraft::CurrentWorld->Entities[0]->Position, true);
     VoxelShaderInstance.SetViewPosition(SnazzCraft::Player->Position, false);
 
@@ -21,6 +21,7 @@ void SnazzCraft::World::Render() const
     
     SnazzCraft::ModelMatrix = glm::mat4(1.0f);
     glUniformMatrix4fv(SnazzCraft::ModelLock, 1, GL_FALSE, glm::value_ptr(SnazzCraft::ModelMatrix));
+    VoxelShaderInstance.SetModelMatrix(SnazzCraft::ModelMatrix, false);
     this->RenderChunks();
 
     this->RenderVoxelPlacementDisplay();
@@ -36,13 +37,15 @@ void SnazzCraft::World::RenderAllEntities() const
 
         SnazzCraft::ModelMatrix = glm::translate(glm::mat4(1.0f), Entity->Position);
         
-        SnazzCraft::ModelMatrix = glm::rotate(SnazzCraft::ModelMatrix, glm::radians(Entity->Rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+        SnazzCraft::ModelMatrix = glm::rotate(SnazzCraft::ModelMatrix, glm::radians( Entity->Rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
         SnazzCraft::ModelMatrix = glm::rotate(SnazzCraft::ModelMatrix, glm::radians(-Entity->Rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
-        SnazzCraft::ModelMatrix = glm::rotate(SnazzCraft::ModelMatrix, glm::radians(Entity->Rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+        SnazzCraft::ModelMatrix = glm::rotate(SnazzCraft::ModelMatrix, glm::radians( Entity->Rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
 
         SnazzCraft::ModelMatrix = glm::scale(SnazzCraft::ModelMatrix, EntityType.EntityMesh->ScaleVector);
         
         glUniformMatrix4fv(SnazzCraft::ModelLock, 1, GL_FALSE, glm::value_ptr(SnazzCraft::ModelMatrix));
+        SnazzCraft::VoxelShader::GetInstance().SetModelMatrix(SnazzCraft::ModelMatrix, false);
+
         EntityType.EntityTexture->BindTexture();
         EntityType.EntityMesh->Draw();
     };
