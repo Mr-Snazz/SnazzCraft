@@ -19,6 +19,6 @@ int main(int ArgC, char* ArgV[])
     SnazzCraft::MainLoop();
 
     SnazzCraft::FreeResources();
-    
+
     return 0;
 }

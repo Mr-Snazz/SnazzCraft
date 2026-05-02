@@ -11,7 +11,7 @@ void SnazzCraft::CreateWorldAndChangeModeToWorld(SnazzCraft::Event* Event)
 {
     if (SnazzCraft::CurrentWorld != nullptr) goto SwitchMode;
 
-    SnazzCraft::CurrentWorld = SnazzCraft::World::CreateWorld("TEST WORLD", 4, 80085);
+    SnazzCraft::CurrentWorld = SnazzCraft::World::CreateWorld("TEST WORLD", 2, 80085);
 
     SwitchMode:
     SnazzCraft::UserMode = SNAZZCRAFT_USER_MODE_WORLD;
