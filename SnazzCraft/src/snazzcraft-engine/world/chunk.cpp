@@ -78,9 +78,9 @@ void SnazzCraft::Chunk::Generate(SnazzCraft::HeightMap* HeightMap, uint32_t MapW
 
         // Testing Torches
         if (X != 5 || Z != 5 || HeightToGenerate <= SnazzCraft::Chunk::OceanLevel) continue;
-        //SnazzCraft::Voxel NewVoxel = SnazzCraft::Voxel(X, HeightToGenerate, Z, ID_VOXEL_TORCH);
-
-        //this->Voxels.insert({ SnazzCraft::Chunk::LocalVoxelIndex(X, HeightToGenerate, Z), NewVoxel });
+        
+        SnazzCraft::Voxel NewVoxel = SnazzCraft::Voxel(X, HeightToGenerate, Z, ID_VOXEL_TORCH);
+        this->Voxels.insert({ SnazzCraft::Chunk::LocalVoxelIndex(X, HeightToGenerate, Z), NewVoxel });
     }
     }
 }

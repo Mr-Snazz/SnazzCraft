@@ -14,9 +14,9 @@ void SnazzCraft::World::Render() const
     } else {
         //SnazzCraft::CurrentWorld->MoveEntity(SnazzCraft::CurrentWorld->Entities[0], glm::vec3(0.0f), 0.01f);
 
-        //SnazzCraft::CurrentWorld->Entities[0]->Rotation.x += 0.5f;
-        //SnazzCraft::CurrentWorld->Entities[0]->Rotation.y += 1.0f;
-        //SnazzCraft::CurrentWorld->Entities[0]->Rotation.z += 1.5f;
+        SnazzCraft::CurrentWorld->Entities[0]->Rotation.x += 0.5f;
+        SnazzCraft::CurrentWorld->Entities[0]->Rotation.y += 1.0f;
+        SnazzCraft::CurrentWorld->Entities[0]->Rotation.z += 1.5f;
     }
 
     if (!SnazzCraft::VoxelTextureAtlas->BindTexture()) return;
