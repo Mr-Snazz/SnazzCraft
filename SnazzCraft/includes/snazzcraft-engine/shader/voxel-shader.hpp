@@ -25,9 +25,11 @@ namespace SnazzCraft
 
         inline void SetViewPosition(const glm::vec3& ViewPosition, bool CallUse) const;
 
-        inline void SetAmbient(float Ambient, bool CallUse) const;
+        inline void SetAmbientStrength(float AmbientStrength, bool CallUse) const;
 
         inline void SetComplexLighting(bool Enabled, bool CallUse) const;
+
+        inline bool ComplexLightingIsEnabled() const;
 
     protected:
 

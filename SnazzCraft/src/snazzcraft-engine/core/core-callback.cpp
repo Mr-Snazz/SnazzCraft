@@ -6,6 +6,7 @@
 #include "snazzcraft-engine/input-handler/data-types.h"
 #include "snazzcraft-engine/world/world.hpp"
 #include "snazzcraft-engine/core/mode.hpp"
+#include "snazzcraft-engine/shader/voxel-shader.hpp"
 
 void SnazzCraft::CreateWorldAndChangeModeToWorld(SnazzCraft::Event* Event)
 {
@@ -35,3 +36,10 @@ void SnazzCraft::ToggleWireframeCallback(SnazzCraft::Event* Event)
 {
     SnazzCraft::WireframeModeActive = !SnazzCraft::WireframeModeActive;
 }
+
+void SnazzCraft::ToggleComplexLightingCallback(SnazzCraft::Event* Event)
+{
+    const SnazzCraft::VoxelShader& VoxelShaderInstance = SnazzCraft::VoxelShader::GetInstance();
+    VoxelShaderInstance.SetComplexLighting(!VoxelShaderInstance.ComplexLightingIsEnabled(), true);
+}
+

@@ -34,6 +34,16 @@ void SnazzCraft::WorldGUI::Initialize(void(*InputHandlerCallback)(SnazzCraft::Ev
     SnazzCraft::PanelWithTextTexture* ToggleWireframePanelWithTextTexture = new SnazzCraft::PanelWithTextTexture{ 10.0f, BackToMainMenuPanelWithTexture->GetY() + BackToMainMenuPanelWithTexture->GetHeight() + 10.0f, 3.0f, ToggleWireframeTextTexture };
     Instance.Panels.push_back(ToggleWireframePanelWithTextTexture);
 
+    // Toggle complex lighting
+    SnazzCraft::TextTexture* ToggleComplexLightingTextTexture = new SnazzCraft::TextTexture{ "Toggle Complex Lighting", 0xFF, 0xFF, 0xFF };
+
+    SnazzCraft::PanelWithTexture* ToggleComplexLightingPanelWithTexture = new SnazzCraft::PanelWithTexture(10.0f, ToggleWireframePanelWithTexture->GetY() + ToggleWireframePanelWithTexture->GetHeight() + 10.0f, ToggleComplexLightingTextTexture->Width, ToggleComplexLightingTextTexture->Height, 3.0f, "textures/gui/button.png");
+    ToggleComplexLightingPanelWithTexture->SetCallback(SnazzCraft::ToggleComplexLightingCallback);
+    Instance.Panels.push_back(ToggleComplexLightingPanelWithTexture);
+
+    SnazzCraft::PanelWithTextTexture* ToggleComplexLightingPanelWithTextTexture = new SnazzCraft::PanelWithTextTexture{ 10.0f, ToggleWireframePanelWithTexture->GetY() + ToggleWireframePanelWithTexture->GetHeight() + 10.0f, 3.0f, ToggleComplexLightingTextTexture };
+    Instance.Panels.push_back(ToggleComplexLightingPanelWithTextTexture);
+
     Instance.SetInputHandler(SnazzCraft::Window);
     Instance.SetInputHandlerCallback(InputHandlerCallback);
 }

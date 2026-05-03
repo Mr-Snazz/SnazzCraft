@@ -30,10 +30,10 @@ inline void SnazzCraft::VoxelShader::SetViewPosition(const glm::vec3& ViewPositi
     this->setVec3("ViewPosition", ViewPosition);
 }
 
-inline void SnazzCraft::VoxelShader::SetAmbient(float Ambient, bool CallUse) const
+inline void SnazzCraft::VoxelShader::SetAmbientStrength(float AmbientStrength, bool CallUse) const
 {
     if (CallUse) this->Use();
-    this->setFloat("Ambient", Ambient);
+    this->setFloat("AmbientStrength", AmbientStrength);
 }
 
 inline void SnazzCraft::VoxelShader::SetComplexLighting(bool Enabled, bool CallUse) const
@@ -41,6 +41,11 @@ inline void SnazzCraft::VoxelShader::SetComplexLighting(bool Enabled, bool CallU
     if (CallUse) this->Use();
     this->setBool("ComplexLightingEnabled", Enabled);
     this->ComplexLightingEnabled = Enabled;
+}
+
+inline bool SnazzCraft::VoxelShader::ComplexLightingIsEnabled() const
+{
+    return this->ComplexLightingEnabled;
 }
 
 inline const SnazzCraft::VoxelShader& SnazzCraft::VoxelShader::GetInstance()

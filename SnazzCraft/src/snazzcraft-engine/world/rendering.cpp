@@ -34,7 +34,7 @@ void SnazzCraft::World::Render() const
 
     const SnazzCraft::VoxelShader& VoxelShaderInstance = VoxelShader::GetInstance();
     VoxelShaderInstance.SetLightPosition(SnazzCraft::CurrentWorld->Entities[0]->Position, true);
-    VoxelShaderInstance.SetViewPosition(SnazzCraft::Player->Position, true);
+    VoxelShaderInstance.SetViewPosition(SnazzCraft::Player->Position, false);
 
     SnazzCraft::ViewMatrix = glm::lookAt(SnazzCraft::Player->Position, SnazzCraft::Player->Position + SnazzCraft::Player->Front, glm::vec3(0.0, 1.0, 0.0));
     VoxelShaderInstance.SetViewMatrix(SnazzCraft::ViewMatrix, false);
