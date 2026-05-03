@@ -1,7 +1,10 @@
 # SnazzCraft
 
---- All the dependencies are stated in dependancies.txt --- \n
-Building the Project: \n
+--- All the dependencies are stated in dependancies.txt --- 
+
+
+Building the Project:
+  
   Simply go the the root directory and run makerscript.sh.
 This should build the project and create a "worlds" folder
 that is needed by the program. Everything I've used is cross
