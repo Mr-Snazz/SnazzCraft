@@ -75,8 +75,19 @@ void SnazzCraft::World::ApplySunLightingToColumn(SnazzCraft::Chunk* Chunk, uint3
         }
 
         auto VoxelIterator = Chunk->Voxels.find(LocalIndex); 
-        if (VoxelIterator != Chunk->Voxels.end()) LightValue -= VoxelIterator->second.GetVoxelType().LightPropogationDecrease;
-        if (LightValue <= 1) break;
+        if (VoxelIterator == Chunk->Voxels.end()) continue;
+        
+        LightValue -= VoxelIterator->second.GetVoxelType().LightPropogationDecrease;
+        if (LightValue > 1) continue;
+
+        int32_t LightOrigin[3] = {
+            static_cast<int32_t>(LocalChunkX) + Chunk->Position[0] * SnazzCraft::Chunk::Width,
+            static_cast<int32_t>(LightY + 1),
+            static_cast<int32_t>(LocalChunkZ) + Chunk->Position[1] * SnazzCraft::Chunk::Depth
+        };
+        this->ApplyLightingVoxel(LightOrigin, LightValue, ChunksToUpdate);
+
+        break;
     }
 }
 
