@@ -1,3 +1,6 @@
 DEPENDANCIES:
 
-tkinter
+GLM - GL Mathmatics
+Libnoise
+GLFW
+
