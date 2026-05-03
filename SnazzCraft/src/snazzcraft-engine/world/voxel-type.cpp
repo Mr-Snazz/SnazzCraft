@@ -4,12 +4,13 @@
 
 const SnazzCraft::VoxelType& SnazzCraft::VoxelType::GetVoxelType(uint8_t VoxelID)
 {
-    static const SnazzCraft::VoxelType Leaves(0, 2, 0x00, true, true);
-    static const SnazzCraft::VoxelType Phantom(0, 0, 0x00, false, false);
-    static const SnazzCraft::VoxelType VoxelCollidable(0, 0, 0x00, false, true);
-    static const SnazzCraft::VoxelType Torch(18, 0, 0x00, false, true);
-    static const SnazzCraft::VoxelType Water(0, 2, 0x3F, true, false);
-    static const SnazzCraft::VoxelType FullSolid(0, SnazzCraft::Voxel::MaxLightValue, 0x3F, true, true);
+    //                                                 LightProducingLevel, LightPropogationDecrease, CullableSides, CollidableToEntities, CollidableToVoxels
+    // NOTE: The two most significant bits of CullableSides are never set, and will never be used even if they are 
+    static const SnazzCraft::VoxelType Leaves         (0,  2,                                0b00000000, true,  true );
+    static const SnazzCraft::VoxelType VoxelCollidable(0,  0,                                0b00000000, false, true );
+    static const SnazzCraft::VoxelType Torch          (18, 0,                                0b00000000, false, true );
+    static const SnazzCraft::VoxelType Water          (0,  2,                                0b00111111, true,  false);
+    static const SnazzCraft::VoxelType FullSolid      (0,  SnazzCraft::Voxel::MaxLightValue, 0b00111111, true,  true );
 
     switch (VoxelID)
     {

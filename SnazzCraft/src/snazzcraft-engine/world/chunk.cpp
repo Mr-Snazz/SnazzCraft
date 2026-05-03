@@ -161,7 +161,7 @@ bool SnazzCraft::Chunk::VoxelTouchingChunkBorder(uint32_t VoxelIndex, uint32_t* 
     return false;
 }
 
-SnazzCraft::Voxel* SnazzCraft::Chunk::GetCollidingVoxel(const glm::vec3& Position, SnazzCraft::Hitbox* Hitbox)
+SnazzCraft::Voxel* SnazzCraft::Chunk::GetCollidingVoxel(const glm::vec3& Position, SnazzCraft::Hitbox* Hitbox, bool TestEntityCollidablility, bool TestVoxelCollidablility)
 {
     int32_t Range[3] = {
         static_cast<int>(glm::ceil(Hitbox->HalfDimensions[0])),
@@ -175,8 +175,11 @@ SnazzCraft::Voxel* SnazzCraft::Chunk::GetCollidingVoxel(const glm::vec3& Positio
     for (int32_t X = VPosition[0] - Range[0]; X <= VPosition[0] + Range[0]; X++) {
     for (int32_t Y = VPosition[1] - Range[1]; Y <= VPosition[1] + Range[1]; Y++) {
     for (int32_t Z = VPosition[2] - Range[2]; Z <= VPosition[2] + Range[2]; Z++) {
-        SnazzCraft::Voxel* CollidingVoxel = this->GetCollidingVoxel(Position, Hitbox, X, Y, Z);
-        if (CollidingVoxel != nullptr) return CollidingVoxel;
+        SnazzCraft::Voxel* CollidingVoxel = this->GetCollidingVoxel(Position, Hitbox, X, Y, Z, TestEntityCollidablility, TestVoxelCollidablility);
+        if (CollidingVoxel == nullptr) continue;
+
+        if (TestEntityCollidablility && CollidingVoxel->GetVoxelType().CollidableToEntities) return CollidingVoxel;
+        if (TestVoxelCollidablility  && CollidingVoxel->GetVoxelType().CollidableToVoxels)   return CollidingVoxel;
     }
     }
     }
@@ -184,7 +187,7 @@ SnazzCraft::Voxel* SnazzCraft::Chunk::GetCollidingVoxel(const glm::vec3& Positio
     return nullptr;
 }
 
-SnazzCraft::Voxel* SnazzCraft::Chunk::GetCollidingVoxel(const glm::vec3& Position)
+SnazzCraft::Voxel* SnazzCraft::Chunk::GetCollidingVoxel(const glm::vec3& Position, bool TestEntityCollidablility, bool TestVoxelCollidablility)
 {
     int32_t VPosition[3];
     glm::vec3 CheckPosition = Position;
@@ -195,12 +198,15 @@ SnazzCraft::Voxel* SnazzCraft::Chunk::GetCollidingVoxel(const glm::vec3& Positio
     auto VoxelIterator = this->Voxels.find(SnazzCraft::Chunk::LocalVoxelIndex(VPosition[0], VPosition[1], VPosition[2]));
     if (VoxelIterator == this->Voxels.end()) return nullptr;
 
-    if (this->VoxelCollisionHitbox->IsColliding(this->LocalVoxelPositionToWorldPosition(VPosition[0], VPosition[1], VPosition[2]), CheckPosition)) return &VoxelIterator->second;
+    if (!this->VoxelCollisionHitbox->IsColliding(this->LocalVoxelPositionToWorldPosition(VPosition[0], VPosition[1], VPosition[2]), CheckPosition)) return nullptr;
+
+    if (TestEntityCollidablility && VoxelIterator->second.GetVoxelType().CollidableToEntities) return &VoxelIterator->second;
+    if (TestVoxelCollidablility  && VoxelIterator->second.GetVoxelType().CollidableToVoxels)   return &VoxelIterator->second;
 
     return nullptr;
 }
 
-SnazzCraft::Voxel* SnazzCraft::Chunk::GetCollidingVoxel(const glm::vec3& Position, SnazzCraft::Hitbox* Hitbox, int32_t LocalVoxelX, int32_t LocalVoxelY, int32_t LocalVoxelZ)
+SnazzCraft::Voxel* SnazzCraft::Chunk::GetCollidingVoxel(const glm::vec3& Position, SnazzCraft::Hitbox* Hitbox, int32_t LocalVoxelX, int32_t LocalVoxelY, int32_t LocalVoxelZ, bool TestEntityCollidablility, bool TestVoxelCollidablility)
 {
     if (!SnazzCraft::Chunk::WithinChunkBounds(LocalVoxelX, LocalVoxelY, LocalVoxelZ)) return nullptr;
 
@@ -209,7 +215,10 @@ SnazzCraft::Voxel* SnazzCraft::Chunk::GetCollidingVoxel(const glm::vec3& Positio
 
     if (!this->VoxelCollisionHitbox->IsColliding(this->LocalVoxelPositionToWorldPosition(LocalVoxelX, LocalVoxelY, LocalVoxelZ), *Hitbox, Position)) return nullptr;
 
-    return &VoxelIterator->second;
+    if (TestEntityCollidablility && VoxelIterator->second.GetVoxelType().CollidableToEntities) return &VoxelIterator->second;
+    if (TestVoxelCollidablility  && VoxelIterator->second.GetVoxelType().CollidableToVoxels)   return &VoxelIterator->second;
+
+    return nullptr;
 }
 
 void SnazzCraft::Chunk::UpdateLightingOnVertices(SnazzCraft::World* World)

@@ -55,9 +55,9 @@ namespace SnazzCraft
 
         void Render() const;
 
-        SnazzCraft::Voxel* GetCollidingVoxel(const glm::vec3& Position, SnazzCraft::Hitbox* Hitbox) const; // Returns nullptr if no collision 
+        SnazzCraft::Voxel* GetCollidingVoxel(const glm::vec3& Position, SnazzCraft::Hitbox* Hitbox, bool TestEntityCollidablility, bool TestVoxelCollidablility) const; // Returns nullptr if no collision 
 
-        SnazzCraft::Voxel* GetCollidingVoxel(const glm::vec3& Position) const; // Returns nullptr if no collision - Position should be in world space
+        SnazzCraft::Voxel* GetCollidingVoxel(const glm::vec3& Position, bool TestEntityCollidablility, bool TestVoxelCollidablility) const; // Returns nullptr if no collision - Position should be in world space
 
         void MoveEntity(SnazzCraft::Entity* Entity, const glm::vec3& Rotation, float Distance) const; // Returns true if movement occurred without voxel collision 
 

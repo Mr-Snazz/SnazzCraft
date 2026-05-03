@@ -33,11 +33,11 @@ bool SnazzCraft::World::PlaceVoxel(const glm::vec3& Position, const glm::vec3& R
 {
     auto CollidedWithEntity = [this](uint32_t NewlyPlacedVoxelIndex) -> bool
     {
-        SnazzCraft::Voxel* CollidingVoxel = this->GetCollidingVoxel(SnazzCraft::Player->Position, SnazzCraft::Player->GetEntityType().EntityHitbox);
+        SnazzCraft::Voxel* CollidingVoxel = this->GetCollidingVoxel(SnazzCraft::Player->Position, SnazzCraft::Player->GetEntityType().EntityHitbox, true, false);
         if (CollidingVoxel != nullptr && SnazzCraft::Chunk::LocalVoxelIndex(*CollidingVoxel) == NewlyPlacedVoxelIndex) return true;
 
         for (SnazzCraft::Entity* Entity : this->Entities) {
-            SnazzCraft::Voxel* CollidingVoxel = this->GetCollidingVoxel(Entity->Position, Entity->GetEntityType().EntityHitbox);
+            SnazzCraft::Voxel* CollidingVoxel = this->GetCollidingVoxel(Entity->Position, Entity->GetEntityType().EntityHitbox, true, false);
             if (CollidingVoxel != nullptr && SnazzCraft::Chunk::LocalVoxelIndex(*CollidingVoxel) == NewlyPlacedVoxelIndex) return true;
         }
 
@@ -168,7 +168,7 @@ bool SnazzCraft::World::RaycastToVoxel(glm::vec3& Position, const glm::vec3& Rot
     float DistanceTraveled = 0.0f;
     while (DistanceTraveled < MaxDistance)
     {
-        SnazzCraft::Voxel* HitVoxel = this->GetCollidingVoxel(glm::vec3(MapPosition) * VoxelSize);
+        SnazzCraft::Voxel* HitVoxel = this->GetCollidingVoxel(glm::vec3(MapPosition) * VoxelSize, false, true); 
         if (HitVoxel != nullptr) {
             Position = RayOrigin + (RayDirection * DistanceTraveled);
             UpdateFaceHitAndVoxelHit(Step, LastStepAxis, HitVoxel);

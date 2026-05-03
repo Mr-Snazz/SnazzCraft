@@ -47,11 +47,11 @@ namespace SnazzCraft
 
         bool VoxelTouchingChunkBorder(uint32_t VoxelIndex, uint32_t* BorderDirection) const;
 
-        SnazzCraft::Voxel* GetCollidingVoxel(const glm::vec3& Position, SnazzCraft::Hitbox* Hitbox); // Returns nullptr if no collision
+        SnazzCraft::Voxel* GetCollidingVoxel(const glm::vec3& Position, SnazzCraft::Hitbox* Hitbox, bool TestEntityCollidablility, bool TestVoxelCollidablility); // Returns nullptr if no collision
 
-        SnazzCraft::Voxel* GetCollidingVoxel(const glm::vec3& Position);
+        SnazzCraft::Voxel* GetCollidingVoxel(const glm::vec3& Position, bool TestEntityCollidablility, bool TestVoxelCollidablility);
 
-        SnazzCraft::Voxel* GetCollidingVoxel(const glm::vec3& Position, SnazzCraft::Hitbox* Hitbox, int32_t LocalVoxelX, int32_t LocalVoxelY, int32_t LocalVoxelZ);
+        SnazzCraft::Voxel* GetCollidingVoxel(const glm::vec3& Position, SnazzCraft::Hitbox* Hitbox, int32_t LocalVoxelX, int32_t LocalVoxelY, int32_t LocalVoxelZ, bool TestEntityCollidablility, bool TestVoxelCollidablility);
 
         void UpdateLightingOnVertices(SnazzCraft::World* World);
 

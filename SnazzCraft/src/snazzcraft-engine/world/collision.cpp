@@ -1,8 +1,9 @@
 #include "snazzcraft-engine/world/world.hpp"
 #include "snazzcraft-engine/world/chunk.hpp"
 #include "snazzcraft-engine/utilities/math.hpp"
+#include "snazzcraft-engine/world/voxel-type.hpp"
 
-SnazzCraft::Voxel* SnazzCraft::World::GetCollidingVoxel(const glm::vec3& Position, SnazzCraft::Hitbox* Hitbox) const
+SnazzCraft::Voxel* SnazzCraft::World::GetCollidingVoxel(const glm::vec3& Position, SnazzCraft::Hitbox* Hitbox, bool TestEntityCollidablility, bool TestVoxelCollidablility) const
 {
     int32_t ChunkCoordinates[2];
     glm::vec3 VoxelSpacePosition = Position / glm::vec3(static_cast<float>(SnazzCraft::Voxel::Size));
@@ -15,15 +16,18 @@ SnazzCraft::Voxel* SnazzCraft::World::GetCollidingVoxel(const glm::vec3& Positio
         auto ChunkIterator = this->Chunks.find(SnazzCraft::IntegerHash(X, Z));
         if (ChunkIterator == this->Chunks.end()) continue;
 
-        SnazzCraft::Voxel* CollisionVoxel = ChunkIterator->second->GetCollidingVoxel(Position, Hitbox);
-        if (CollisionVoxel != nullptr) return CollisionVoxel;
+        SnazzCraft::Voxel* CollisionVoxel = ChunkIterator->second->GetCollidingVoxel(Position, Hitbox, TestEntityCollidablility, TestVoxelCollidablility);
+        if (CollisionVoxel == nullptr) continue;
+
+        if (TestEntityCollidablility && CollisionVoxel->GetVoxelType().CollidableToEntities) return CollisionVoxel;
+        if (TestVoxelCollidablility  && CollisionVoxel->GetVoxelType().CollidableToVoxels)   return CollisionVoxel;
     }
     }
 
     return nullptr;
 }
 
-SnazzCraft::Voxel* SnazzCraft::World::GetCollidingVoxel(const glm::vec3& Position) const
+SnazzCraft::Voxel* SnazzCraft::World::GetCollidingVoxel(const glm::vec3& Position, bool TestEntityCollidablility, bool TestVoxelCollidablility) const
 {
     int32_t ChunkCoordinates[2];
     glm::vec3 VoxelSpacePosition = Position / glm::vec3(static_cast<float>(SnazzCraft::Voxel::Size));
@@ -34,8 +38,6 @@ SnazzCraft::Voxel* SnazzCraft::World::GetCollidingVoxel(const glm::vec3& Positio
     auto ChunkIterator = this->Chunks.find(SnazzCraft::IntegerHash(ChunkCoordinates[0], ChunkCoordinates[1]));
     if (ChunkIterator == this->Chunks.end()) return nullptr;
 
-    SnazzCraft::Voxel* CollisionVoxel = ChunkIterator->second->GetCollidingVoxel(Position);
-    if (CollisionVoxel != nullptr) return CollisionVoxel;
-
-    return nullptr;
+    SnazzCraft::Voxel* CollisionVoxel = ChunkIterator->second->GetCollidingVoxel(Position, TestEntityCollidablility, TestVoxelCollidablility);
+    return CollisionVoxel;
 }
