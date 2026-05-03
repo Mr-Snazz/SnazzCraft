@@ -20,7 +20,6 @@ void SnazzCraft::World::Render() const
     SnazzCraft::VoxelTextureAtlas->BindTexture();
     
     SnazzCraft::ModelMatrix = glm::mat4(1.0f);
-    glUniformMatrix4fv(SnazzCraft::ModelLock, 1, GL_FALSE, glm::value_ptr(SnazzCraft::ModelMatrix));
     VoxelShaderInstance.SetModelMatrix(SnazzCraft::ModelMatrix, false);
     this->RenderChunks();
 
@@ -42,8 +41,6 @@ void SnazzCraft::World::RenderAllEntities() const
         SnazzCraft::ModelMatrix = glm::rotate(SnazzCraft::ModelMatrix, glm::radians( Entity->Rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
 
         SnazzCraft::ModelMatrix = glm::scale(SnazzCraft::ModelMatrix, EntityType.EntityMesh->ScaleVector);
-        
-        glUniformMatrix4fv(SnazzCraft::ModelLock, 1, GL_FALSE, glm::value_ptr(SnazzCraft::ModelMatrix));
         SnazzCraft::VoxelShader::GetInstance().SetModelMatrix(SnazzCraft::ModelMatrix, false);
 
         EntityType.EntityTexture->BindTexture();
