@@ -10,9 +10,9 @@
 #include "snazzcraft-engine/world/voxel-type.hpp"
 
 SnazzCraft::Chunk::Chunk(int32_t X, int32_t Y)
-: ChunkMesh(nullptr), Voxels(std::unordered_map<uint32_t, SnazzCraft::Voxel>()), 
-  LightValues(std::unordered_map<uint32_t, int>()), Vertices(std::vector<SnazzCraft::VoxelVertice>()), Indices(std::vector<uint32_t>()), 
-  VoxelCollisionHitbox(new SnazzCraft::Hitbox(glm::vec3((float)SnazzCraft::Voxel::Size)))
+: ChunkMesh(nullptr),                               Voxels(std::unordered_map<uint32_t, SnazzCraft::Voxel>()), 
+  LightValues(std::unordered_map<uint32_t, int>()), Vertices(std::vector<SnazzCraft::VoxelVertice>()), 
+  Indices(std::vector<uint32_t>()),                 VoxelCollisionHitbox(new SnazzCraft::Hitbox(glm::vec3((float)SnazzCraft::Voxel::Size)))
 {
     this->Position[0] = X;
     this->Position[1] = Y;
@@ -49,7 +49,9 @@ void SnazzCraft::Chunk::Generate(SnazzCraft::HeightMap* HeightMap, uint32_t MapW
             uint8_t NewVoxelID = ID_VOXEL_STONE;
 
             if (HeightToGenerate != 0 && Y == HeightToGenerate - 1) {
-                if (Y >= SnazzCraft::Chunk::OceanLevel - 1) {
+                if (Y >= SnazzCraft::Chunk::OceanLevel - 1 && Y <= SnazzCraft::Chunk::OceanLevel + 2) {
+                    NewVoxelID = ID_VOXEL_SAND;
+                } else if (Y >= SnazzCraft::Chunk::OceanLevel - 1) {
                     NewVoxelID = ID_VOXEL_DIRT_GRASS_MIX;
                 } else {
                     NewVoxelID = ID_VOXEL_DIRT; 

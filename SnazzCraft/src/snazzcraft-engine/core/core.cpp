@@ -105,7 +105,7 @@ bool SnazzCraft::Initiate()
     VoxelShaderInstance.SetLightPosition(glm::vec3(0.0f, 50.0f, 0.0f), false);
     VoxelShaderInstance.SetViewPosition(SnazzCraft::Player->Position, false);
     VoxelShaderInstance.SetAmbientStrength(0.6f, false);
-    VoxelShaderInstance.SetComplexLighting(true, false);
+    VoxelShaderInstance.SetComplexLighting(false, false);
     
     SnazzCraft::VoxelTextureAtlas = new SnazzCraft::Texture("textures/voxel/atlas.png");
     stbi_set_flip_vertically_on_load(true);
@@ -116,7 +116,7 @@ bool SnazzCraft::Initiate()
     
     SnazzCraft::VoxelMesh = new Mesh(VoxelMeshVertices, VoxelMeshIndices);
 
-    SnazzCraft::VoxelMesh->ScaleVector = { (float)(SnazzCraft::Voxel::Size) / 2, (float)(SnazzCraft::Voxel::Size) / 2, (float)(SnazzCraft::Voxel::Size) / 2 };
+    SnazzCraft::VoxelMesh->ScaleVector = glm::vec3(static_cast<float>(SnazzCraft::Voxel::Size) / 2.0f);
 
     SnazzCraft::MainMenuGUI::Initialize(MainMenuInputCallback);
     SnazzCraft::WorldGUI::Initialize(WorldInputCallback);

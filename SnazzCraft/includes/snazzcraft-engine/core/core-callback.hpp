@@ -4,17 +4,17 @@ namespace SnazzCraft
 {
     class Event;
 
-    void CreateWorldAndChangeModeToWorld(SnazzCraft::Event* Event);
+    inline void CreateWorldAndChangeModeToWorld(SnazzCraft::Event* Event);
 
-    void ChangeModeToWorldCallback(SnazzCraft::Event* Event);
+    inline void ChangeModeToWorldCallback(SnazzCraft::Event* Event);
 
-    void ChangeModeToMainMenuCallback(SnazzCraft::Event* Event);
+    inline void ChangeModeToMainMenuCallback(SnazzCraft::Event* Event);
 
-    void CloseWindowCallback(SnazzCraft::Event* Event);
+    inline void CloseWindowCallback(SnazzCraft::Event* Event);
 
-    void ToggleWireframeCallback(SnazzCraft::Event* Event);
+    inline void ToggleWireframeCallback(SnazzCraft::Event* Event);
 
-    void ToggleComplexLightingCallback(SnazzCraft::Event* Event);
+    inline void ToggleComplexLightingCallback(SnazzCraft::Event* Event);
 } // SnazzCraft
 
-
+#include "snazzcraft-engine/core/core-callback.inl"

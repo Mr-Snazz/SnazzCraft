@@ -8,7 +8,7 @@
 #include "snazzcraft-engine/core/mode.hpp"
 #include "snazzcraft-engine/shader/voxel-shader.hpp"
 
-void SnazzCraft::CreateWorldAndChangeModeToWorld(SnazzCraft::Event* Event)
+inline void SnazzCraft::CreateWorldAndChangeModeToWorld(SnazzCraft::Event* Event)
 {
     if (SnazzCraft::CurrentWorld != nullptr) goto SwitchMode;
 
@@ -18,26 +18,26 @@ void SnazzCraft::CreateWorldAndChangeModeToWorld(SnazzCraft::Event* Event)
     SnazzCraft::UserMode = SNAZZCRAFT_USER_MODE_WORLD;
 }
 
-void SnazzCraft::ChangeModeToWorldCallback(SnazzCraft::Event* Event)
+inline void SnazzCraft::ChangeModeToWorldCallback(SnazzCraft::Event* Event)
 {
     if (SnazzCraft::UserMode == SNAZZCRAFT_USER_MODE_WORLD) return;
 
     SnazzCraft::UserMode = SNAZZCRAFT_USER_MODE_WORLD;
 }
 
-void SnazzCraft::ChangeModeToMainMenuCallback(SnazzCraft::Event* Event)
+inline void SnazzCraft::ChangeModeToMainMenuCallback(SnazzCraft::Event* Event)
 {
     if (SnazzCraft::UserMode == SNAZZCRAFT_USER_MODE_MAIN_MENU) return;
 
     SnazzCraft::UserMode = SNAZZCRAFT_USER_MODE_MAIN_MENU;
 }
 
-void SnazzCraft::ToggleWireframeCallback(SnazzCraft::Event* Event)
+inline void SnazzCraft::ToggleWireframeCallback(SnazzCraft::Event* Event)
 {
     SnazzCraft::WireframeModeActive = !SnazzCraft::WireframeModeActive;
 }
 
-void SnazzCraft::ToggleComplexLightingCallback(SnazzCraft::Event* Event)
+inline void SnazzCraft::ToggleComplexLightingCallback(SnazzCraft::Event* Event)
 {
     const SnazzCraft::VoxelShader& VoxelShaderInstance = SnazzCraft::VoxelShader::GetInstance();
     VoxelShaderInstance.SetComplexLighting(!VoxelShaderInstance.ComplexLightingIsEnabled(), true);

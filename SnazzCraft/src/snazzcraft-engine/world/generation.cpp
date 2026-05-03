@@ -18,7 +18,7 @@ void SnazzCraft::World::GenerateChunk(int32_t X, int32_t Z, bool ApplyLighting)
     NewChunk->UpdateVerticesAndIndices();   
 
     this->Chunks[ChunkHash] = NewChunk;
-    bool UpdatedChunk;
+    bool UpdatedChunk = false;
     if (ApplyLighting) { 
         this->UpdateChunkLighting(NewChunk, &UpdatedChunk); 
     }
