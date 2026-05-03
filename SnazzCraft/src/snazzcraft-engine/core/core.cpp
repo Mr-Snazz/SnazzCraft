@@ -105,7 +105,7 @@ bool SnazzCraft::Initiate()
     VoxelShaderInstance.SetLightPosition(glm::vec3(0.0f, 50.0f, 0.0f), false);
     VoxelShaderInstance.SetViewPosition(SnazzCraft::Player->Position, false);
     VoxelShaderInstance.SetAmbient(0.6f, false);
-    VoxelShaderInstance.SetComplexLighting(false, false);
+    VoxelShaderInstance.SetComplexLighting(true, false);
     
     SnazzCraft::VoxelTextureAtlas = new SnazzCraft::Texture("textures/voxel/atlas.png");
     stbi_set_flip_vertically_on_load(true);

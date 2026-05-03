@@ -29,6 +29,25 @@ void main()
 
 	vec4 TextureColor = texture(texture1, TextureCoordinate);
     if (TextureColor.a < 0.1) discard;
+    
+    if (ComplexLightingEnabled) {
+        // Ambient
+        vec3 ambient = Ambient * TextureColor.rgb;
+
+        // Diffuse
+        vec3 norm = normalize(Normal);
+        vec3 lightDir = normalize(LightPosition - FragPosition);
+        float diff = max(dot(norm, lightDir), 0.0);
+        vec3 diffuse = diff * TextureColor.rgb;
+
+        // Specular
+        vec3 viewDir = normalize(ViewPosition - FragPosition);
+        vec3 reflectDir = reflect(-lightDir, norm);
+        float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+        vec3 specular = spec * TextureColor.rgb;
+
+        TextureColor.rgb = ambient + diffuse + specular;
+    }
        
     FragColor = TextureColor * Brightness;
 }
