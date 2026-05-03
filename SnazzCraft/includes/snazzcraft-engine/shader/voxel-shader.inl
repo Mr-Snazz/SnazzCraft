@@ -36,6 +36,13 @@ inline void SnazzCraft::VoxelShader::SetAmbient(float Ambient, bool CallUse) con
     this->setFloat("Ambient", Ambient);
 }
 
+inline void SnazzCraft::VoxelShader::SetComplexLighting(bool Enabled, bool CallUse) const
+{
+    if (CallUse) this->Use();
+    this->setBool("ComplexLightingEnabled", Enabled);
+    this->ComplexLightingEnabled = Enabled;
+}
+
 inline const SnazzCraft::VoxelShader& SnazzCraft::VoxelShader::GetInstance()
 {
     static VoxelShader Instance("src/glsl-shaders/voxel/voxel-vertex-shader.glsl", "src/glsl-shaders/voxel/voxel-fragment-shader.glsl");

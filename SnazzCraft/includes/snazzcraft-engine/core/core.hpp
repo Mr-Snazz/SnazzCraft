@@ -31,13 +31,8 @@ namespace SnazzCraft
     class World;
 
     extern glm::mat4 ProjectionMatrix;
-    extern int ProjectionLock;
-
     extern glm::mat4 ModelMatrix;
-    extern int ModelLock;
-
     extern glm::mat4 ViewMatrix;
-    extern int ViewLock;
 
     extern bool CloseApplication;
 

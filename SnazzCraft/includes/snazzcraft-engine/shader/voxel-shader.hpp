@@ -27,10 +27,13 @@ namespace SnazzCraft
 
         inline void SetAmbient(float Ambient, bool CallUse) const;
 
+        inline void SetComplexLighting(bool Enabled, bool CallUse) const;
+
     protected:
 
-
     private:
+        mutable bool ComplexLightingEnabled;
+
         VoxelShader(const char* vertexPath, const char* fragmentPath);
 
 

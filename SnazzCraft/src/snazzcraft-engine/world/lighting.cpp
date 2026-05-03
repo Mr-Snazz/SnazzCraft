@@ -82,11 +82,10 @@ void SnazzCraft::World::ApplySunLightingToColumn(SnazzCraft::Chunk* Chunk, uint3
 
 void SnazzCraft::World::ApplyLightingVoxel(int32_t LightOrigin[3], int32_t LightProducingLevel, std::unordered_set<uint64_t>* ChunksToUpdate)
 {
-    auto IsOutsideWorld = [this](int32_t X, int32_t Y, int32_t Z) -> bool
+    auto VoxelIsOutsideWorld = [this](int32_t X, int32_t Y, int32_t Z) -> bool
     {
-        //return X < 0 || Y < 0 || Z < 0 || X >= this->Size * SnazzCraft::Chunk::Width || Y >= SnazzCraft::Chunk::Height || Z >= this->Size * SnazzCraft::Chunk::Depth;
-        return X < -this->Size * SnazzCraft::Chunk::Width || Y <  0                         || Z < -this->Size * SnazzCraft::Chunk::Depth || 
-               X >  this->Size * SnazzCraft::Chunk::Width || Y >= SnazzCraft::Chunk::Height || Z >= this->Size * SnazzCraft::Chunk::Depth;
+        return X <  -this->Size      * SnazzCraft::Chunk::Width || Y <  0                         || Z <  -this->Size      * SnazzCraft::Chunk::Depth || 
+               X >= (this->Size + 1) * SnazzCraft::Chunk::Width || Y >= SnazzCraft::Chunk::Height || Z >= (this->Size + 1) * SnazzCraft::Chunk::Depth;
     };
 
     auto AddLightNodes = [this](std::queue<SnazzCraft::World::LightNode>& Queue, const SnazzCraft::World::LightNode& OriginNode, int LightPropagationDecrease) -> void
@@ -119,7 +118,7 @@ void SnazzCraft::World::ApplyLightingVoxel(int32_t LightOrigin[3], int32_t Light
         SnazzCraft::World::LightNode CurrentNode = Queue.front();
         Queue.pop();
 
-        if (IsOutsideWorld(CurrentNode.X, CurrentNode.Y, CurrentNode.Z)) continue;
+        if (VoxelIsOutsideWorld(CurrentNode.X, CurrentNode.Y, CurrentNode.Z)) continue;
 
         int32_t ChunkCoordinates[2];
         SnazzCraft::Chunk::GetChunkPosition(CurrentNode.X, CurrentNode.Z, ChunkCoordinates);

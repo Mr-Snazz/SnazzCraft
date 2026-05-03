@@ -14,7 +14,7 @@ namespace SnazzCraft
     public:
         static constexpr uint32_t Size = 2;
         static constexpr int32_t MaxLightValue = 20;
-        static constexpr int32_t SunlightLightValue = 15;
+        static constexpr int32_t SunlightLightValue = 12;
 
         union 
         {

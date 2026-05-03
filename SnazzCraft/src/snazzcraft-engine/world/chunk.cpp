@@ -78,9 +78,9 @@ void SnazzCraft::Chunk::Generate(SnazzCraft::HeightMap* HeightMap, uint32_t MapW
 
         // Testing Torches
         if (X != 5 || Z != 5 || HeightToGenerate <= SnazzCraft::Chunk::OceanLevel) continue;
-        SnazzCraft::Voxel NewVoxel = SnazzCraft::Voxel(X, HeightToGenerate, Z, ID_VOXEL_TORCH);
+        //SnazzCraft::Voxel NewVoxel = SnazzCraft::Voxel(X, HeightToGenerate, Z, ID_VOXEL_TORCH);
 
-        this->Voxels.insert({ SnazzCraft::Chunk::LocalVoxelIndex(X, HeightToGenerate, Z), NewVoxel });
+        //this->Voxels.insert({ SnazzCraft::Chunk::LocalVoxelIndex(X, HeightToGenerate, Z), NewVoxel });
     }
     }
 }
@@ -216,7 +216,7 @@ void SnazzCraft::Chunk::UpdateLightingOnVertices(SnazzCraft::World* World)
 {
     auto GetLightValue = [this, World](const SnazzCraft::Voxel& Voxel, int8_t Side) -> float
     {
-        constexpr float DefaultLightValue = 1.0f / static_cast<float>(SnazzCraft::Voxel::MaxLightValue);
+        constexpr float DefaultLightValue = 1.0f / 20.0f;
 
         int32_t CheckX = static_cast<int32_t>(Voxel.X) + SnazzCraft::VoxelCheckPositions[Side][0];
         int32_t CheckY = static_cast<int32_t>(Voxel.Y) + SnazzCraft::VoxelCheckPositions[Side][1];

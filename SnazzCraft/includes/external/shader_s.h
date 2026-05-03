@@ -12,7 +12,7 @@
 #include <iostream>
 
 /*
-Some code is modified by me, but origional code is found in learnopengl.com
+Some code is modified, but origional code is found in learnopengl.com
 */
 
 class LearnOpenGLShader

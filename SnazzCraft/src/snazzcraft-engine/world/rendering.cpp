@@ -5,24 +5,46 @@
 #include "snazzcraft-engine/mesh/mesh.hpp"
 #include "snazzcraft-engine/world/chunk.hpp"
 #include "snazzcraft-engine/shader/voxel-shader.hpp"
+#include "snazzcraft-engine/entity/entity-ids.h"
 
 void SnazzCraft::World::Render() const
-{
+{   
+    if (SnazzCraft::CurrentWorld->Entities.size() == 0) {
+        SnazzCraft::CurrentWorld->Entities.push_back(new SnazzCraft::Entity(glm::vec3(0.0f, 80.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), ID_ENTITY_TEST));
+    } else {
+        //SnazzCraft::CurrentWorld->MoveEntity(SnazzCraft::CurrentWorld->Entities[0], glm::vec3(0.0f), 0.01f);
+
+        //SnazzCraft::CurrentWorld->Entities[0]->Rotation.x += 0.5f;
+        //SnazzCraft::CurrentWorld->Entities[0]->Rotation.y += 1.0f;
+        //SnazzCraft::CurrentWorld->Entities[0]->Rotation.z += 1.5f;
+    }
+
+    if (!SnazzCraft::VoxelTextureAtlas->BindTexture()) return;
+
+    glEnable(GL_DEPTH_TEST);
+    glCullFace(GL_FRONT); 
+    glFrontFace(GL_CW);  
+    glEnable(GL_CULL_FACE);
+    if (SnazzCraft::WireframeModeActive) {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    }
+    else {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    }
+
     const SnazzCraft::VoxelShader& VoxelShaderInstance = VoxelShader::GetInstance();
     VoxelShaderInstance.SetLightPosition(SnazzCraft::CurrentWorld->Entities[0]->Position, true);
     VoxelShaderInstance.SetViewPosition(SnazzCraft::Player->Position, false);
 
     SnazzCraft::ViewMatrix = glm::lookAt(SnazzCraft::Player->Position, SnazzCraft::Player->Position + SnazzCraft::Player->Front, glm::vec3(0.0, 1.0, 0.0));
-    glUniformMatrix4fv(SnazzCraft::ViewLock, 1, GL_FALSE, glm::value_ptr(SnazzCraft::ViewMatrix));
     VoxelShaderInstance.SetViewMatrix(SnazzCraft::ViewMatrix, false);
-
-    // Render voxels in chunks & voxel placement display
-    SnazzCraft::VoxelTextureAtlas->BindTexture();
     
     SnazzCraft::ModelMatrix = glm::mat4(1.0f);
     VoxelShaderInstance.SetModelMatrix(SnazzCraft::ModelMatrix, false);
+
     this->RenderChunks();
 
+    SnazzCraft::CurrentWorld->UpdateVoxelPlacementDisplay();
     this->RenderVoxelPlacementDisplay();
     
     this->RenderAllEntities();
@@ -77,7 +99,8 @@ void SnazzCraft::World::RenderVoxelPlacementDisplay() const
 
     SnazzCraft::ModelMatrix = glm::translate(glm::mat4(1.0f), this->VoxelPlacementDisplayPosition);
     SnazzCraft::ModelMatrix = glm::scale(SnazzCraft::ModelMatrix, this->VoxelPlacementDisplayMesh->ScaleVector);
-    glUniformMatrix4fv(SnazzCraft::ModelLock, 1, GL_FALSE, glm::value_ptr(SnazzCraft::ModelMatrix));
+    SnazzCraft::VoxelShader::GetInstance().SetModelMatrix(SnazzCraft::ModelMatrix, false);
+
     this->VoxelPlacementDisplayMesh->Draw();
 }
 

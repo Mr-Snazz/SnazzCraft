@@ -11,9 +11,9 @@ out float Brightness;
 
 out vec3 FragPosition;
   
-uniform mat4 Model;
-uniform mat4 View;
-uniform mat4 Projection;
+uniform mat4 Model      = mat4(1.0f);
+uniform mat4 View       = mat4(1.0f);
+uniform mat4 Projection = mat4(1.0f);
 
 void main()
 {

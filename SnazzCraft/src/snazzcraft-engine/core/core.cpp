@@ -8,18 +8,12 @@
 #include "snazzcraft-engine/fps-tracker/fps-tracker.hpp"
 #include "snazzcraft-engine/entity/user.hpp"
 #include "snazzcraft-engine/world/world.hpp"
-#include "snazzcraft-engine/entity/entity-ids.h"
 #include "snazzcraft-engine/world/voxel-ids.h"
 #include "snazzcraft-engine/shader/voxel-shader.hpp"
 
 glm::mat4 SnazzCraft::ProjectionMatrix = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 1000.0f);
-int SnazzCraft::ProjectionLock;
-
 glm::mat4 SnazzCraft::ModelMatrix = glm::mat4(1.0f);
-int SnazzCraft::ModelLock;
-
 glm::mat4 SnazzCraft::ViewMatrix = glm::mat4(1.0f);
-int SnazzCraft::ViewLock;
 
 bool SnazzCraft::CloseApplication = false;
 
@@ -76,8 +70,6 @@ void MainMenuInputCallback(SnazzCraft::Event* Event);
 
 void WorldInputCallback(SnazzCraft::Event* Event);
 
-void RenderWorld();
-
 bool SnazzCraft::Initiate()
 {
     glfwInit();
@@ -107,31 +99,16 @@ bool SnazzCraft::Initiate()
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
     const SnazzCraft::VoxelShader& VoxelShaderInstance = SnazzCraft::VoxelShader::GetInstance();
-    VoxelShaderInstance.SetLightPosition(glm::vec3(0.0f, 50.0f, 0.0f), true);
-    VoxelShaderInstance.SetViewPosition(SnazzCraft::Player->Position, false);
-    VoxelShaderInstance.SetAmbient(0.1f, false);
-
-    const uint32_t& VoxelShaderID = VoxelShaderInstance.GetID();
-    SnazzCraft::ProjectionLock = glGetUniformLocation(VoxelShaderID, "projection");
-    SnazzCraft::ModelLock = glGetUniformLocation(VoxelShaderID, "model");
-    SnazzCraft::ViewLock = glGetUniformLocation(VoxelShaderID, "view");
-
-    VoxelShaderInstance.SetProjectionMatrix(SnazzCraft::ProjectionMatrix, false);
+    VoxelShaderInstance.SetProjectionMatrix(SnazzCraft::ProjectionMatrix, true);
     VoxelShaderInstance.SetModelMatrix(SnazzCraft::ModelMatrix, false);
     VoxelShaderInstance.SetViewMatrix(SnazzCraft::ViewMatrix, false);
-
-    glUniformMatrix4fv(SnazzCraft::ProjectionLock, 1, GL_FALSE, glm::value_ptr(ProjectionMatrix));
-    glUniformMatrix4fv(SnazzCraft::ModelLock, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
+    VoxelShaderInstance.SetLightPosition(glm::vec3(0.0f, 50.0f, 0.0f), false);
+    VoxelShaderInstance.SetViewPosition(SnazzCraft::Player->Position, false);
+    VoxelShaderInstance.SetAmbient(0.6f, false);
+    VoxelShaderInstance.SetComplexLighting(false, false);
+    
     SnazzCraft::VoxelTextureAtlas = new SnazzCraft::Texture("textures/voxel/atlas.png");
     stbi_set_flip_vertically_on_load(true);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     glfwSetMouseButtonCallback(SnazzCraft::Window, MouseButtonCallback);
 
@@ -170,7 +147,7 @@ void SnazzCraft::MainLoop()
 
                 SnazzCraft::CurrentWorld->ApplyGravityToAllEntities();
 
-                RenderWorld();
+                SnazzCraft::CurrentWorld->Render();
                 WorldGUIInstance.Draw();
 
                 break;
@@ -210,35 +187,6 @@ void SnazzCraft::FreeResources()
     delete SnazzCraft::GlobalFPSTracker;
     
     glfwTerminate();
-}
-
-void RenderWorld()
-{
-    if (SnazzCraft::CurrentWorld->Entities.size() == 0) {
-        SnazzCraft::CurrentWorld->Entities.push_back(new SnazzCraft::Entity(glm::vec3(0.0f, 80.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), ID_ENTITY_TEST));
-    } else {
-        //SnazzCraft::CurrentWorld->MoveEntity(SnazzCraft::CurrentWorld->Entities[0], glm::vec3(0.0f), 0.01f);
-
-        //SnazzCraft::CurrentWorld->Entities[0]->Rotation.x += 0.5f;
-        //SnazzCraft::CurrentWorld->Entities[0]->Rotation.y += 1.0f;
-        //SnazzCraft::CurrentWorld->Entities[0]->Rotation.z += 1.5f;
-    }
-
-    if (!SnazzCraft::VoxelTextureAtlas->BindTexture()) return;
-
-    glEnable(GL_DEPTH_TEST);
-    glCullFace(GL_FRONT); 
-    glFrontFace(GL_CW);  
-    glEnable(GL_CULL_FACE);
-    if (SnazzCraft::WireframeModeActive) {
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    }
-    else {
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    }
-    
-    SnazzCraft::CurrentWorld->UpdateVoxelPlacementDisplay();
-    SnazzCraft::CurrentWorld->Render();
 }
 
 void WorldInputCallback(SnazzCraft::Event* Event)
