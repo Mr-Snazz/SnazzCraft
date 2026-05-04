@@ -31,8 +31,6 @@ namespace SnazzCraft
     public:
         int32_t Position[2]; // X & Z Chunk Coordinates
 
-        SnazzCraft::Mesh* ChunkMesh;
-
         std::unordered_map<uint32_t, SnazzCraft::Voxel> Voxels; // Voxel positioning is in local chunk space
         std::unordered_map<uint32_t, int> LightValues;
         Chunk(int32_t X, int32_t Y); // Chunk Coordinates 
@@ -57,11 +55,14 @@ namespace SnazzCraft
 
         inline void UpdateMesh();
 
+        inline bool HasValidMesh() const;
+
+        inline void Draw() const;
+
     private:
         glm::vec3 ChunkWorldOffset;
 
-        std::vector<SnazzCraft::VoxelVertice> Vertices;
-        std::vector<uint32_t> Indices;
+        SnazzCraft::Mesh ChunkMesh;
 
         SnazzCraft::Hitbox* VoxelCollisionHitbox;
 

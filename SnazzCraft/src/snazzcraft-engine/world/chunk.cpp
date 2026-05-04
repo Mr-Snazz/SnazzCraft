@@ -10,9 +10,10 @@
 #include "snazzcraft-engine/world/voxel-type.hpp"
 
 SnazzCraft::Chunk::Chunk(int32_t X, int32_t Y)
-: ChunkMesh(nullptr),                               Voxels(std::unordered_map<uint32_t, SnazzCraft::Voxel>()), 
-  LightValues(std::unordered_map<uint32_t, int>()), Vertices(std::vector<SnazzCraft::VoxelVertice>()), 
-  Indices(std::vector<uint32_t>()),                 VoxelCollisionHitbox(new SnazzCraft::Hitbox(glm::vec3((float)SnazzCraft::Voxel::Size)))
+: Voxels(std::unordered_map<uint32_t, SnazzCraft::Voxel>()), 
+  LightValues(std::unordered_map<uint32_t, int>()), 
+  ChunkMesh(SnazzCraft::Mesh({}, {})), 
+  VoxelCollisionHitbox(new SnazzCraft::Hitbox(glm::vec3((float)SnazzCraft::Voxel::Size)))
 {
     this->Position[0] = X;
     this->Position[1] = Y;
@@ -26,7 +27,6 @@ SnazzCraft::Chunk::Chunk(int32_t X, int32_t Y)
 
 SnazzCraft::Chunk::~Chunk()
 {
-    delete this->ChunkMesh;
     delete this->VoxelCollisionHitbox;
 }
 
@@ -89,19 +89,19 @@ void SnazzCraft::Chunk::Generate(SnazzCraft::HeightMap* HeightMap, uint32_t MapW
 
 void SnazzCraft::Chunk::UpdateVerticesAndIndices()
 {
-    this->Vertices.clear();
-    this->Indices.clear();
+    this->ChunkMesh.Vertices.clear();
+    this->ChunkMesh.Indices.clear();
 
     for (const auto& VoxelPair : this->Voxels) {
         if (VoxelPair.second.GetSideCount() == 0) continue;
 
         const glm::vec3 Offset = glm::vec3((float)VoxelPair.second.X, (float)VoxelPair.second.Y, (float)VoxelPair.second.Z) * glm::vec3((float)SnazzCraft::Voxel::Size, (float)SnazzCraft::Voxel::Size, (float)SnazzCraft::Voxel::Size) + this->ChunkWorldOffset; 
-        uint32_t NewVerticesCount = 0;
 
+        uint32_t NewVerticesCount = 0;
         for (SnazzCraft::VoxelVertice& VoxelVertice : SnazzCraft::EngineVoxelTextureApplier->GetTexturedVertices(VoxelPair.second)) { 
             VoxelVertice.Position += Offset; // Adjusting to world space once now means not having to create a new model matrix for each individual chunk later
 
-            this->Vertices.push_back(VoxelVertice);
+            this->ChunkMesh.Vertices.push_back(VoxelVertice);
             NewVerticesCount++; 
         }
         
@@ -109,7 +109,7 @@ void SnazzCraft::Chunk::UpdateVerticesAndIndices()
             if (!VoxelPair.second.HasSide(SideIndex)) continue;
 
             for (uint32_t I = 0; I < 6; I++) {
-                this->Indices.push_back(SnazzCraft::VoxelMesh->Indices[SnazzCraft::Index2D<uint32_t>(I, SideIndex, 6)] + this->Vertices.size() - NewVerticesCount);
+                this->ChunkMesh.Indices.push_back(SnazzCraft::VoxelMesh->Indices[SnazzCraft::Index2D<uint32_t>(I, SideIndex, 6)] + this->ChunkMesh.Vertices.size() - NewVerticesCount);
             }
             
         }
@@ -281,7 +281,7 @@ void SnazzCraft::Chunk::UpdateLightingOnVertices(SnazzCraft::World* World)
 
             float LightValue = GetLightValue(Voxel, L);
             for (uint8_t J = 0x00; J < 0x04; J++) { // 4 vertices per face
-                this->Vertices[(VoxelCount * 24) + SnazzCraft::Index2D<uint8_t>(J, L, 4)].Brightness = LightValue; // 24 vertices per voxel
+                this->ChunkMesh.Vertices[(VoxelCount * 24) + SnazzCraft::Index2D<uint8_t>(J, L, 4)].Brightness = LightValue; // 24 vertices per voxel
             }
         }
 

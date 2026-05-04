@@ -2,10 +2,18 @@
 
 inline void SnazzCraft::Chunk::UpdateMesh()
 {
-    delete this->ChunkMesh;
-    if (this->Vertices.empty() || this->Indices.empty()) { this->ChunkMesh = nullptr; return; }
+    this->ChunkMesh.UpdateGPUData(true, true);
+}
 
-    this->ChunkMesh = new SnazzCraft::Mesh(this->Vertices, this->Indices);
+inline bool SnazzCraft::Chunk::HasValidMesh() const
+{
+    return !this->ChunkMesh.Vertices.empty() && !this->ChunkMesh.Indices.empty();
+}
+
+inline void SnazzCraft::Chunk::Draw() const
+{
+    if (!this->HasValidMesh()) return;
+    this->ChunkMesh.Draw();
 }
 
 inline glm::vec3 SnazzCraft::Chunk::LocalVoxelPositionToWorldPosition(uint32_t X, uint32_t Y, uint32_t Z) const

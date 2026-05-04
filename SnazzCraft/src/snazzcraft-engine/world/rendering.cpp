@@ -87,8 +87,8 @@ void SnazzCraft::World::RenderChunks() const
         auto ChunkIterator = this->Chunks.find(SnazzCraft::IntegerHash(X, Z));
         if (ChunkIterator == this->Chunks.end()) continue;
 
-        if (ChunkIterator->second->ChunkMesh == nullptr) continue; 
-        ChunkIterator->second->ChunkMesh->Draw();
+        if (!ChunkIterator->second->HasValidMesh()) continue; 
+        ChunkIterator->second->Draw();
     }
     }
 }
