@@ -30,6 +30,8 @@ namespace SnazzCraft
 
         virtual void Draw() const;
 
+        void UpdateGPUData(bool BindVAO, bool UnbindPostUpdate);
+
     private:
         uint32_t VBO;
         uint32_t EBO;

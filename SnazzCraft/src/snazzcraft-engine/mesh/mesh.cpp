@@ -24,22 +24,33 @@ void SnazzCraft::Mesh::Draw() const
     glBindVertexArray(0);
 }
 
+void SnazzCraft::Mesh::UpdateGPUData(bool BindVAO, bool UnbindPostUpdate)
+{
+    if (BindVAO) glBindVertexArray(this->VAO);
+
+    // Update VBO with current vertex data
+    glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
+    glBufferData(GL_ARRAY_BUFFER, this->Vertices.size() * sizeof(SnazzCraft::VoxelVertice), this->Vertices.data(), GL_DYNAMIC_DRAW);
+
+    // Update EBO with current index data
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->Indices.size() * sizeof(uint32_t), this->Indices.data(), GL_DYNAMIC_DRAW);
+
+    if (!UnbindPostUpdate) return;
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+}
+
 void SnazzCraft::Mesh::Initiate()
 {
     glGenVertexArrays(1, &this->VAO);
     glGenBuffers(1, &this->VBO);
     glGenBuffers(1, &this->EBO);
 
-    // Bind VAO first
     glBindVertexArray(this->VAO);
 
-    // VBO: upload vertex data
-    glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
-    glBufferData(GL_ARRAY_BUFFER, this->Vertices.size() * sizeof(SnazzCraft::VoxelVertice), this->Vertices.data(), GL_STATIC_DRAW);
-
-    // EBO: upload index data
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->Indices.size() * sizeof(uint32_t), this->Indices.data(), GL_STATIC_DRAW);
+    this->UpdateGPUData(false, false); 
 
     // Set vertex attribute pointers
 
