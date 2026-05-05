@@ -65,8 +65,7 @@ bool SnazzCraft::World::PlaceVoxel(const glm::vec3& Position, const glm::vec3& R
     ChunkIterator->second->Voxels[LocalPlaceVoxelIndex] = NewVoxel;
 
     if (CollidedWithEntity(LocalPlaceVoxelIndex)) { 
-        NewVoxel.ID = ID_VOXEL_AIR;
-        ChunkIterator->second->Voxels[LocalPlaceVoxelIndex] = NewVoxel; 
+        ChunkIterator->second->Voxels[LocalPlaceVoxelIndex].ID = ID_VOXEL_AIR;
         return false; 
     }
 
