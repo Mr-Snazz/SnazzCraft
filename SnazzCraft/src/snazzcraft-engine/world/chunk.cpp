@@ -10,8 +10,8 @@
 #include "snazzcraft-engine/world/voxel-type.hpp"
 
 SnazzCraft::Chunk::Chunk(int32_t X, int32_t Y)
-    : Voxels(std::array<SnazzCraft::Voxel, SnazzCraft::Chunk::Width * SnazzCraft::Chunk::Height * SnazzCraft::Chunk::Depth>()), 
-    LightValues(std::unordered_map<uint32_t, int>()), 
+    : Voxels(std::array<SnazzCraft::Voxel, SnazzCraft::Chunk::Volume>()), 
+    LightValues(std::array<int32_t, SnazzCraft::Chunk::Volume>()), 
     ChunkMesh(SnazzCraft::Mesh({}, {})), 
     VoxelCollisionHitbox(new SnazzCraft::Hitbox(glm::vec3((float)SnazzCraft::Voxel::Size)))
 {
@@ -27,7 +27,10 @@ SnazzCraft::Chunk::Chunk(int32_t X, int32_t Y)
     for (uint16_t X = 0u; X < SnazzCraft::Chunk::Width;  X++) {
     for (uint16_t Y = 0u; Y < SnazzCraft::Chunk::Height; Y++) {
     for (uint16_t Z = 0u; Z < SnazzCraft::Chunk::Depth;  Z++) {
-        this->Voxels[SnazzCraft::Chunk::LocalVoxelIndex(X, Y, Z)] = SnazzCraft::Voxel(X, Y, Z, ID_VOXEL_AIR);
+        uint32_t LocalIndex = SnazzCraft::Chunk::LocalVoxelIndex(X, Y, Z);
+
+        this->Voxels     [LocalIndex] = SnazzCraft::Voxel(X, Y, Z, ID_VOXEL_AIR);
+        this->LightValues[LocalIndex] = SnazzCraft::Voxel::DefaultLightValue;
     }
     }
     }
@@ -236,14 +239,14 @@ void SnazzCraft::Chunk::UpdateLightingOnVertices(SnazzCraft::World* World)
 {
     auto GetLightValue = [this, World](const SnazzCraft::Voxel& Voxel, int8_t Side) -> float
     {
-        constexpr float DefaultLightValue = 1.0f / 20.0f;
+        constexpr float DefaultLightValueFloat = static_cast<float>(SnazzCraft::Voxel::DefaultLightValue) / static_cast<float>(SnazzCraft::Voxel::MaxLightValue);
 
         int32_t CheckX = static_cast<int32_t>(Voxel.X) + SnazzCraft::VoxelCheckPositions[Side][0];
         int32_t CheckY = static_cast<int32_t>(Voxel.Y) + SnazzCraft::VoxelCheckPositions[Side][1];
         int32_t CheckZ = static_cast<int32_t>(Voxel.Z) + SnazzCraft::VoxelCheckPositions[Side][2];
 
         if (CheckY >= SnazzCraft::Chunk::Height) return static_cast<float>(SnazzCraft::Voxel::SunlightLightValue) / SnazzCraft::Voxel::MaxLightValue;
-        if (CheckY < 0) return DefaultLightValue;
+        if (CheckY < 0) return DefaultLightValueFloat;
 
         int32_t TargetChunkX = this->Position[0];
         int32_t TargetChunkZ = this->Position[1];
@@ -264,7 +267,7 @@ void SnazzCraft::Chunk::UpdateLightingOnVertices(SnazzCraft::World* World)
             TargetChunkZ++; 
         }
 
-        if (!World->ChunkWithinWorld(TargetChunkX, TargetChunkZ)) return DefaultLightValue;
+        if (!World->ChunkWithinWorld(TargetChunkX, TargetChunkZ)) return DefaultLightValueFloat;
 
         uint64_t ChunkIndex = SnazzCraft::IntegerHash<int32_t>(TargetChunkX, TargetChunkZ);
         auto ChunkIterator = World->Chunks.find(ChunkIndex);
@@ -272,13 +275,14 @@ void SnazzCraft::Chunk::UpdateLightingOnVertices(SnazzCraft::World* World)
             World->GenerateChunk(TargetChunkX, TargetChunkZ, true);
             ChunkIterator = World->Chunks.find(ChunkIndex);
         }
-        if (ChunkIterator == World->Chunks.end()) return DefaultLightValue;
+        if (ChunkIterator == World->Chunks.end()) return DefaultLightValueFloat;
 
         uint32_t LocalIndex = SnazzCraft::Chunk::LocalVoxelIndex(CheckX, CheckY, CheckZ);
-        auto LightValueIterator = ChunkIterator->second->LightValues.find(LocalIndex);
-        if (LightValueIterator == ChunkIterator->second->LightValues.end() || LightValueIterator->second <= 1) return DefaultLightValue;
 
-        return static_cast<float>(LightValueIterator->second) / static_cast<float>(SnazzCraft::Voxel::MaxLightValue);
+        int LightValue = ChunkIterator->second->LightValues[LocalIndex];
+        if (LightValue <= 1) return DefaultLightValueFloat;
+
+        return static_cast<float>(LightValue) / static_cast<float>(SnazzCraft::Voxel::MaxLightValue);
     };
 
     uint32_t VoxelCount = 0;

@@ -34,9 +34,10 @@ namespace SnazzCraft
         static constexpr int16_t Width  = 16;
         static constexpr int16_t Height = 256;
         static constexpr int16_t Depth  = 16;
-        std::array<SnazzCraft::Voxel, SnazzCraft::Chunk::Width * SnazzCraft::Chunk::Height * SnazzCraft::Chunk::Depth> Voxels; // Voxel positioning is in local chunk space
+        static constexpr int32_t Volume = Width * Height * Depth;
 
-        std::unordered_map<uint32_t, int> LightValues;
+        std::array<SnazzCraft::Voxel, Volume> Voxels; // Voxel positioning is in local chunk space
+        std::array<int32_t,           Volume> LightValues;
 
         Chunk(int32_t X, int32_t Y); // Chunk Coordinates 
 
@@ -63,6 +64,8 @@ namespace SnazzCraft
         inline bool HasValidMesh() const;
 
         inline void Draw() const;
+
+        inline void ClearLightValues();
 
     private:
         glm::vec3 ChunkWorldOffset;

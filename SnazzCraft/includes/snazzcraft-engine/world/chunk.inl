@@ -16,6 +16,11 @@ inline void SnazzCraft::Chunk::Draw() const
     this->ChunkMesh.Draw();
 }
 
+inline void SnazzCraft::Chunk::ClearLightValues()
+{
+    for (uint32_t I = 0u; I < SnazzCraft::Chunk::Volume; I++) this->LightValues[I] = 1;
+}
+
 inline glm::vec3 SnazzCraft::Chunk::LocalVoxelPositionToWorldPosition(uint32_t X, uint32_t Y, uint32_t Z) const
 {
     return glm::vec3((float)X, (float)Y, (float)Z) * glm::vec3((float)SnazzCraft::Voxel::Size, (float)SnazzCraft::Voxel::Size, (float)SnazzCraft::Voxel::Size) + this->ChunkWorldOffset;

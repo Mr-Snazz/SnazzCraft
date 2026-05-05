@@ -17,7 +17,7 @@ SnazzCraft::World::LightNode::LightNode(int8_t ILightValue, int32_t IPosition[3]
 
 void SnazzCraft::World::UpdateChunkLighting(SnazzCraft::Chunk* Chunk, bool* UpdatedInputChunk)
 {
-    Chunk->LightValues.clear();
+    Chunk->ClearLightValues();
     std::unordered_set<uint64_t> ChunksToUpdate;
 
     this->ApplySunLightingToChunk(Chunk, &ChunksToUpdate);
@@ -67,12 +67,8 @@ void SnazzCraft::World::ApplySunLightingToColumn(SnazzCraft::Chunk* Chunk, uint3
         uint32_t LightY = Y - 1;
         uint32_t LocalIndex = SnazzCraft::Chunk::LocalVoxelIndex(LocalChunkX, LightY, LocalChunkZ);
 
-        auto LightIterator = Chunk->LightValues.find(LocalIndex);
-        if (LightIterator == Chunk->LightValues.end()) {
-            Chunk->LightValues.insert_or_assign(LocalIndex, LightValue);
-        } else {
-            LightIterator->second = LightIterator->second >= LightValue ? LightIterator->second : LightValue;
-        }
+        int ChunkLightValue = Chunk->LightValues[LocalIndex];
+        Chunk->LightValues[LocalIndex] = LightValue > ChunkLightValue ? LightValue : ChunkLightValue;
 
         const SnazzCraft::Voxel& Voxel = Chunk->Voxels[LocalIndex];
         
@@ -143,18 +139,18 @@ void SnazzCraft::World::ApplyLightingVoxel(int32_t LightOrigin[3], int32_t Light
         int32_t Local[3];
         SnazzCraft::Chunk::GetLocalVoxelPosition(CurrentNode.X, CurrentNode.Y, CurrentNode.Z, Local);
         int32_t LightIndex = SnazzCraft::Chunk::LocalVoxelIndex(Local[0], Local[1], Local[2]);
-        
-        auto ExistingLightIterator = ChunkIterator->second->LightValues.find(LightIndex);
-        int32_t CurrentExistingValue = (ExistingLightIterator == ChunkIterator->second->LightValues.end()) ? 0 : ExistingLightIterator->second;
 
-        if (CurrentNode.LightValue > CurrentExistingValue) {
-            ChunkIterator->second->LightValues.insert_or_assign(LightIndex, CurrentNode.LightValue);
+        int ExistingLightValue = ChunkIterator->second->LightValues[LightIndex];
+
+        if (CurrentNode.LightValue > ExistingLightValue) {
+            ChunkIterator->second->LightValues[LightIndex] = CurrentNode.LightValue;
+
             if (ChunksToUpdate != nullptr) ChunksToUpdate->insert(SnazzCraft::IntegerHash<int32_t>(ChunkCoordinates[0], ChunkCoordinates[1]));
             
             int32_t LocalVoxelPosition[3];
             SnazzCraft::Chunk::GetLocalVoxelPosition(CurrentNode.X, CurrentNode.Y, CurrentNode.Z, LocalVoxelPosition);
-            const SnazzCraft::Voxel& Voxel = ChunkIterator->second->Voxels[SnazzCraft::Chunk::LocalVoxelIndex(LocalVoxelPosition[0], LocalVoxelPosition[1], LocalVoxelPosition[2])];
 
+            const SnazzCraft::Voxel& Voxel = ChunkIterator->second->Voxels[SnazzCraft::Chunk::LocalVoxelIndex(LocalVoxelPosition[0], LocalVoxelPosition[1], LocalVoxelPosition[2])];
             int VoxelLightPropogationDecrease =  Voxel.GetVoxelType().LightPropogationDecrease;
             AddLightNodes(Queue, CurrentNode, (VoxelLightPropogationDecrease > 1) ? VoxelLightPropogationDecrease : 1);
         }
