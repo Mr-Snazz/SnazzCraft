@@ -7,7 +7,7 @@ inline void SnazzCraft::Chunk::UpdateMesh()
 
 inline bool SnazzCraft::Chunk::HasValidMesh() const
 {
-    return !this->ChunkMesh.Vertices.empty() && !this->ChunkMesh.Indices.empty();
+    return this->ChunkMesh.IsValid();
 }
 
 inline void SnazzCraft::Chunk::Draw() const

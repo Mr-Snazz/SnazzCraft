@@ -1,6 +1,7 @@
-#include"snazzcraft-engine/world/world.hpp"
+#include "snazzcraft-engine/world/world.hpp"
 #include "snazzcraft-engine/world/chunk.hpp"
 #include "snazzcraft-engine/utilities/math.hpp"
+#include "snazzcraft-engine/world/voxel-ids.h"
 
 bool GetNewPlacePosition(const glm::vec3& EndPosition, uint8_t FaceHit, SnazzCraft::Voxel* VoxelHit, int8_t OutNewPlacePosition[3], int32_t OutChunkCoordinates[2]);
 
@@ -20,7 +21,7 @@ bool SnazzCraft::World::DestroyVoxel(const glm::vec3& Position, const glm::vec3&
     if  (ChunkIterator == this->Chunks.end()) return false;
 
     uint32_t LocalVoxelIndex = SnazzCraft::Chunk::LocalVoxelIndex(*VoxelHit);
-    ChunkIterator->second->Voxels.erase(LocalVoxelIndex);
+    ChunkIterator->second->Voxels[LocalVoxelIndex] = SnazzCraft::Voxel(VoxelHit->X, VoxelHit->Y, VoxelHit->Z, ID_VOXEL_AIR);
 
     ChunkIterator->second->CullVoxelFaces();
     ChunkIterator->second->UpdateVerticesAndIndices();
@@ -56,12 +57,18 @@ bool SnazzCraft::World::PlaceVoxel(const glm::vec3& Position, const glm::vec3& R
     if (!GetNewPlacePosition(EndPosition, FaceHit, VoxelHit, NewPlacePosition, ChunkCoordinates)) return false;
     
     auto ChunkIterator = this->Chunks.find(SnazzCraft::IntegerHash(ChunkCoordinates[0], ChunkCoordinates[1]));
-    if (ChunkIterator == this->Chunks.end() || !this->ChunkWithinWorld(ChunkIterator->second)) return false;
+    if (ChunkIterator == this->Chunks.end() || !this->ChunkWithinWorld(ChunkIterator->second)) return false; // CLEAN
     
     uint32_t LocalPlaceVoxelIndex = SnazzCraft::Chunk::LocalVoxelIndex(NewPlacePosition[0], NewPlacePosition[1], NewPlacePosition[2]);
-    ChunkIterator->second->Voxels.insert_or_assign(LocalPlaceVoxelIndex, SnazzCraft::Voxel(static_cast<uint8_t>(NewPlacePosition[0]), static_cast<uint8_t>(NewPlacePosition[1]), static_cast<uint8_t>(NewPlacePosition[2]), VoxelID));
 
-    if (CollidedWithEntity(LocalPlaceVoxelIndex)) { ChunkIterator->second->Voxels.erase(LocalPlaceVoxelIndex); return false; }
+    SnazzCraft::Voxel NewVoxel = SnazzCraft::Voxel(static_cast<uint8_t>(NewPlacePosition[0]), static_cast<uint8_t>(NewPlacePosition[1]), static_cast<uint8_t>(NewPlacePosition[2]), VoxelID);
+    ChunkIterator->second->Voxels[LocalPlaceVoxelIndex] = NewVoxel;
+
+    if (CollidedWithEntity(LocalPlaceVoxelIndex)) { 
+        NewVoxel.ID = ID_VOXEL_AIR;
+        ChunkIterator->second->Voxels[LocalPlaceVoxelIndex] = NewVoxel; 
+        return false; 
+    }
 
     ChunkIterator->second->CullVoxelFaces();
     ChunkIterator->second->UpdateVerticesAndIndices();

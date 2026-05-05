@@ -23,8 +23,8 @@ bool SnazzCraft::World::SaveWorldToFile(bool OverwriteExistingFile) const
 
         File << WORLD_SAVE_FILE_DESCRIPTOR_CHUNK_BEGIN << ": " << Chunk->Position[0] << " " << Chunk->Position[1] << "\n";
 
-        for (auto& VoxelPair : Chunk->Voxels) {
-            File << WORLD_SAVE_FILE_DESCRIPTOR_CHUNK_NEW_VOXEL << ": " << VoxelPair.second.X << " " << VoxelPair.second.Y << " " << VoxelPair.second.Z << " " << VoxelPair.second.ID << "\n";
+        for (auto& Voxel : Chunk->Voxels) {
+            File << WORLD_SAVE_FILE_DESCRIPTOR_CHUNK_NEW_VOXEL << ": " << Voxel.X << " " << Voxel.Y << " " << Voxel.Z << " " << Voxel.ID << "\n";
         }
 
         File << WORLD_SAVE_FILE_DESCRIPTOR_CHUNK_END << ":\n";
@@ -146,7 +146,7 @@ SnazzCraft::World* SnazzCraft::World::LoadWorldFromSaveFile(std::string FilePath
         SnazzCraft::Chunk* NewChunk = new SnazzCraft::Chunk(NewChunkPosition.first, NewChunkPosition.second);
 
         for (SnazzCraft::Voxel Voxel : VoxelsToAddToChunks[I]) {
-            NewChunk->Voxels.insert_or_assign(SnazzCraft::Chunk::LocalVoxelIndex(Voxel), Voxel);
+            NewChunk->Voxels[SnazzCraft::Chunk::LocalVoxelIndex(Voxel)] = Voxel;
         }
 
         NewChunk->CullVoxelFaces();

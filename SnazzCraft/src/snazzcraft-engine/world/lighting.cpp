@@ -22,14 +22,14 @@ void SnazzCraft::World::UpdateChunkLighting(SnazzCraft::Chunk* Chunk, bool* Upda
 
     this->ApplySunLightingToChunk(Chunk, &ChunksToUpdate);
 
-    for (const auto& VoxelPair : Chunk->Voxels) {
-        int32_t LightProducingLevel = VoxelPair.second.GetVoxelType().LightProducingLevel;
+    for (const auto& Voxel : Chunk->Voxels) {
+        int32_t LightProducingLevel = Voxel.GetVoxelType().LightProducingLevel;
         if (LightProducingLevel <= 0) continue;
 
         int32_t Position[3] = {
-            static_cast<int32_t>(VoxelPair.second.X) + Chunk->Position[0] * SnazzCraft::Chunk::Width,
-            static_cast<int32_t>(VoxelPair.second.Y),
-            static_cast<int32_t>(VoxelPair.second.Z) + Chunk->Position[1] * SnazzCraft::Chunk::Depth,
+            static_cast<int32_t>(Voxel.X) + Chunk->Position[0] * SnazzCraft::Chunk::Width,
+            static_cast<int32_t>(Voxel.Y),
+            static_cast<int32_t>(Voxel.Z) + Chunk->Position[1] * SnazzCraft::Chunk::Depth,
         };
         this->ApplyLightingVoxel(Position, LightProducingLevel, &ChunksToUpdate);
     }
@@ -74,10 +74,9 @@ void SnazzCraft::World::ApplySunLightingToColumn(SnazzCraft::Chunk* Chunk, uint3
             LightIterator->second = LightIterator->second >= LightValue ? LightIterator->second : LightValue;
         }
 
-        auto VoxelIterator = Chunk->Voxels.find(LocalIndex); 
-        if (VoxelIterator == Chunk->Voxels.end()) continue;
+        const SnazzCraft::Voxel& Voxel = Chunk->Voxels[LocalIndex];
         
-        LightValue -= VoxelIterator->second.GetVoxelType().LightPropogationDecrease;
+        LightValue -= Voxel.GetVoxelType().LightPropogationDecrease;
         if (LightValue > 1) continue;
 
         int32_t LightOrigin[3] = {
@@ -154,10 +153,9 @@ void SnazzCraft::World::ApplyLightingVoxel(int32_t LightOrigin[3], int32_t Light
             
             int32_t LocalVoxelPosition[3];
             SnazzCraft::Chunk::GetLocalVoxelPosition(CurrentNode.X, CurrentNode.Y, CurrentNode.Z, LocalVoxelPosition);
-            auto VoxelIterator = ChunkIterator->second->Voxels.find(SnazzCraft::Chunk::LocalVoxelIndex(LocalVoxelPosition[0], LocalVoxelPosition[1], LocalVoxelPosition[2]));
-            int LightPropogationDecrease = VoxelIterator != ChunkIterator->second->Voxels.end() ? VoxelIterator->second.GetVoxelType().LightPropogationDecrease: 1;
+            const SnazzCraft::Voxel& Voxel = ChunkIterator->second->Voxels[SnazzCraft::Chunk::LocalVoxelIndex(LocalVoxelPosition[0], LocalVoxelPosition[1], LocalVoxelPosition[2])];
 
-            AddLightNodes(Queue, CurrentNode, LightPropogationDecrease);
+            AddLightNodes(Queue, CurrentNode, Voxel.GetVoxelType().LightPropogationDecrease);
         }
     }
 }

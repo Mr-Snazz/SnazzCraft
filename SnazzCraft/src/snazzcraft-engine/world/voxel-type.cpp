@@ -6,11 +6,12 @@ const SnazzCraft::VoxelType& SnazzCraft::VoxelType::GetVoxelType(uint8_t VoxelID
 {
     //                                                 LightProducingLevel, LightPropogationDecrease, CullableSides, CollidableToEntities, CollidableToVoxels
     // NOTE: The two most significant bits of CullableSides are never set, and will never be used even if they are 
-    static const SnazzCraft::VoxelType Leaves         (0,  2,                                0b00000000, true,  true );
-    static const SnazzCraft::VoxelType VoxelCollidable(0,  0,                                0b00000000, false, true );
-    static const SnazzCraft::VoxelType Torch          (18, 0,                                0b00000000, false, true );
-    static const SnazzCraft::VoxelType Water          (0,  2,                                0b00111111, true,  false);
-    static const SnazzCraft::VoxelType FullSolid      (0,  SnazzCraft::Voxel::MaxLightValue, 0b00111111, true,  true );
+    static const SnazzCraft::VoxelType Leaves         (0,  2,                                0b00000000, true,  true,  true );
+    static const SnazzCraft::VoxelType VoxelCollidable(0,  0,                                0b00000000, false, true,  true );
+    static const SnazzCraft::VoxelType Torch          (18, 0,                                0b00000000, false, true,  true );
+    static const SnazzCraft::VoxelType Water          (0,  2,                                0b00111111, true,  false, true );
+    static const SnazzCraft::VoxelType FullSolid      (0,  SnazzCraft::Voxel::MaxLightValue, 0b00111111, true,  true,  true );
+    static const SnazzCraft::VoxelType Phantom        (0,  0,                                0b00111111, false, false, false);
 
     switch (VoxelID)
     {
@@ -26,14 +27,18 @@ const SnazzCraft::VoxelType& SnazzCraft::VoxelType::GetVoxelType(uint8_t VoxelID
         case ID_VOXEL_TORCH:
             return Torch;
 
+        case ID_VOXEL_AIR:
+            return Phantom;
+
         default:
             return FullSolid;
     }
 }
 
-SnazzCraft::VoxelType::VoxelType(int32_t ILightProducingLevel, int32_t ILightPropogationDecrease, uint8_t ICullableSides, bool ICollidableToEntities, bool ICollidableToVoxels)
+SnazzCraft::VoxelType::VoxelType(int32_t ILightProducingLevel, int32_t ILightPropogationDecrease, uint8_t ICullableSides, bool ICollidableToEntities, bool ICollidableToVoxels, bool ICullableAgainst)
     : LightProducingLevel(ILightProducingLevel), LightPropogationDecrease(ILightPropogationDecrease), 
-      CullableSides(ICullableSides), CollidableToEntities(ICollidableToEntities), CollidableToVoxels(ICollidableToVoxels)
+      CullableSides(ICullableSides), CollidableToEntities(ICollidableToEntities), CollidableToVoxels(ICollidableToVoxels),
+      CullableAgainst(ICullableAgainst)
 {
 
 }

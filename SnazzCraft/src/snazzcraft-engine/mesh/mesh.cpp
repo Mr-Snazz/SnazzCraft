@@ -70,7 +70,6 @@ void SnazzCraft::Mesh::Initiate()
     glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(SnazzCraft::VoxelVertice), (void*)offsetof(SnazzCraft::VoxelVertice, SnazzCraft::VoxelVertice::Brightness));
     glEnableVertexAttribArray(3);
 
-    // Unbind (optional safety)
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 }

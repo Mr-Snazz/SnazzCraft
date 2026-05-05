@@ -38,6 +38,5 @@ SnazzCraft::Voxel* SnazzCraft::World::GetCollidingVoxel(const glm::vec3& Positio
     auto ChunkIterator = this->Chunks.find(SnazzCraft::IntegerHash(ChunkCoordinates[0], ChunkCoordinates[1]));
     if (ChunkIterator == this->Chunks.end()) return nullptr;
 
-    SnazzCraft::Voxel* CollisionVoxel = ChunkIterator->second->GetCollidingVoxel(Position, TestEntityCollidablility, TestVoxelCollidablility);
-    return CollisionVoxel;
+    return ChunkIterator->second->GetCollidingVoxel(Position, TestEntityCollidablility, TestVoxelCollidablility);
 }

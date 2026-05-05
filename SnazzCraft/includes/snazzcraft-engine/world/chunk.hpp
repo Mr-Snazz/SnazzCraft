@@ -31,8 +31,13 @@ namespace SnazzCraft
     public:
         int32_t Position[2]; // X & Z Chunk Coordinates
 
-        std::unordered_map<uint32_t, SnazzCraft::Voxel> Voxels; // Voxel positioning is in local chunk space
+        static constexpr int16_t Width  = 16;
+        static constexpr int16_t Height = 256;
+        static constexpr int16_t Depth  = 16;
+        std::array<SnazzCraft::Voxel, SnazzCraft::Chunk::Width * SnazzCraft::Chunk::Height * SnazzCraft::Chunk::Depth> Voxels; // Voxel positioning is in local chunk space
+
         std::unordered_map<uint32_t, int> LightValues;
+
         Chunk(int32_t X, int32_t Y); // Chunk Coordinates 
 
         ~Chunk();
@@ -71,9 +76,6 @@ namespace SnazzCraft
         inline void WorldSpaceToVoxelSpace(const glm::vec3& WorldPosition, int32_t VoxelPosition[3]) const;
 
     public:
-        static constexpr int16_t Width  = 16;
-        static constexpr int16_t Height = 256;
-        static constexpr int16_t Depth  = 16;
         static constexpr int16_t OceanLevel = 20; // 125
         static constexpr int16_t MaxOceanDepth = 40;
 

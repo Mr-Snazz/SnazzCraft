@@ -32,6 +32,8 @@ namespace SnazzCraft
 
         void UpdateGPUData(bool BindVAO, bool UnbindPostUpdate);
 
+        inline bool IsValid() const;
+
     private:
         uint32_t VBO;
         uint32_t EBO;
@@ -46,3 +48,4 @@ namespace SnazzCraft
     extern SnazzCraft::Mesh* VoxelMesh;
 } // SnazzCraft
 
+#include "snazzcraft-engine/mesh/mesh.inl"

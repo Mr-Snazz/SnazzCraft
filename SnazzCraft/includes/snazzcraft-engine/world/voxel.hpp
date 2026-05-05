@@ -12,10 +12,6 @@ namespace SnazzCraft
     class Voxel
     {
     public:
-        static constexpr uint32_t Size = 2;
-        static constexpr int32_t MaxLightValue = 20;
-        static constexpr int32_t SunlightLightValue = 12;
-
         union 
         {
             struct 
@@ -25,6 +21,8 @@ namespace SnazzCraft
             uint8_t Position[3]; // In local chunk space
         };
         uint8_t ID;
+
+        Voxel();
 
         Voxel(uint8_t IX, uint8_t IY, uint8_t IZ, uint8_t IID);
 
@@ -46,6 +44,14 @@ namespace SnazzCraft
         // Bit order:
         // false, false, Bottom, Top, Back, Right, Left, Front
         uint8_t Sides = 0x3F;
+
+    public:
+        static constexpr uint32_t Size = 2;
+        static constexpr int32_t MaxLightValue = 20;
+        static constexpr int32_t SunlightLightValue = 12;
+
+    private:
+
 
     };
 } // SnazzCraft
