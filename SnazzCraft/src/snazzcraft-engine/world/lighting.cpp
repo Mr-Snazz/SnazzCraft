@@ -155,7 +155,8 @@ void SnazzCraft::World::ApplyLightingVoxel(int32_t LightOrigin[3], int32_t Light
             SnazzCraft::Chunk::GetLocalVoxelPosition(CurrentNode.X, CurrentNode.Y, CurrentNode.Z, LocalVoxelPosition);
             const SnazzCraft::Voxel& Voxel = ChunkIterator->second->Voxels[SnazzCraft::Chunk::LocalVoxelIndex(LocalVoxelPosition[0], LocalVoxelPosition[1], LocalVoxelPosition[2])];
 
-            AddLightNodes(Queue, CurrentNode, Voxel.GetVoxelType().LightPropogationDecrease);
+            int VoxelLightPropogationDecrease =  Voxel.GetVoxelType().LightPropogationDecrease;
+            AddLightNodes(Queue, CurrentNode, (VoxelLightPropogationDecrease > 1) ? VoxelLightPropogationDecrease : 1);
         }
     }
 }
