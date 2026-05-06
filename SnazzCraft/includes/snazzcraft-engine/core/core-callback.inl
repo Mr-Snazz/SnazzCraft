@@ -20,15 +20,11 @@ inline void SnazzCraft::CreateWorldAndChangeModeToWorld(SnazzCraft::Event* Event
 
 inline void SnazzCraft::ChangeModeToWorldCallback(SnazzCraft::Event* Event)
 {
-    if (SnazzCraft::UserMode == SNAZZCRAFT_USER_MODE_WORLD) return;
-
     SnazzCraft::UserMode = SNAZZCRAFT_USER_MODE_WORLD;
 }
 
 inline void SnazzCraft::ChangeModeToMainMenuCallback(SnazzCraft::Event* Event)
 {
-    if (SnazzCraft::UserMode == SNAZZCRAFT_USER_MODE_MAIN_MENU) return;
-
     SnazzCraft::UserMode = SNAZZCRAFT_USER_MODE_MAIN_MENU;
 }
 
