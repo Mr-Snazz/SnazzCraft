@@ -1,5 +1,11 @@
 #include "snazzcraft-engine/world/voxel.hpp"
+#include "snazzcraft-engine/world/voxel-type.hpp"
 #include "snazzcraft-engine/utilities/byte-handling.hpp"
+
+inline const SnazzCraft::VoxelType& SnazzCraft::Voxel::GetVoxelType() const
+{
+    return SnazzCraft::VoxelType::GetVoxelType(this->ID);
+}
 
 inline bool SnazzCraft::Voxel::HasSide(uint8_t SideIndex) const
 {
@@ -30,3 +36,4 @@ inline uint8_t SnazzCraft::Voxel::GetSideCount() const
 
     return Count;
 }
+

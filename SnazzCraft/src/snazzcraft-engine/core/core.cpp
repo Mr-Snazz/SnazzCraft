@@ -174,9 +174,7 @@ void SnazzCraft::MainLoop()
 }
 
 void SnazzCraft::FreeResources()
-{
-    SnazzCraft::CurrentWorld->SaveWorldToFile(true);
-
+{   
     SnazzCraft::EntityType::FreeResources();
 
     delete SnazzCraft::Player;

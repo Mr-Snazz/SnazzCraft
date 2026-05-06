@@ -22,14 +22,18 @@ void SnazzCraft::World::UpdateChunkLighting(SnazzCraft::Chunk* Chunk, bool* Upda
 
     this->ApplySunLightingToChunk(Chunk, &ChunksToUpdate);
 
-    for (const auto& Voxel : Chunk->Voxels) {
+    for (uint32_t VoxelIndex = 0u; VoxelIndex < SnazzCraft::Chunk::Volume; VoxelIndex++) {
+        const SnazzCraft::Voxel& Voxel = Chunk->Voxels[VoxelIndex];
+
         int32_t LightProducingLevel = Voxel.GetVoxelType().LightProducingLevel;
         if (LightProducingLevel <= 0) continue;
 
+        int32_t VoxelX, VoxelY, VoxelZ;
+        SnazzCraft::Chunk::GetVoxelPosition(VoxelIndex, VoxelX, VoxelY, VoxelZ);
         int32_t Position[3] = {
-            static_cast<int32_t>(Voxel.X) + Chunk->Position[0] * SnazzCraft::Chunk::Width,
-            static_cast<int32_t>(Voxel.Y),
-            static_cast<int32_t>(Voxel.Z) + Chunk->Position[1] * SnazzCraft::Chunk::Depth,
+            VoxelX + Chunk->Position[0] * SnazzCraft::Chunk::Width,
+            VoxelY,
+            VoxelZ + Chunk->Position[1] * SnazzCraft::Chunk::Depth,
         };
         this->ApplyLightingVoxel(Position, LightProducingLevel, &ChunksToUpdate);
     }

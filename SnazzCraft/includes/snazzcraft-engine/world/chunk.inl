@@ -79,11 +79,6 @@ constexpr uint32_t SnazzCraft::Chunk::LocalVoxelIndex(uint32_t X, uint32_t Y, ui
     return SnazzCraft::Index3D<uint32_t>(X, Y, Z, static_cast<uint32_t>(SnazzCraft::Chunk::Width), static_cast<uint32_t>(SnazzCraft::Chunk::Height));
 }
 
-inline uint32_t SnazzCraft::Chunk::LocalVoxelIndex(const SnazzCraft::Voxel& Voxel)
-{
-    return SnazzCraft::Index3D<uint32_t>(Voxel.X, Voxel.Y, Voxel.Z, static_cast<uint32_t>(SnazzCraft::Chunk::Width), static_cast<uint32_t>(SnazzCraft::Chunk::Height));
-}
-
 constexpr bool SnazzCraft::Chunk::WithinChunkBounds(int32_t X, int32_t Y, int32_t Z)
 {
     return X >= 0 && Y >= 0 && Z >= 0 && X < SnazzCraft::Chunk::Width && Y < SnazzCraft::Chunk::Height && Z < SnazzCraft::Chunk::Depth;
@@ -94,6 +89,23 @@ constexpr bool SnazzCraft::Chunk::WithinChunkBounds(uint32_t X, uint32_t Y, uint
     return X < SnazzCraft::Chunk::Width && Y < SnazzCraft::Chunk::Height && Z < SnazzCraft::Chunk::Depth;
 }
 
+template <typename T>
+requires std::signed_integral<T> || std::unsigned_integral<T>
+inline void SnazzCraft::Chunk::GetVoxelPosition(uint32_t VoxelIndex, T& OutX, T& OutY, T& OutZ)
+{
+    OutX =  VoxelIndex %  static_cast<uint32_t>(SnazzCraft::Chunk::Width);
+    OutY = (VoxelIndex /  static_cast<uint32_t>(SnazzCraft::Chunk::Width)) % static_cast<uint32_t>(SnazzCraft::Chunk::Height);
+    OutZ =  VoxelIndex / (static_cast<uint32_t>(SnazzCraft::Chunk::Width)  * static_cast<uint32_t>(SnazzCraft::Chunk::Height));
+}
+
+template <typename T>
+requires std::signed_integral<T> || std::unsigned_integral<T>
+inline void SnazzCraft::Chunk::GetVoxelPosition(uint32_t VoxelIndex, T OutPosition[3])
+{
+    OutPosition[0] =  VoxelIndex %  static_cast<uint32_t>(SnazzCraft::Chunk::Width);
+    OutPosition[1] = (VoxelIndex /  static_cast<uint32_t>(SnazzCraft::Chunk::Width)) % static_cast<uint32_t>(SnazzCraft::Chunk::Height);
+    OutPosition[2] =  VoxelIndex / (static_cast<uint32_t>(SnazzCraft::Chunk::Width)  * static_cast<uint32_t>(SnazzCraft::Chunk::Height));
+}
 
 
 

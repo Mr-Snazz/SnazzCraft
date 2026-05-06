@@ -55,15 +55,29 @@ namespace SnazzCraft
 
         void Render() const;
 
-        SnazzCraft::Voxel* GetCollidingVoxel(const glm::vec3& Position, SnazzCraft::Hitbox* Hitbox, bool TestEntityCollidablility, bool TestVoxelCollidablility) const; // Returns nullptr if no collision 
+    private:
+        class VoxelCollisionInfo
+        {
+        public:
+            SnazzCraft::Voxel* CollidingVoxel;
+            SnazzCraft::Chunk* CollidedInChunk;
+            uint32_t CollidingVoxelIndex;
 
-        SnazzCraft::Voxel* GetCollidingVoxel(const glm::vec3& Position, bool TestEntityCollidablility, bool TestVoxelCollidablility) const; // Returns nullptr if no collision - Position should be in world space
+            VoxelCollisionInfo();
+
+            VoxelCollisionInfo(SnazzCraft::Voxel* ICollidingVoxel, SnazzCraft::Chunk* ICollidedInChunk, uint32_t ICollidingVoxelIndex);
+
+            inline bool Collided() const;
+        };
+
+    public:
+        SnazzCraft::World::VoxelCollisionInfo GetCollidingVoxel(const glm::vec3& Position, SnazzCraft::Hitbox* Hitbox, bool TestEntityCollidablility, bool TestVoxelCollidablility) const; // Returns nullptr if no collision 
+
+        SnazzCraft::World::VoxelCollisionInfo GetCollidingVoxel(const glm::vec3& Position, bool TestEntityCollidablility, bool TestVoxelCollidablility) const; // Returns nullptr if no collision - Position should be in world space
 
         void MoveEntity(SnazzCraft::Entity* Entity, const glm::vec3& Rotation, float Distance) const; // Returns true if movement occurred without voxel collision 
 
         void MoveEntity(glm::vec3 Translation, SnazzCraft::Entity* Entity) const; // Returns true if movement occurred without voxel collision 
-
-        bool SaveWorldToFile(bool OverwriteExistingFile) const;
 
         /*
         Calls UpdateVerticesAndIndices & UpdateMesh on all chunks affected
@@ -81,13 +95,47 @@ namespace SnazzCraft
 
         inline const glm::vec3& GetVoxelPlacementDisplayPosition() const;
 
-        inline bool ChunkWithinWorld(SnazzCraft::Chunk* Chunk) const;
+        bool ChunkWithinWorld(SnazzCraft::Chunk* Chunk) const;
 
         inline bool ChunkWithinWorld(int32_t ChunkX, int32_t ChunkZ) const;
 
     private:
-        struct LightNode
+        SnazzCraft::HeightMap* WorldHeightMap = nullptr;
+        SnazzCraft::Mesh* VoxelPlacementDisplayMesh = nullptr;
+        glm::vec3 VoxelPlacementDisplayPosition;
+        bool ShouldRenderVoxelPlacementDisplay = false;
+
+        void RenderAllEntities() const;
+
+        void RenderChunks() const;
+
+        void RenderVoxelPlacementDisplay() const;
+
+        /*
+        Rotation is expected to not be normalized
+        */
+        bool RaycastToVoxel(glm::vec3& Position, const glm::vec3& Rotation, float MaxDistance, uint8_t* FaceHit, SnazzCraft::World::VoxelCollisionInfo* VoxelCollisionInfo); 
+
+        void ApplySunLightingToChunk(SnazzCraft::Chunk* Chunk, std::unordered_set<uint64_t>* ChunksToUpdate);
+
+        void ApplySunLightingToColumn(SnazzCraft::Chunk* Chunk, uint32_t LocalChunkX, uint32_t LocalChunkZ, uint32_t StartY, int32_t StartLightValue, std::unordered_set<uint64_t>* ChunksToUpdate);
+        
+        /*
+        Only to be called trough UpdateChunkLighting
+        Generates currently ungenerated Chunks when light values would affect them
+        */
+        void ApplyLightingVoxel(int32_t LightOrigin[3], int32_t LightProducingLevel, std::unordered_set<uint64_t>* ChunksToUpdate);
+        
+    public:
+        friend class SnazzCraft::Chunk;
+
+        static SnazzCraft::World* CreateWorld(std::string Name, uint32_t Size, int32_t Seed);
+
+
+    private:
+        class LightNode
         {
+        public:
             union 
             {
                 struct 
@@ -103,41 +151,11 @@ namespace SnazzCraft
             LightNode(int8_t ILightValue, int32_t IPosition[3]);
         };
 
-        SnazzCraft::HeightMap* WorldHeightMap = nullptr;
-        SnazzCraft::Mesh* VoxelPlacementDisplayMesh = nullptr;
-        glm::vec3 VoxelPlacementDisplayPosition;
-        bool ShouldRenderVoxelPlacementDisplay = false;
-
-        void RenderAllEntities() const;
-
-        void RenderChunks() const;
-
-        void RenderVoxelPlacementDisplay() const;
-
-        /*
-        Rotation is expected to not be normalized
-        */
-        bool RaycastToVoxel(glm::vec3& Position, const glm::vec3& Rotation, float MaxDistance, uint8_t* FaceHit, SnazzCraft::Voxel** VoxelHit); 
-
-        void ApplySunLightingToChunk(SnazzCraft::Chunk* Chunk, std::unordered_set<uint64_t>* ChunksToUpdate);
-
-        void ApplySunLightingToColumn(SnazzCraft::Chunk* Chunk, uint32_t LocalChunkX, uint32_t LocalChunkZ, uint32_t StartY, int32_t StartLightValue, std::unordered_set<uint64_t>* ChunksToUpdate);
         
-        /*
-        Only to be called trough UpdateChunkLighting
-        Generates currently ungenerated Chunks when light values would affect them
-        */
-        void ApplyLightingVoxel(int32_t LightOrigin[3], int32_t LightProducingLevel, std::unordered_set<uint64_t>* ChunksToUpdate);
-        
-    public:
-        static SnazzCraft::World* CreateWorld(std::string Name, uint32_t Size, int32_t Seed);
-
-        static SnazzCraft::World* LoadWorldFromSaveFile(std::string FilePath);
-
-    
     };
     
     extern SnazzCraft::World* CurrentWorld;
 } // SnazzCraft
 
 #include "snazzcraft-engine/world/world.inl"
+#include "snazzcraft-engine/world/voxel-collision-info.inl"

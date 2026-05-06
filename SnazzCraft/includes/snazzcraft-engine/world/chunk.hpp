@@ -10,6 +10,7 @@
 #include "snazzcraft-engine/world/voxel.hpp"
 #include "snazzcraft-engine/utilities/math.hpp"
 #include "snazzcraft-engine/mesh/mesh.hpp"
+#include "snazzcraft-engine/world/world.hpp"
 
 namespace SnazzCraft
 {
@@ -34,7 +35,7 @@ namespace SnazzCraft
         static constexpr int16_t Width  = 16;
         static constexpr int16_t Height = 256;
         static constexpr int16_t Depth  = 16;
-        static constexpr int32_t Volume = Width * Height * Depth;
+        static constexpr uint32_t Volume = static_cast<uint32_t>(Width * Height * Depth);
 
         std::array<SnazzCraft::Voxel, Volume> Voxels; // Voxel positioning is in local chunk space
         std::array<int32_t,           Volume> LightValues;
@@ -51,11 +52,11 @@ namespace SnazzCraft
 
         bool VoxelTouchingChunkBorder(uint32_t VoxelIndex, uint32_t* BorderDirection) const;
 
-        SnazzCraft::Voxel* GetCollidingVoxel(const glm::vec3& Position, SnazzCraft::Hitbox* Hitbox, bool TestEntityCollidablility, bool TestVoxelCollidablility); // Returns nullptr if no collision
+        SnazzCraft::World::VoxelCollisionInfo GetCollidingVoxel(const glm::vec3& Position, SnazzCraft::Hitbox* Hitbox, bool TestEntityCollidablility, bool TestVoxelCollidablility); // Returns nullptr if no collision
 
-        SnazzCraft::Voxel* GetCollidingVoxel(const glm::vec3& Position, bool TestEntityCollidablility, bool TestVoxelCollidablility);
+        SnazzCraft::World::VoxelCollisionInfo GetCollidingVoxel(const glm::vec3& Position, bool TestEntityCollidablility, bool TestVoxelCollidablility);
 
-        SnazzCraft::Voxel* GetCollidingVoxel(const glm::vec3& Position, SnazzCraft::Hitbox* Hitbox, int32_t LocalVoxelX, int32_t LocalVoxelY, int32_t LocalVoxelZ, bool TestEntityCollidablility, bool TestVoxelCollidablility);
+        SnazzCraft::World::VoxelCollisionInfo GetCollidingVoxel(const glm::vec3& Position, SnazzCraft::Hitbox* Hitbox, int32_t LocalVoxelX, int32_t LocalVoxelY, int32_t LocalVoxelZ, bool TestEntityCollidablility, bool TestVoxelCollidablility);
 
         void UpdateLightingOnVertices(SnazzCraft::World* World);
 
@@ -94,11 +95,17 @@ namespace SnazzCraft
 
         static constexpr uint32_t LocalVoxelIndex(uint32_t X, uint32_t Y, uint32_t Z);
 
-        static inline uint32_t LocalVoxelIndex(const SnazzCraft::Voxel& Voxel);
-
         static constexpr bool WithinChunkBounds(int32_t X, int32_t Y, int32_t Z);
 
         static constexpr bool WithinChunkBounds(uint32_t X, uint32_t Y, uint32_t Z);
+
+        template <typename T>
+        requires std::signed_integral<T> || std::unsigned_integral<T>
+        static inline void GetVoxelPosition(uint32_t VoxelIndex, T& OutX, T& OutY, T& OutZ);
+
+        template <typename T>
+        requires std::signed_integral<T> || std::unsigned_integral<T>
+        static inline void GetVoxelPosition(uint32_t VoxelIndex, T OutPosition[3]);
 
     };
 } // SnazzCraft

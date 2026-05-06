@@ -27,8 +27,13 @@ SnazzCraft::World::World(std::string IName, uint32_t ISize, int32_t ISeed)
 
     this->WorldHeightMap = new SnazzCraft::HeightMap(static_cast<uint32_t>(this->Size * SnazzCraft::Chunk::Width), -SnazzCraft::Chunk::MaxOceanDepth, SnazzCraft::Chunk::Height - SnazzCraft::Chunk::OceanLevel, this->Seed, 1.0, 0.5, 2.0, 6);
 
-    this->VoxelPlacementDisplayMesh = new SnazzCraft::Mesh(SnazzCraft::EngineVoxelTextureApplier->GetTexturedVertices(SnazzCraft::Voxel(0, 0, 0, ID_VOXEL_BARRIER)), SnazzCraft::VoxelMesh->Indices);
+    this->VoxelPlacementDisplayMesh = new SnazzCraft::Mesh(SnazzCraft::EngineVoxelTextureApplier->GetTexturedVertices(SnazzCraft::Voxel(ID_VOXEL_BARRIER)), SnazzCraft::VoxelMesh->Indices);
     this->VoxelPlacementDisplayMesh->ScaleVector = glm::vec3(1.005f);
+}
+
+bool SnazzCraft::World::ChunkWithinWorld(SnazzCraft::Chunk* Chunk) const
+{
+    return Chunk != nullptr && Chunk->Position[0] >= -this->Size && Chunk->Position[0] <= this->Size && Chunk->Position[1] >= -this->Size && Chunk->Position[1] <= this->Size;
 }
 
 

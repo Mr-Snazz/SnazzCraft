@@ -12,23 +12,15 @@ namespace SnazzCraft
     class Voxel
     {
     public:
-        union 
-        {
-            struct 
-            {
-                uint8_t X, Y, Z;
-            };
-            uint8_t Position[3]; // In local chunk space
-        };
         uint8_t ID;
 
         Voxel();
 
-        Voxel(uint8_t IX, uint8_t IY, uint8_t IZ, uint8_t IID);
+        Voxel(uint8_t IID);
 
         ~Voxel() = default;
 
-        const SnazzCraft::VoxelType& GetVoxelType() const;
+        inline const SnazzCraft::VoxelType& GetVoxelType() const;
 
         inline bool HasSide(uint8_t SideIndex) const;
 

@@ -12,9 +12,7 @@ void SnazzCraft::World::MoveEntity(SnazzCraft::Entity* Entity, const glm::vec3& 
         float OldCoordinate = Entity->Position[I];
 
         Entity->Position[I] = NewPosition[I];
-
-        SnazzCraft::Voxel* CollisionVoxel = this->GetCollidingVoxel(Entity->Position, Entity->GetEntityType().EntityHitbox, true, false);
-        if (CollisionVoxel == nullptr) continue;
+        if (!this->GetCollidingVoxel(Entity->Position, Entity->GetEntityType().EntityHitbox, true, false).Collided()) continue;
 
         Entity->Position[I] = OldCoordinate;
     }
@@ -26,9 +24,7 @@ void SnazzCraft::World::MoveEntity(glm::vec3 Translation, SnazzCraft::Entity* En
         float OldCoordinate = Entity->Position[I];
 
         Entity->Position[I] += Translation[I];
-
-        SnazzCraft::Voxel* CollisionVoxel = this->GetCollidingVoxel(Entity->Position, Entity->GetEntityType().EntityHitbox, true, false);
-        if (CollisionVoxel == nullptr) continue;
+        if (!this->GetCollidingVoxel(Entity->Position, Entity->GetEntityType().EntityHitbox, true, false).Collided()) continue;
 
         Entity->Position[I] = OldCoordinate;
     }
