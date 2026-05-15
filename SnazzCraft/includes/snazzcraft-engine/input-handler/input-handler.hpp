@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <stdint.h>
 
 #include "external/glfw3.h"
 
@@ -24,7 +25,8 @@ namespace SnazzCraft
 
         virtual void PollEvents();
 
-        virtual void HandleEvents(); // Does not clear queue if no callback is set
+        // Does not clear queue if no callback is set
+        virtual void HandleEvents(); 
 
     private:
         GLFWwindow* Window;

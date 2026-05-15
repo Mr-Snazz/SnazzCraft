@@ -11,7 +11,7 @@ namespace SnazzCraft
     class Panel
     {
     public:  
-        virtual void HandleEvent(SnazzCraft::Event* Event) const;
+        virtual bool HandleEvent(SnazzCraft::Event* Event) const; // Returns true if Callback was called
 
         inline void Draw() const
         {

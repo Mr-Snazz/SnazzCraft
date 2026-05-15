@@ -16,14 +16,16 @@ constexpr float FullTextureCoordinates[12] = {
     1.0f, 1.0f  // Bottom Right
 };
 
-void SnazzCraft::Panel::HandleEvent(SnazzCraft::Event* Event) const
+bool SnazzCraft::Panel::HandleEvent(SnazzCraft::Event* Event) const
 {
-    if (this->Callback == nullptr) return;
+    if (this->Callback == nullptr) return false;
 
     glm::dvec2* MousePosition = reinterpret_cast<glm::dvec2*>(Event->EventData->AccessDataType(SNAZZCRAFT_DATA_TYPE_DVEC2));
-    if (MousePosition == nullptr || !this->WithinPanel(MousePosition->x, MousePosition->y)) return;
+    if (MousePosition == nullptr || !this->WithinPanel(MousePosition->x, MousePosition->y)) return false;
     
     this->Callback(Event);
+    
+    return true;
 }
 
 SnazzCraft::Panel::~Panel()

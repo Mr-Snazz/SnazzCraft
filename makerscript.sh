@@ -4,5 +4,5 @@ cd "$ScriptDirectory/SnazzCraft"
 
 mkdir -p "worlds"
 
-make all
+make all -j2
 ./bin/executable

@@ -59,11 +59,15 @@ namespace SnazzCraft
             this->InputHandler.EventQueue.push_back(Event);
         }
 
-        inline void SendEventToPanels(SnazzCraft::Event* Event) const
+        inline bool SendEventToPanels(SnazzCraft::Event* Event) const // Returns true if one or more HandleEvent calls from Panel addresses returne true
         {
+            bool HandleEventReturnedTrue = false;
+
             for (SnazzCraft::Panel* Panel : this->Panels) {
-                Panel->HandleEvent(Event);
+                if (Panel->HandleEvent(Event)) HandleEventReturnedTrue = true;
             }
+
+            return HandleEventReturnedTrue;
         }
 
     protected:

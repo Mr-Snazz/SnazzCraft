@@ -17,7 +17,7 @@ void SnazzCraft::InputHandler::PollEvents()
 {
     if (this->Window == nullptr) return;
     
-    for (unsigned char I = 0; I < SNAZZCRAFT_KEY_CHECK_AMOUNT; I++) { // I is SnazzCraft key   
+    for (uint8_t I = 0u; I < SNAZZCRAFT_KEY_CHECK_AMOUNT; I++) { // I is SnazzCraft key   
         if (glfwGetKey(this->Window, SnazzCraftKeyToGLFWKey[I]) == GLFW_PRESS) {
             SnazzCraft::Event* NewEvent = new SnazzCraft::Event(SNAZZCRAFT_EVENT_KEY_DOWN);
 
@@ -36,7 +36,7 @@ void SnazzCraft::InputHandler::HandleEvents()
 {
     if (this->Callback == nullptr) return;
     
-    for (int I = this->EventQueue.size() - 1; I >= 0; I--) {
+    for (int32_t I = this->EventQueue.size() - 1; I >= 0; I--) {
         SnazzCraft::Event* CurrentEvent = this->EventQueue[I];
 
         this->Callback(CurrentEvent);

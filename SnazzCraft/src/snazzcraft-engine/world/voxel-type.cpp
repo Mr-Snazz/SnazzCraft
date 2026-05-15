@@ -4,7 +4,7 @@
 
 const SnazzCraft::VoxelType& SnazzCraft::VoxelType::GetVoxelType(uint8_t VoxelID)
 {
-    //                                                 LightProducingLevel, LightPropogationDecrease, CullableSides, CollidableToEntities, CollidableToVoxels
+    //                                                 LightProducingLevel, LightPropogationDecrease, CullableSides, CollidableToEntities, CollidableToVoxels. CullableAgainst
     // NOTE: The two most significant bits of CullableSides are never set, and will never be used even if they are 
     static const SnazzCraft::VoxelType Leaves         (0,  2,                                0b00000000, true,  true,  true );
     static const SnazzCraft::VoxelType VoxelCollidable(0,  0,                                0b00000000, false, true,  true );
@@ -37,8 +37,8 @@ const SnazzCraft::VoxelType& SnazzCraft::VoxelType::GetVoxelType(uint8_t VoxelID
 
 SnazzCraft::VoxelType::VoxelType(int32_t ILightProducingLevel, int32_t ILightPropogationDecrease, uint8_t ICullableSides, bool ICollidableToEntities, bool ICollidableToVoxels, bool ICullableAgainst)
     : LightProducingLevel(ILightProducingLevel), LightPropogationDecrease(ILightPropogationDecrease), 
-      CullableSides(ICullableSides), CollidableToEntities(ICollidableToEntities), CollidableToVoxels(ICollidableToVoxels),
-      CullableAgainst(ICullableAgainst)
+      CullableSides(ICullableSides),             CollidableToEntities(ICollidableToEntities), 
+      CollidableToVoxels(ICollidableToVoxels),   CullableAgainst(ICullableAgainst)
 {
 
 }

@@ -18,7 +18,7 @@ glm::mat4 SnazzCraft::ViewMatrix = glm::mat4(1.0f);
 bool SnazzCraft::CloseApplication = false;
 
 const std::vector<SnazzCraft::VoxelVertice> VoxelMeshVertices = {
-    //   Position             // Normal             // Texture Coords
+    //   Position             // Normal              // Texture Coords
 
     // Front
     { { -1.0f, -1.0f, -1.0f }, { 0.0f, 0.0f, -1.0f }, { 0.0f, 0.2f } },
@@ -311,7 +311,8 @@ void WorldInputCallback(SnazzCraft::Event* Event)
 
             case SNAZZCRAFT_EVENT_MOUSE_CLICK_LEFT_PRESS:
             {
-                WorldGUIInstance.SendEventToPanels(Event);
+                if (WorldGUIInstance.SendEventToPanels(Event)) break;
+ 
                 SnazzCraft::CurrentWorld->DestroyVoxel(SnazzCraft::Player->Position, SnazzCraft::Player->Rotation);
             
                 break;
