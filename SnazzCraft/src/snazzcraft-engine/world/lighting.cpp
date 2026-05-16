@@ -1,19 +1,8 @@
 #include "snazzcraft-engine/world/world.hpp"
-#include "snazzcraft-engine/world/chunk.hpp"
+#include "snazzcraft-engine/chunk/chunk.hpp"
 #include "snazzcraft-engine/utilities/math.hpp"
-#include "snazzcraft-engine/world/voxel-type.hpp"
-
-SnazzCraft::World::LightNode::LightNode(int8_t ILightValue, int32_t IX, int32_t IY, int32_t IZ)
-    : X(IX), Y(IY), Z(IZ), LightValue(ILightValue)
-{
-
-}
-
-SnazzCraft::World::LightNode::LightNode(int8_t ILightValue, int32_t IPosition[3])
-    : X(IPosition[0]), Y(IPosition[1]), Z(IPosition[2]), LightValue(ILightValue)
-{
-    
-}
+#include "snazzcraft-engine/voxel/voxel-type.hpp"
+#include "snazzcraft-engine/world/light-node.hpp"
 
 void SnazzCraft::World::UpdateChunkLighting(SnazzCraft::Chunk* Chunk, bool* UpdatedInputChunk)
 {

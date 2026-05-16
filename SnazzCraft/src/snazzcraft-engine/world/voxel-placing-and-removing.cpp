@@ -1,7 +1,7 @@
 #include "snazzcraft-engine/world/world.hpp"
-#include "snazzcraft-engine/world/chunk.hpp"
+#include "snazzcraft-engine/chunk/chunk.hpp"
 #include "snazzcraft-engine/utilities/math.hpp"
-#include "snazzcraft-engine/world/voxel-ids.h"
+#include "snazzcraft-engine/voxel/voxel-ids.h"
 
 bool GetNewPlacePosition(const glm::vec3& EndPosition, uint8_t FaceHit, uint32_t VoxelHitIndex, int8_t OutNewPlacePosition[3], int32_t OutChunkCoordinates[2]);
 
@@ -22,7 +22,7 @@ bool SnazzCraft::World::DestroyVoxel(const glm::vec3& Position, const glm::vec3&
 
     ChunkIterator->second->Voxels[VoxelCollisionInfo.CollidingVoxelIndex] = SnazzCraft::Voxel(ID_VOXEL_AIR);
 
-    ChunkIterator->second->CullVoxelFaces();
+    ChunkIterator->second->CullVoxelFaces(this);
     ChunkIterator->second->UpdateVerticesAndIndices();
     this->UpdateChunkLighting(ChunkIterator->second, nullptr);
 
@@ -68,7 +68,7 @@ bool SnazzCraft::World::PlaceVoxel(const glm::vec3& Position, const glm::vec3& R
         return false; 
     }
 
-    ChunkIterator->second->CullVoxelFaces();
+    ChunkIterator->second->CullVoxelFaces(this);
     ChunkIterator->second->UpdateVerticesAndIndices();
     this->UpdateChunkLighting(ChunkIterator->second, nullptr);
     

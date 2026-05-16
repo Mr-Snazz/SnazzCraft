@@ -1,11 +1,11 @@
 #include "snazzcraft-engine/world/world.hpp"
-#include "snazzcraft-engine/world/chunk.hpp"
+#include "snazzcraft-engine/chunk/chunk.hpp"
 #include "snazzcraft-engine/utilities/math.hpp"
 #include "snazzcraft-engine/height-map/height-map.hpp"
 
 void SnazzCraft::World::GenerateChunk(int32_t X, int32_t Z, bool ApplyLighting)
 {
-    if (X < -SnazzCraft::World::Size || X > SnazzCraft::World::Size || Z < -SnazzCraft::World::Size || Z > SnazzCraft::World::Size) return;
+    if (!this->ChunkWithinWorld(X, Z)) return;
 
     uint64_t ChunkHash = SnazzCraft::IntegerHash(X, Z);
     auto Iterator = this->Chunks.find(ChunkHash);
@@ -14,7 +14,7 @@ void SnazzCraft::World::GenerateChunk(int32_t X, int32_t Z, bool ApplyLighting)
     SnazzCraft::Chunk* NewChunk = new SnazzCraft::Chunk(X, Z);
 
     NewChunk->Generate(this->WorldHeightMap, static_cast<uint32_t>(this->Size * SnazzCraft::Chunk::Width));
-    NewChunk->CullVoxelFaces();
+    NewChunk->CullVoxelFaces(this);
     NewChunk->UpdateVerticesAndIndices();   
 
     this->Chunks[ChunkHash] = NewChunk;

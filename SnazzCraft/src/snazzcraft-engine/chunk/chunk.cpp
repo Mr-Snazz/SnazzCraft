@@ -1,13 +1,13 @@
-#include "snazzcraft-engine/world/chunk.hpp"
+#include "snazzcraft-engine/chunk/chunk.hpp"
 #include "snazzcraft-engine/world/world.hpp"
 #include "snazzcraft-engine/utilities/math.hpp"
 #include "snazzcraft-engine/texture/atlas.hpp"
 #include "snazzcraft-engine/hitbox/hitbox.hpp"
-#include "snazzcraft-engine/world/voxel-ids.h"
+#include "snazzcraft-engine/voxel/voxel-ids.h"
 #include "snazzcraft-engine/height-map/height-map.hpp"
 #include "snazzcraft-engine/hitbox/hitbox.hpp"
 #include "snazzcraft-engine/utilities/math.hpp"
-#include "snazzcraft-engine/world/voxel-type.hpp"
+#include "snazzcraft-engine/voxel/voxel-type.hpp"
 
 SnazzCraft::Chunk::Chunk(int32_t X, int32_t Y)
     : Voxels(std::array<SnazzCraft::Voxel, SnazzCraft::Chunk::Volume>()), 
@@ -132,7 +132,7 @@ void SnazzCraft::Chunk::UpdateVerticesAndIndices()
     }
 }
 
-void SnazzCraft::Chunk::CullVoxelFaces()
+void SnazzCraft::Chunk::CullVoxelFaces(SnazzCraft::World* World)
 {
     for (uint32_t VoxelIndex = 0u; VoxelIndex < SnazzCraft::Chunk::Volume; VoxelIndex++) {
         SnazzCraft::Voxel& Voxel = this->Voxels[VoxelIndex];
@@ -168,9 +168,6 @@ void SnazzCraft::Chunk::CullVoxelFaces()
             Voxel.ChangeSideValue(I, false);
         }
     }
-
-
-
 }
 
 bool SnazzCraft::Chunk::VoxelTouchingChunkBorder(uint32_t VoxelIndex, uint32_t* BorderDirection) const

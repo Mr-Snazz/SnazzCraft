@@ -7,7 +7,7 @@
 
 #include "external/glm/glm.hpp"
 
-#include "snazzcraft-engine/world/voxel.hpp"
+#include "snazzcraft-engine/voxel/voxel.hpp"
 #include "snazzcraft-engine/utilities/math.hpp"
 #include "snazzcraft-engine/mesh/mesh.hpp"
 #include "snazzcraft-engine/world/world.hpp"
@@ -48,7 +48,7 @@ namespace SnazzCraft
 
         void UpdateVerticesAndIndices();
 
-        void CullVoxelFaces(); // Clears previously optimized voxels and repopulates the std::unordered_map
+        void CullVoxelFaces(SnazzCraft::World* World); // Clears previously optimized voxels and repopulates the std::unordered_map
 
         bool VoxelTouchingChunkBorder(uint32_t VoxelIndex, uint32_t* BorderDirection) const;
 
@@ -80,7 +80,7 @@ namespace SnazzCraft
         inline void WorldSpaceToVoxelSpace(const glm::vec3& WorldPosition, int32_t VoxelPosition[3]) const;
 
     public:
-        static constexpr int16_t OceanLevel = 20; // 125
+        static constexpr int16_t OceanLevel = 125; // 125
         static constexpr int16_t MaxOceanDepth = 40;
 
         static inline int32_t FloorDivide(int32_t Value, int32_t Divisor);
@@ -99,6 +99,7 @@ namespace SnazzCraft
 
         static constexpr bool WithinChunkBounds(uint32_t X, uint32_t Y, uint32_t Z);
 
+        // Outputs local voxel coordinates
         template <typename T>
         requires std::signed_integral<T> || std::unsigned_integral<T>
         static inline void GetVoxelPosition(uint32_t VoxelIndex, T& OutX, T& OutY, T& OutZ);
@@ -110,7 +111,7 @@ namespace SnazzCraft
     };
 } // SnazzCraft
 
-#include "snazzcraft-engine/world/chunk.inl"
+#include "snazzcraft-engine/chunk/chunk.inl"
 
 
 

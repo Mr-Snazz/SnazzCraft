@@ -1,5 +1,5 @@
 #include "snazzcraft-engine/world/world.hpp"
-#include "snazzcraft-engine/world/chunk.hpp"
+#include "snazzcraft-engine/chunk/chunk.hpp"
 
 inline void SnazzCraft::World::ApplyGravityToAllEntities() const
 {

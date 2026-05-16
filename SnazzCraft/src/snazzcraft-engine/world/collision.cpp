@@ -1,7 +1,7 @@
 #include "snazzcraft-engine/world/world.hpp"
-#include "snazzcraft-engine/world/chunk.hpp"
+#include "snazzcraft-engine/chunk/chunk.hpp"
 #include "snazzcraft-engine/utilities/math.hpp"
-#include "snazzcraft-engine/world/voxel-type.hpp"
+#include "snazzcraft-engine/voxel/voxel-type.hpp"
 
 SnazzCraft::World::VoxelCollisionInfo SnazzCraft::World::GetCollidingVoxel(const glm::vec3& Position, SnazzCraft::Hitbox* Hitbox, bool TestEntityCollidablility, bool TestVoxelCollidablility) const
 {

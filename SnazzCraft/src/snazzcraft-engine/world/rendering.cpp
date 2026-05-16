@@ -3,14 +3,14 @@
 #include "snazzcraft-engine/utilities/math.hpp"
 #include "snazzcraft-engine/texture/texture.hpp"
 #include "snazzcraft-engine/mesh/mesh.hpp"
-#include "snazzcraft-engine/world/chunk.hpp"
+#include "snazzcraft-engine/chunk/chunk.hpp"
 #include "snazzcraft-engine/shader/voxel-shader.hpp"
 #include "snazzcraft-engine/entity/entity-ids.h"
 
 void SnazzCraft::World::Render() const
 {   
     if (SnazzCraft::CurrentWorld->Entities.size() == 0) {
-        SnazzCraft::CurrentWorld->Entities.push_back(new SnazzCraft::Entity(glm::vec3(0.0f, 80.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), ID_ENTITY_TEST));
+        SnazzCraft::CurrentWorld->Entities.push_back(new SnazzCraft::Entity(glm::vec3(0.0f, static_cast<float>(SnazzCraft::Chunk::OceanLevel * 2 + 40), 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), ID_ENTITY_TEST));
     } else {
         //SnazzCraft::CurrentWorld->MoveEntity(SnazzCraft::CurrentWorld->Entities[0], glm::vec3(0.0f), 0.01f);
 

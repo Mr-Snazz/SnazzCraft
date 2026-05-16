@@ -17,7 +17,7 @@
 #include "external/glm/glm.hpp"
 
 #include "snazzcraft-engine/entity/entity.hpp"
-#include "snazzcraft-engine/world/voxel.hpp"
+#include "snazzcraft-engine/voxel/voxel.hpp"
 #include "snazzcraft-engine/entity/user.hpp"
 
 #define WORLD_SAVE_FILE_DESCRIPTOR_NAME            ('0')
@@ -133,25 +133,8 @@ namespace SnazzCraft
 
 
     private:
-        class LightNode
-        {
-        public:
-            union 
-            {
-                struct 
-                {
-                    int32_t X, Y, Z;
-                };
-                int32_t Position[3];
-            };
-            int8_t LightValue;
-
-            LightNode(int8_t ILightValue, int32_t IX, int32_t IY, int32_t IZ);
-
-            LightNode(int8_t ILightValue, int32_t IPosition[3]);
-        };
-
-        
+        class LightNode;
+        class GenerationTask;
     };
     
     extern SnazzCraft::World* CurrentWorld;

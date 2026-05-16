@@ -6,7 +6,7 @@
 #include <string>
 
 #include "snazzcraft-engine/mesh/voxel-vertice.hpp"
-#include "snazzcraft-engine/world/voxel.hpp"
+#include "snazzcraft-engine/voxel/voxel.hpp"
 
 #define ATLAS_SIZE (5)
 #define VOXEL_TEXTURE_SIZE_PIXELS (256)

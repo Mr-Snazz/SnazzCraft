@@ -1,6 +1,6 @@
 #include "snazzcraft-engine/world/world.hpp"
-#include "snazzcraft-engine/world/chunk.hpp"
-#include "snazzcraft-engine/world/voxel-ids.h"
+#include "snazzcraft-engine/chunk/chunk.hpp"
+#include "snazzcraft-engine/voxel/voxel-ids.h"
 #include "snazzcraft-engine/texture/atlas.hpp"
 #include "snazzcraft-engine/height-map/height-map.hpp"
 

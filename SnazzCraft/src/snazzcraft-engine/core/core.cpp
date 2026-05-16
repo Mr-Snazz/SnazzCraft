@@ -8,7 +8,7 @@
 #include "snazzcraft-engine/fps-tracker/fps-tracker.hpp"
 #include "snazzcraft-engine/entity/user.hpp"
 #include "snazzcraft-engine/world/world.hpp"
-#include "snazzcraft-engine/world/voxel-ids.h"
+#include "snazzcraft-engine/voxel/voxel-ids.h"
 #include "snazzcraft-engine/shader/voxel-shader.hpp"
 
 glm::mat4 SnazzCraft::ProjectionMatrix = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 1000.0f);
@@ -120,6 +120,8 @@ bool SnazzCraft::Initiate()
 
     SnazzCraft::MainMenuGUI::Initialize(MainMenuInputCallback);
     SnazzCraft::WorldGUI::Initialize(WorldInputCallback);
+
+
 
     return true;
 }

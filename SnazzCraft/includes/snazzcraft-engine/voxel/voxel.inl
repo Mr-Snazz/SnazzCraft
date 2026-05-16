@@ -1,5 +1,5 @@
-#include "snazzcraft-engine/world/voxel.hpp"
-#include "snazzcraft-engine/world/voxel-type.hpp"
+#include "snazzcraft-engine/voxel/voxel.hpp"
+#include "snazzcraft-engine/voxel/voxel-type.hpp"
 #include "snazzcraft-engine/utilities/byte-handling.hpp"
 
 inline const SnazzCraft::VoxelType& SnazzCraft::Voxel::GetVoxelType() const

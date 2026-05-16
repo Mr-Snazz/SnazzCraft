@@ -49,4 +49,4 @@ namespace SnazzCraft
     };
 } // SnazzCraft
 
-#include "snazzcraft-engine/world/voxel.inl"
+#include "snazzcraft-engine/voxel/voxel.inl"
