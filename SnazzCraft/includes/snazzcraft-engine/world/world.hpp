@@ -19,6 +19,7 @@
 #include "snazzcraft-engine/entity/entity.hpp"
 #include "snazzcraft-engine/voxel/voxel.hpp"
 #include "snazzcraft-engine/entity/user.hpp"
+#include "snazzcraft-engine/utilities/thread-pool.hpp"
 
 #define WORLD_SAVE_FILE_DESCRIPTOR_NAME            ('0')
 #define WORLD_SAVE_FILE_DESCRIPTOR_SIZE            ('1')
@@ -44,14 +45,9 @@ namespace SnazzCraft
         uint32_t RenderDistance = 50;
         float PlayerReach = static_cast<float>(SnazzCraft::Voxel::Size * 5);
 
-        std::unordered_map<uint64_t, SnazzCraft::Chunk*> Chunks; // Uses SnazzCraft::IntegerHash for hasing
-        std::vector<SnazzCraft::Entity*> Entities;
-
         World(std::string IName, uint32_t ISize, int32_t ISeed);
 
         ~World();
-
-        void GenerateChunk(int32_t X, int32_t Z, bool ApplyLighting); 
 
         void Render() const;
 
@@ -91,19 +87,31 @@ namespace SnazzCraft
 
         void UpdateVoxelPlacementDisplay();
 
+        bool ChunkWithinWorld(SnazzCraft::Chunk* Chunk) const;
+
         inline void ApplyGravityToAllEntities() const;
 
-        inline const glm::vec3& GetVoxelPlacementDisplayPosition() const;
-
-        bool ChunkWithinWorld(SnazzCraft::Chunk* Chunk) const;
+        inline const glm::vec3& GetVoxelPlacementDisplayPosition() const; 
 
         inline bool ChunkWithinWorld(int32_t ChunkX, int32_t ChunkZ) const;
 
     private:
-        SnazzCraft::HeightMap* WorldHeightMap = nullptr;
+        SnazzCraft::ThreadPool ThreadPool; // 4 threads
+
+        std::unordered_map<uint64_t, SnazzCraft::Chunk*> Chunks; // Uses SnazzCraft::IntegerHash for hashing
+        mutable std::mutex ChunksMutex;
+
+        std::vector<SnazzCraft::Entity*> Entities;
+        mutable std::mutex EntitiesMutex;
+
+        SnazzCraft::HeightMap* HeightMap = nullptr;
+        mutable std::mutex HeighhtMapMutex;
+
         SnazzCraft::Mesh* VoxelPlacementDisplayMesh = nullptr;
         glm::vec3 VoxelPlacementDisplayPosition;
         bool ShouldRenderVoxelPlacementDisplay = false;
+
+        void GenerateChunk(int32_t X, int32_t Z, bool ApplyLighting); 
 
         void RenderAllEntities() const;
 
@@ -127,14 +135,17 @@ namespace SnazzCraft
         void ApplyLightingVoxel(int32_t LightOrigin[3], int32_t LightProducingLevel, std::unordered_set<uint64_t>* ChunksToUpdate);
         
     public:
-        friend class SnazzCraft::Chunk;
-
         static SnazzCraft::World* CreateWorld(std::string Name, uint32_t Size, int32_t Seed);
 
 
     private:
         class LightNode;
+
         class GenerationTask;
+        class GenerationTaskChunk;
+
+        friend class SnazzCraft::Chunk;
+        friend class SnazzCraft::World::GenerationTask;
     };
     
     extern SnazzCraft::World* CurrentWorld;

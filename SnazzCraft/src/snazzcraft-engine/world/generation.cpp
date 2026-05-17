@@ -2,10 +2,14 @@
 #include "snazzcraft-engine/chunk/chunk.hpp"
 #include "snazzcraft-engine/utilities/math.hpp"
 #include "snazzcraft-engine/height-map/height-map.hpp"
+#include "snazzcraft-engine/world/generation-task/generation-task-chunk.hpp"
 
 void SnazzCraft::World::GenerateChunk(int32_t X, int32_t Z, bool ApplyLighting)
 {
     if (!this->ChunkWithinWorld(X, Z)) return;
+
+    //std::lock_guard<std::mutex> ChunksLock(this->ChunksMutex);
+    //std::lock_guard<std::mutex> HeightMapLock(this->HeighhtMapMutex);
 
     uint64_t ChunkHash = SnazzCraft::IntegerHash(X, Z);
     auto Iterator = this->Chunks.find(ChunkHash);
@@ -13,7 +17,7 @@ void SnazzCraft::World::GenerateChunk(int32_t X, int32_t Z, bool ApplyLighting)
     
     SnazzCraft::Chunk* NewChunk = new SnazzCraft::Chunk(X, Z);
 
-    NewChunk->Generate(this->WorldHeightMap, static_cast<uint32_t>(this->Size * SnazzCraft::Chunk::Width));
+    NewChunk->Generate(this->HeightMap, static_cast<uint32_t>(this->Size * SnazzCraft::Chunk::Width));
     NewChunk->CullVoxelFaces(this);
     NewChunk->UpdateVerticesAndIndices();   
 
@@ -37,12 +41,19 @@ SnazzCraft::World* SnazzCraft::World::CreateWorld(std::string Name, uint32_t Siz
 
     SnazzCraft::World* NewWorld = new SnazzCraft::World(Name, GenerateSize, Seed);
 
+    //std::vector<SnazzCraft::World::GenerationTask*> Tasks;
     for (int32_t X = -NewWorld->Size; X <= NewWorld->Size; X++) {
     for (int32_t Z = -NewWorld->Size; Z <= NewWorld->Size; Z++) {
-        NewWorld->GenerateChunk(X, Z, true);
+        //NewWorld->GenerateChunk(X, Z, true);
+        //Tasks.push_back(new SnazzCraft::World::GenerationTaskChunk(NewWorld, X, Z));
+        //SnazzCraft::World::GenerationTask* New = new SnazzCraft::World::GenerationTaskChunk(NewWorld, X, Z);
+        //Test.Enqueue([New](){ New->Execute(); });
     } 
     }
-    
+
+    //for (const auto& Task : Tasks) Task->Execute();
+
+
     return NewWorld;
 }
 

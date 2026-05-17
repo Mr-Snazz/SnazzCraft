@@ -10,6 +10,7 @@
 void SnazzCraft::World::Render() const
 {   
     if (SnazzCraft::CurrentWorld->Entities.size() == 0) {
+        std::lock_guard<std::mutex> EntitieLock(this->EntitiesMutex);
         SnazzCraft::CurrentWorld->Entities.push_back(new SnazzCraft::Entity(glm::vec3(0.0f, static_cast<float>(SnazzCraft::Chunk::OceanLevel * 2 + 40), 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), ID_ENTITY_TEST));
     } else {
         //SnazzCraft::CurrentWorld->MoveEntity(SnazzCraft::CurrentWorld->Entities[0], glm::vec3(0.0f), 0.01f);

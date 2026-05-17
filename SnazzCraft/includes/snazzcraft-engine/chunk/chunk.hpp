@@ -14,7 +14,6 @@
 
 namespace SnazzCraft
 {
-    class World;
     class HeightMap;
     class Hitbox;
 
@@ -32,9 +31,9 @@ namespace SnazzCraft
     public:
         int32_t Position[2]; // X & Z Chunk Coordinates
 
-        static constexpr int16_t Width  = 16;
-        static constexpr int16_t Height = 256;
-        static constexpr int16_t Depth  = 16;
+        static constexpr int16_t  Width  = 16;
+        static constexpr int16_t  Height = 256;
+        static constexpr int16_t  Depth  = 16;
         static constexpr uint32_t Volume = static_cast<uint32_t>(Width * Height * Depth);
 
         std::array<SnazzCraft::Voxel, Volume> Voxels; // Voxel positioning is in local chunk space
@@ -48,7 +47,7 @@ namespace SnazzCraft
 
         void UpdateVerticesAndIndices();
 
-        void CullVoxelFaces(SnazzCraft::World* World); // Clears previously optimized voxels and repopulates the std::unordered_map
+        void CullVoxelFaces(SnazzCraft::World* World); 
 
         bool VoxelTouchingChunkBorder(uint32_t VoxelIndex, uint32_t* BorderDirection) const;
 
