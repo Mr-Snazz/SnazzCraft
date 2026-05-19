@@ -13,6 +13,7 @@
 #include <stdint.h>
 #include <queue>
 #include <functional>
+#include <variant>
 
 #include "external/glm/glm.hpp"
 
@@ -45,6 +46,8 @@ namespace SnazzCraft
         uint32_t RenderDistance = 50;
         float PlayerReach = static_cast<float>(SnazzCraft::Voxel::Size * 5);
 
+        SnazzCraft::ThreadPool ThreadPool; // 4 threads
+
         World(std::string IName, uint32_t ISize, int32_t ISeed);
 
         ~World();
@@ -75,12 +78,6 @@ namespace SnazzCraft
 
         void MoveEntity(glm::vec3 Translation, SnazzCraft::Entity* Entity) const; // Returns true if movement occurred without voxel collision 
 
-        /*
-        Calls UpdateVerticesAndIndices & UpdateMesh on all chunks affected
-        If the Chunk in the address given has no light producing voxels then no member functions of that chunk will be called to update its vertices, indices, or mesh
-        */
-        void UpdateChunkLighting(SnazzCraft::Chunk* Chunk, bool* UpatedInputChunk);
-
         bool DestroyVoxel(const glm::vec3& Position, const glm::vec3& Rotation);
 
         bool PlaceVoxel(const glm::vec3& Position, const glm::vec3& Rotation, uint8_t VoxelID);
@@ -96,8 +93,6 @@ namespace SnazzCraft
         inline bool ChunkWithinWorld(int32_t ChunkX, int32_t ChunkZ) const;
 
     private:
-        SnazzCraft::ThreadPool ThreadPool; // 4 threads
-
         std::unordered_map<uint64_t, SnazzCraft::Chunk*> Chunks; // Uses SnazzCraft::IntegerHash for hashing
         mutable std::mutex ChunksMutex;
 
@@ -124,6 +119,8 @@ namespace SnazzCraft
         */
         bool RaycastToVoxel(glm::vec3& Position, const glm::vec3& Rotation, float MaxDistance, uint8_t* FaceHit, SnazzCraft::World::VoxelCollisionInfo* VoxelCollisionInfo); 
 
+        void UpdateChunkLighting(SnazzCraft::Chunk* Chunk, bool* UpatedInputChunk);
+
         void ApplySunLightingToChunk(SnazzCraft::Chunk* Chunk, std::unordered_set<uint64_t>* ChunksToUpdate);
 
         void ApplySunLightingToColumn(SnazzCraft::Chunk* Chunk, uint32_t LocalChunkX, uint32_t LocalChunkZ, uint32_t StartY, int32_t StartLightValue, std::unordered_set<uint64_t>* ChunksToUpdate);
@@ -141,11 +138,9 @@ namespace SnazzCraft
     private:
         class LightNode;
 
-        class GenerationTask;
-        class GenerationTaskChunk;
-
         friend class SnazzCraft::Chunk;
-        friend class SnazzCraft::World::GenerationTask;
+
+        
     };
     
     extern SnazzCraft::World* CurrentWorld;

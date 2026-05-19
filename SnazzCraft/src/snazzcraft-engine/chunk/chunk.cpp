@@ -12,7 +12,8 @@
 SnazzCraft::Chunk::Chunk(int32_t X, int32_t Y)
     : Voxels(std::array<SnazzCraft::Voxel, SnazzCraft::Chunk::Volume>()), 
     LightValues(std::array<int32_t, SnazzCraft::Chunk::Volume>()), 
-    ChunkMesh(SnazzCraft::Mesh({}, {})), 
+    ShouldUpdateMesh(false),
+    ChunkMesh(SnazzCraft::Mesh({}, {}, false)), 
     VoxelCollisionHitbox(new SnazzCraft::Hitbox(glm::vec3((float)SnazzCraft::Voxel::Size)))
 {
     this->Position[0] = X;
@@ -130,9 +131,11 @@ void SnazzCraft::Chunk::UpdateVerticesAndIndices()
             
         }
     }
+
+    this->ShouldUpdateMesh = true;
 }
 
-void SnazzCraft::Chunk::CullVoxelFaces(SnazzCraft::World* World)
+void SnazzCraft::Chunk::CullVoxelFaces()
 {
     for (uint32_t VoxelIndex = 0u; VoxelIndex < SnazzCraft::Chunk::Volume; VoxelIndex++) {
         SnazzCraft::Voxel& Voxel = this->Voxels[VoxelIndex];
@@ -288,7 +291,7 @@ void SnazzCraft::Chunk::UpdateLightingOnVertices(SnazzCraft::World* World)
         uint64_t ChunkIndex = SnazzCraft::IntegerHash<int32_t>(TargetChunkX, TargetChunkZ);
         auto ChunkIterator = World->Chunks.find(ChunkIndex);
         if (ChunkIterator == World->Chunks.end()) {
-            World->GenerateChunk(TargetChunkX, TargetChunkZ, true);
+            //World->GenerateChunk(TargetChunkX, TargetChunkZ, true);
             ChunkIterator = World->Chunks.find(ChunkIndex);
         }
         if (ChunkIterator == World->Chunks.end()) return DefaultLightValueFloat;
@@ -317,5 +320,7 @@ void SnazzCraft::Chunk::UpdateLightingOnVertices(SnazzCraft::World* World)
         }
         VoxelCount++;
     }
+
+    this->ShouldUpdateMesh = true;
 }
 

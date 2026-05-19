@@ -22,4 +22,3 @@ inline bool SnazzCraft::World::ChunkWithinWorld(int32_t ChunkX, int32_t ChunkZ) 
     return ChunkX >= -this->Size && ChunkX <= this->Size && ChunkZ >= -this->Size && ChunkZ <= this->Size;
 }
 
-

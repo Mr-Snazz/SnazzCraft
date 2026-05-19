@@ -3,6 +3,7 @@
 inline void SnazzCraft::Chunk::UpdateMesh()
 {
     this->ChunkMesh.UpdateGPUData(true, true);
+    //this->ChunkMesh = SnazzCraft::Mesh(this->ChunkMesh.Vertices, this->ChunkMesh.Indices);
 }
 
 inline bool SnazzCraft::Chunk::HasValidMesh() const

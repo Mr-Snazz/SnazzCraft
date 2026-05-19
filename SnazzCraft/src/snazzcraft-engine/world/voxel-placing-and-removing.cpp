@@ -22,9 +22,11 @@ bool SnazzCraft::World::DestroyVoxel(const glm::vec3& Position, const glm::vec3&
 
     ChunkIterator->second->Voxels[VoxelCollisionInfo.CollidingVoxelIndex] = SnazzCraft::Voxel(ID_VOXEL_AIR);
 
-    ChunkIterator->second->CullVoxelFaces(this);
+    ChunkIterator->second->CullVoxelFaces();
     ChunkIterator->second->UpdateVerticesAndIndices();
     this->UpdateChunkLighting(ChunkIterator->second, nullptr);
+
+    ChunkIterator->second->ShouldUpdateMesh = true;
 
     return true;
 }
@@ -68,9 +70,11 @@ bool SnazzCraft::World::PlaceVoxel(const glm::vec3& Position, const glm::vec3& R
         return false; 
     }
 
-    ChunkIterator->second->CullVoxelFaces(this);
+    ChunkIterator->second->CullVoxelFaces();
     ChunkIterator->second->UpdateVerticesAndIndices();
     this->UpdateChunkLighting(ChunkIterator->second, nullptr);
+
+    ChunkIterator->second->ShouldUpdateMesh = true;
     
     return true;
 }

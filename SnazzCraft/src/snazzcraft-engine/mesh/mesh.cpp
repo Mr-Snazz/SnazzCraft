@@ -2,12 +2,13 @@
 
 SnazzCraft::Mesh* SnazzCraft::VoxelMesh = nullptr;
 
-SnazzCraft::Mesh::Mesh(std::vector<SnazzCraft::VoxelVertice> Vertices, std::vector<uint32_t> Indices)
+SnazzCraft::Mesh::Mesh(std::vector<SnazzCraft::VoxelVertice> Vertices, std::vector<uint32_t> Indices, bool Initiate)
+    : VAO(0u), VBO(0u), EBO(0u), ShouldInitiate(!Initiate)
 {
 	this->Vertices = Vertices;
 	this->Indices = Indices;
 
-    this->Initiate();
+    if (Initiate) this->Initiate();
 }
 
 SnazzCraft::Mesh::~Mesh()
@@ -26,6 +27,8 @@ void SnazzCraft::Mesh::Draw() const
 
 void SnazzCraft::Mesh::UpdateGPUData(bool BindVAO, bool UnbindPostUpdate)
 {
+    if (this->ShouldInitiate) { this->ShouldInitiate = false; this->Initiate(); return; }
+
     if (BindVAO) glBindVertexArray(this->VAO);
 
     // Update VBO with current vertex data
@@ -44,6 +47,10 @@ void SnazzCraft::Mesh::UpdateGPUData(bool BindVAO, bool UnbindPostUpdate)
 
 void SnazzCraft::Mesh::Initiate()
 {
+    if (this->VAO != 0u) glDeleteVertexArrays(1, &this->VAO);
+    if (this->VBO != 0u) glDeleteBuffers(1, &this->VBO);
+    if (this->EBO != 0u) glDeleteBuffers(1, &this->EBO);
+
     glGenVertexArrays(1, &this->VAO);
     glGenBuffers(1, &this->VBO);
     glGenBuffers(1, &this->EBO);
@@ -149,7 +156,7 @@ SnazzCraft::Mesh* SnazzCraft::Mesh::LoadMeshFromObjectFile(const char* FilePath)
     File.close();
 
     // Instantiate the mesh with the populated vectors
-    return new SnazzCraft::Mesh(OutVertices, OutIndices);
+    return new SnazzCraft::Mesh(OutVertices, OutIndices, false);
 }
 
 

@@ -18,11 +18,12 @@ namespace SnazzCraft
 
         ~ThreadPool();
 
-        void Enqueue(std::function<void()> Task);
+        void Enqueue(std::function<void(void*)> Task, void* Argument);
 
     private:
-        std::queue<std::function<void()>> TaskQueue;
-        std::mutex TaskQueueMutex;
+        std::queue<std::function<void(void*)>> TaskQueue;
+        std::queue<void*> ArguementQueue;
+        std::mutex QueueMutex;
 
         std::vector<std::jthread> Threads;
         std::condition_variable Condition;

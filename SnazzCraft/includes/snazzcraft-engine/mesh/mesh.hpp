@@ -24,7 +24,7 @@ namespace SnazzCraft
 
         uint32_t VAO;
 
-        Mesh(std::vector<SnazzCraft::VoxelVertice> Vertices, std::vector<uint32_t> Indices); // Use shader before constructing
+        Mesh(std::vector<SnazzCraft::VoxelVertice> Vertices, std::vector<uint32_t> Indices, bool Initiate); // Use shader before constructing
 
         virtual ~Mesh();
 
@@ -37,6 +37,7 @@ namespace SnazzCraft
     private:
         uint32_t VBO;
         uint32_t EBO;
+        bool ShouldInitiate;
 
         void Initiate();
 

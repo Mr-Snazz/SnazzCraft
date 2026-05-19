@@ -39,6 +39,10 @@ namespace SnazzCraft
         std::array<SnazzCraft::Voxel, Volume> Voxels; // Voxel positioning is in local chunk space
         std::array<int32_t,           Volume> LightValues;
 
+        bool ShouldUpdateMesh;
+
+        SnazzCraft::Mesh ChunkMesh; //
+
         Chunk(int32_t X, int32_t Y); // Chunk Coordinates 
 
         ~Chunk();
@@ -47,7 +51,7 @@ namespace SnazzCraft
 
         void UpdateVerticesAndIndices();
 
-        void CullVoxelFaces(SnazzCraft::World* World); 
+        void CullVoxelFaces(); 
 
         bool VoxelTouchingChunkBorder(uint32_t VoxelIndex, uint32_t* BorderDirection) const;
 
@@ -70,7 +74,7 @@ namespace SnazzCraft
     private:
         glm::vec3 ChunkWorldOffset;
 
-        SnazzCraft::Mesh ChunkMesh;
+        
 
         SnazzCraft::Hitbox* VoxelCollisionHitbox;
 
@@ -79,8 +83,8 @@ namespace SnazzCraft
         inline void WorldSpaceToVoxelSpace(const glm::vec3& WorldPosition, int32_t VoxelPosition[3]) const;
 
     public:
-        static constexpr int16_t OceanLevel = 125; // 125
-        static constexpr int16_t MaxOceanDepth = 40;
+        static constexpr int16_t OceanLevel = 25; // 125
+        static constexpr int16_t MaxOceanDepth = 11;
 
         static inline int32_t FloorDivide(int32_t Value, int32_t Divisor);
 

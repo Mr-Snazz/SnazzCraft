@@ -70,10 +70,10 @@ void SnazzCraft::World::RenderAllEntities() const
         EntityType.EntityMesh->Draw();
     };
 
+    std::lock_guard<std::mutex> EntitiesLock(this->EntitiesMutex);
+
     RenderEntity(SnazzCraft::Player);
-    for (SnazzCraft::Entity* Entity : this->Entities) {
-        RenderEntity(Entity);
-    }
+    for (SnazzCraft::Entity* Entity : this->Entities) RenderEntity(Entity);
 }
 
 void SnazzCraft::World::RenderChunks() const
@@ -85,13 +85,19 @@ void SnazzCraft::World::RenderChunks() const
     for (int32_t Z = PlayerChunkPosition[1] - static_cast<int32_t>(this->RenderDistance); Z <= PlayerChunkPosition[1] + static_cast<int32_t>(this->RenderDistance); Z++) {
         if (!this->ChunkWithinWorld(X, Z)) continue;
 
-        auto ChunkIterator = this->Chunks.find(SnazzCraft::IntegerHash(X, Z));
+        uint64_t Hash = SnazzCraft::IntegerHash(X, Z);
+        std::lock_guard<std::mutex> ChunksToUpdateMeshesLock(this->ChunksMutex);
+
+        auto ChunkIterator = this->Chunks.find(Hash);
         if (ChunkIterator == this->Chunks.end()) continue;
+
+        if (ChunkIterator->second->ShouldUpdateMesh) { ChunkIterator->second->UpdateMesh(); ChunkIterator->second->ShouldUpdateMesh = false; }
 
         if (!ChunkIterator->second->HasValidMesh()) continue; 
         ChunkIterator->second->Draw();
     }
     }
+    
 }
 
 void SnazzCraft::World::RenderVoxelPlacementDisplay() const

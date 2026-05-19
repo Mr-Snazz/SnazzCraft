@@ -114,7 +114,7 @@ bool SnazzCraft::Initiate()
 
     SnazzCraft::EntityType::Initialize();
     
-    SnazzCraft::VoxelMesh = new Mesh(VoxelMeshVertices, VoxelMeshIndices);
+    SnazzCraft::VoxelMesh = new Mesh(VoxelMeshVertices, VoxelMeshIndices, true);
 
     SnazzCraft::VoxelMesh->ScaleVector = glm::vec3(static_cast<float>(SnazzCraft::Voxel::Size) / 2.0f);
 

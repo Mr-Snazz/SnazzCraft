@@ -2,7 +2,7 @@
 #include "snazzcraft-engine/utilities/math.hpp"
 #include "snazzcraft-engine/entity/entity-ids.h"
 
-SnazzCraft::User* SnazzCraft::Player = new SnazzCraft::User({ -5.0f, 290.0f, -50.0f }, { 0.0f, 0.0f, 0.0f });
+SnazzCraft::User* SnazzCraft::Player = new SnazzCraft::User({ -5.0f, 65.0f, -50.0f }, { 0.0f, 0.0f, 0.0f });
 
 SnazzCraft::User::User(glm::vec3 Position, glm::vec3 Rotation) : SnazzCraft::Entity(Position, Rotation, ID_ENTITY_PLAYER)
 {
