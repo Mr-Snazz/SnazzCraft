@@ -21,7 +21,7 @@ SnazzCraft::World::~World()
 }
 
 SnazzCraft::World::World(std::string IName, uint32_t ISize, int32_t ISeed)
-    : Name(IName), Seed(ISeed), ThreadPool(SnazzCraft::ThreadPool(4u)), Chunks(std::unordered_map<uint64_t, SnazzCraft::Chunk*>()), VoxelPlacementDisplayPosition(glm::vec3(0.0f))
+    : Name(IName), Seed(ISeed), ThreadPool(SnazzCraft::ThreadPool(6u)), Chunks(std::unordered_map<uint64_t, SnazzCraft::Chunk*>()), VoxelPlacementDisplayPosition(glm::vec3(0.0f))
 {
     this->Size = static_cast<int32_t>((ISize > SnazzCraft::World::MaxSize || ISize <= 0) ? SnazzCraft::World::MaxSize : ISize);
 

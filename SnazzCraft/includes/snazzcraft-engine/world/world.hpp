@@ -22,13 +22,6 @@
 #include "snazzcraft-engine/entity/user.hpp"
 #include "snazzcraft-engine/utilities/thread-pool.hpp"
 
-#define WORLD_SAVE_FILE_DESCRIPTOR_NAME            ('0')
-#define WORLD_SAVE_FILE_DESCRIPTOR_SIZE            ('1')
-#define WORLD_SAVE_FILE_DESCRIPTOR_CHUNK_BEGIN     ('2')
-#define WORLD_SAVE_FILE_DESCRIPTOR_CHUNK_END       ('3')
-#define WORLD_SAVE_FILE_DESCRIPTOR_CHUNK_NEW_VOXEL ('4')
-#define WORLD_SAVE_FILE_DESCRIPTOR_WORLD_SEED      ('5')
-
 namespace SnazzCraft
 {
     class Chunk;
@@ -45,8 +38,6 @@ namespace SnazzCraft
         
         uint32_t RenderDistance = 50;
         float PlayerReach = static_cast<float>(SnazzCraft::Voxel::Size * 5);
-
-        SnazzCraft::ThreadPool ThreadPool; // 4 threads
 
         World(std::string IName, uint32_t ISize, int32_t ISeed);
 
@@ -85,6 +76,8 @@ namespace SnazzCraft
         void UpdateVoxelPlacementDisplay();
 
         bool ChunkWithinWorld(SnazzCraft::Chunk* Chunk) const;
+        
+        void AddChunkUpdateTaskToThreadPool(SnazzCraft::Chunk* Chunk);
 
         inline void ApplyGravityToAllEntities() const;
 
@@ -92,7 +85,11 @@ namespace SnazzCraft
 
         inline bool ChunkWithinWorld(int32_t ChunkX, int32_t ChunkZ) const;
 
+        inline void AddTaskToThreadPool(std::function<void(void*)> Task, void* Argument);
+
     private:
+        SnazzCraft::ThreadPool ThreadPool; // 6 threads
+
         std::unordered_map<uint64_t, SnazzCraft::Chunk*> Chunks; // Uses SnazzCraft::IntegerHash for hashing
         mutable std::mutex ChunksMutex;
 
@@ -100,13 +97,13 @@ namespace SnazzCraft
         mutable std::mutex EntitiesMutex;
 
         SnazzCraft::HeightMap* HeightMap = nullptr;
-        mutable std::mutex HeighhtMapMutex;
+        mutable std::mutex HeightMapMutex;
 
         SnazzCraft::Mesh* VoxelPlacementDisplayMesh = nullptr;
         glm::vec3 VoxelPlacementDisplayPosition;
         bool ShouldRenderVoxelPlacementDisplay = false;
 
-        void GenerateChunk(int32_t X, int32_t Z, bool ApplyLighting); 
+        void GenerateChunk(int32_t X, int32_t Z); 
 
         void RenderAllEntities() const;
 
@@ -140,7 +137,6 @@ namespace SnazzCraft
 
         friend class SnazzCraft::Chunk;
 
-        
     };
     
     extern SnazzCraft::World* CurrentWorld;

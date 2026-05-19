@@ -40,8 +40,7 @@ namespace SnazzCraft
         std::array<int32_t,           Volume> LightValues;
 
         bool ShouldUpdateMesh;
-
-        SnazzCraft::Mesh ChunkMesh; //
+        bool ShouldUpdateLighting;
 
         Chunk(int32_t X, int32_t Y); // Chunk Coordinates 
 
@@ -74,7 +73,7 @@ namespace SnazzCraft
     private:
         glm::vec3 ChunkWorldOffset;
 
-        
+        SnazzCraft::Mesh ChunkMesh; 
 
         SnazzCraft::Hitbox* VoxelCollisionHitbox;
 

@@ -15,13 +15,13 @@ SnazzCraft::ThreadPool::ThreadPool(size_t ThreadCount)
 
                 // Wait until a task is availuble or the pool is stopping
                 this->Condition.wait(Lock, [this]{ return this->ShouldStop || !this->TaskQueue.empty(); });
-                if (this->ShouldStop && this->TaskQueue.empty() && this->ArguementQueue.empty()) return;
+                if (this->ShouldStop && this->TaskQueue.empty() && this->ArgumentQueue.empty()) return;
 
                 Task = std::move(this->TaskQueue.front());
                 this->TaskQueue.pop();
 
-                Argument = std::move(this->ArguementQueue.front());
-                this->ArguementQueue.pop();
+                Argument = std::move(this->ArgumentQueue.front());
+                this->ArgumentQueue.pop();
             }
 
             if (Task) Task(Argument);
@@ -41,12 +41,12 @@ SnazzCraft::ThreadPool::~ThreadPool()
     this->Condition.notify_all();
 }
 
-void SnazzCraft::ThreadPool::Enqueue(std::function<void(void*)> Task, void* Arguement)
+void SnazzCraft::ThreadPool::Enqueue(std::function<void(void*)> Task, void* Argument)
 {
     {
         std::lock_guard<std::mutex> Lock(this->QueueMutex);
         this->TaskQueue.emplace(std::move(Task));
-        this->ArguementQueue.emplace(Arguement);
+        this->ArgumentQueue.emplace(Argument);
     }
 
     this->Condition.notify_one();

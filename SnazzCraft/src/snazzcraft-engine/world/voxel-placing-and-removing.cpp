@@ -27,6 +27,7 @@ bool SnazzCraft::World::DestroyVoxel(const glm::vec3& Position, const glm::vec3&
     this->UpdateChunkLighting(ChunkIterator->second, nullptr);
 
     ChunkIterator->second->ShouldUpdateMesh = true;
+    ChunkIterator->second->ShouldUpdateLighting = true;
 
     return true;
 }
@@ -63,18 +64,16 @@ bool SnazzCraft::World::PlaceVoxel(const glm::vec3& Position, const glm::vec3& R
     
     uint32_t LocalPlaceVoxelIndex = SnazzCraft::Chunk::LocalVoxelIndex(NewPlacePosition[0], NewPlacePosition[1], NewPlacePosition[2]);
 
+    if (CollidedWithEntity(LocalPlaceVoxelIndex)) return false;
+
     ChunkIterator->second->Voxels[LocalPlaceVoxelIndex] = SnazzCraft::Voxel(VoxelID);
 
-    if (CollidedWithEntity(LocalPlaceVoxelIndex)) { 
-        ChunkIterator->second->Voxels[LocalPlaceVoxelIndex].ID = ID_VOXEL_AIR;
-        return false; 
-    }
-
-    ChunkIterator->second->CullVoxelFaces();
-    ChunkIterator->second->UpdateVerticesAndIndices();
-    this->UpdateChunkLighting(ChunkIterator->second, nullptr);
+    //ChunkIterator->second->CullVoxelFaces();
+    //ChunkIterator->second->UpdateVerticesAndIndices();
+    //this->UpdateChunkLighting(ChunkIterator->second, nullptr);
 
     ChunkIterator->second->ShouldUpdateMesh = true;
+    ChunkIterator->second->ShouldUpdateLighting = true;
     
     return true;
 }

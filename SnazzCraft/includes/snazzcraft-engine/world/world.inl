@@ -22,3 +22,8 @@ inline bool SnazzCraft::World::ChunkWithinWorld(int32_t ChunkX, int32_t ChunkZ) 
     return ChunkX >= -this->Size && ChunkX <= this->Size && ChunkZ >= -this->Size && ChunkZ <= this->Size;
 }
 
+inline void SnazzCraft::World::AddTaskToThreadPool(std::function<void(void*)> Task, void* Argument)
+{
+    this->ThreadPool.Enqueue(Task, Argument);
+}
+

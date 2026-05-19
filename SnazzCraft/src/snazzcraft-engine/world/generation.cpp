@@ -3,48 +3,57 @@
 #include "snazzcraft-engine/utilities/math.hpp"
 #include "snazzcraft-engine/height-map/height-map.hpp"
 
-void SnazzCraft::World::GenerateChunk(int32_t X, int32_t Z, bool ApplyLighting)
+void SnazzCraft::World::GenerateChunk(int32_t X, int32_t Z)
 {
     if (!this->ChunkWithinWorld(X, Z)) return;
 
-    std::lock_guard<std::mutex> ChunksLock(this->ChunksMutex);
-    std::lock_guard<std::mutex> HeightMapLock(this->HeighhtMapMutex);
-
     uint64_t ChunkHash = SnazzCraft::IntegerHash(X, Z);
-    auto Iterator = this->Chunks.find(ChunkHash);
-    if (Iterator != this->Chunks.end()) return;
+
+    {
+        std::lock_guard<std::mutex> ChunksLock(this->ChunksMutex);
+    
+        auto Iterator = this->Chunks.find(ChunkHash);
+        if (Iterator != this->Chunks.end()) return;
+    }
     
     SnazzCraft::Chunk* NewChunk = new SnazzCraft::Chunk(X, Z);
 
-    NewChunk->Generate(this->HeightMap, static_cast<uint32_t>(this->Size * SnazzCraft::Chunk::Width));
+    {
+        std::lock_guard<std::mutex> HeightMapLock(this->HeightMapMutex);
+        NewChunk->Generate(this->HeightMap, static_cast<uint32_t>(this->Size * SnazzCraft::Chunk::Width));
+    }
+    
     NewChunk->CullVoxelFaces();
     NewChunk->UpdateVerticesAndIndices();   
+    NewChunk->ShouldUpdateMesh = false;
 
-    this->Chunks[ChunkHash] = NewChunk;
-    bool UpdatedChunk = false;
-    if (ApplyLighting) this->UpdateChunkLighting(NewChunk, &UpdatedChunk); 
+    {
+        std::lock_guard<std::mutex> ChunksLock(this->ChunksMutex);
 
-    //if (UpdatedChunk) return;
-        
-    NewChunk->UpdateLightingOnVertices(this);
-    NewChunk->ShouldUpdateMesh = true;
+        this->Chunks[ChunkHash] = NewChunk;
+
+        bool UpdatedChunk = false;
+        this->UpdateChunkLighting(NewChunk, &UpdatedChunk); 
+
+        if (UpdatedChunk) return;
+            
+        NewChunk->UpdateLightingOnVertices(this);
+        NewChunk->ShouldUpdateLighting = false;
+    }
 }
 
 SnazzCraft::World* SnazzCraft::World::CreateWorld(std::string Name, uint32_t Size, int32_t Seed)
 {
     uint32_t GenerateSize = Size == 0u || Size > SnazzCraft::World::MaxSize ? 
-        SnazzCraft::World::MaxSize : 
-        Size;
+                            SnazzCraft::World::MaxSize : Size;
 
     SnazzCraft::World* NewWorld = new SnazzCraft::World(Name, GenerateSize, Seed);
     
     for (int32_t X = -NewWorld->Size; X <= NewWorld->Size; X++) {
     for (int32_t Z = -NewWorld->Size; Z <= NewWorld->Size; Z++) {
-        NewWorld->ThreadPool.Enqueue([NewWorld, X, Z](void* Argument){ NewWorld->GenerateChunk(X, Z, true); }, nullptr);
+        NewWorld->AddTaskToThreadPool([NewWorld, X, Z](void* Argument){ NewWorld->GenerateChunk(X, Z); }, nullptr);
     } 
     }
-
-    //std::this_thread::sleep_for(std::chrono::milliseconds(3000));
 
     return NewWorld;
 }

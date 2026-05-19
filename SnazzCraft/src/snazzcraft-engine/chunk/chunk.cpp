@@ -13,6 +13,7 @@ SnazzCraft::Chunk::Chunk(int32_t X, int32_t Y)
     : Voxels(std::array<SnazzCraft::Voxel, SnazzCraft::Chunk::Volume>()), 
     LightValues(std::array<int32_t, SnazzCraft::Chunk::Volume>()), 
     ShouldUpdateMesh(false),
+    ShouldUpdateLighting(false),
     ChunkMesh(SnazzCraft::Mesh({}, {}, false)), 
     VoxelCollisionHitbox(new SnazzCraft::Hitbox(glm::vec3((float)SnazzCraft::Voxel::Size)))
 {
@@ -171,6 +172,8 @@ void SnazzCraft::Chunk::CullVoxelFaces()
             Voxel.ChangeSideValue(I, false);
         }
     }
+
+    this->ShouldUpdateMesh = true;
 }
 
 bool SnazzCraft::Chunk::VoxelTouchingChunkBorder(uint32_t VoxelIndex, uint32_t* BorderDirection) const
@@ -290,10 +293,6 @@ void SnazzCraft::Chunk::UpdateLightingOnVertices(SnazzCraft::World* World)
 
         uint64_t ChunkIndex = SnazzCraft::IntegerHash<int32_t>(TargetChunkX, TargetChunkZ);
         auto ChunkIterator = World->Chunks.find(ChunkIndex);
-        if (ChunkIterator == World->Chunks.end()) {
-            //World->GenerateChunk(TargetChunkX, TargetChunkZ, true);
-            ChunkIterator = World->Chunks.find(ChunkIndex);
-        }
         if (ChunkIterator == World->Chunks.end()) return DefaultLightValueFloat;
 
         uint32_t LocalIndex = SnazzCraft::Chunk::LocalVoxelIndex(CheckX, CheckY, CheckZ);

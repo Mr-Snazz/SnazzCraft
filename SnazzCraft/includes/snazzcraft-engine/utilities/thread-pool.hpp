@@ -22,7 +22,7 @@ namespace SnazzCraft
 
     private:
         std::queue<std::function<void(void*)>> TaskQueue;
-        std::queue<void*> ArguementQueue;
+        std::queue<void*> ArgumentQueue;
         std::mutex QueueMutex;
 
         std::vector<std::jthread> Threads;

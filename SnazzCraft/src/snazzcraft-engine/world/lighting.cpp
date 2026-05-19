@@ -32,6 +32,7 @@ void SnazzCraft::World::UpdateChunkLighting(SnazzCraft::Chunk* Chunk, bool* Upda
         if (ChunkIterator == this->Chunks.end()) continue;
 
         ChunkIterator->second->UpdateLightingOnVertices(this);
+        ChunkIterator->second->ShouldUpdateLighting = false;
     }
 
     auto ChunkIterator = ChunksToUpdate.find(SnazzCraft::IntegerHash<int32_t>(Chunk->Position[0], Chunk->Position[1]));
@@ -121,11 +122,6 @@ void SnazzCraft::World::ApplyLightingVoxel(int32_t LightOrigin[3], int32_t Light
         int32_t ChunkCoordinates[2];
         SnazzCraft::Chunk::GetChunkPosition(CurrentNode.X, CurrentNode.Z, ChunkCoordinates);
         auto ChunkIterator = this->Chunks.find(SnazzCraft::IntegerHash(ChunkCoordinates[0], ChunkCoordinates[1]));
-        
-        if (ChunkIterator == this->Chunks.end()) {
-            //this->GenerateChunk(ChunkCoordinates[0], ChunkCoordinates[1], true);
-            ChunkIterator = this->Chunks.find(SnazzCraft::IntegerHash(ChunkCoordinates[0], ChunkCoordinates[1]));
-        }
         if (ChunkIterator == this->Chunks.end()) continue;
 
         int32_t Local[3];
