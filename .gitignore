@@ -2,9 +2,5 @@
 /SnazzCraft/build
 /SnazzCraft/worlds
 
-/Launcher/launcher.spec
-/Launcher/build
-/Launcher/dist
-/Launcher/launcher.spec
-/Launcher/pyinstaller-env
+/SnazzCraft/.vscode
 
