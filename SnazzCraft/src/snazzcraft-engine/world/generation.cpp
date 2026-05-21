@@ -25,7 +25,6 @@ void SnazzCraft::World::GenerateChunk(int32_t X, int32_t Z)
     
     NewChunk->CullVoxelFaces();
     NewChunk->UpdateVerticesAndIndices();   
-    NewChunk->ShouldUpdateMesh = false;
 
     {
         std::lock_guard<std::mutex> ChunksLock(this->ChunksMutex);
@@ -38,7 +37,7 @@ void SnazzCraft::World::GenerateChunk(int32_t X, int32_t Z)
         if (UpdatedChunk) return;
             
         NewChunk->UpdateLightingOnVertices(this);
-        NewChunk->ShouldUpdateLighting = false;
+        NewChunk->ShouldUpdateMesh = true;
     }
 }
 

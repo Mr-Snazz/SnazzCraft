@@ -13,7 +13,6 @@ SnazzCraft::Chunk::Chunk(int32_t X, int32_t Y)
     : Voxels(std::array<SnazzCraft::Voxel, SnazzCraft::Chunk::Volume>()), 
     LightValues(std::array<int32_t, SnazzCraft::Chunk::Volume>()), 
     ShouldUpdateMesh(false),
-    ShouldUpdateLighting(false),
     ChunkMesh(SnazzCraft::Mesh({}, {}, false)), 
     VoxelCollisionHitbox(new SnazzCraft::Hitbox(glm::vec3((float)SnazzCraft::Voxel::Size)))
 {

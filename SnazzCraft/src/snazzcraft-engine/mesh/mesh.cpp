@@ -81,7 +81,7 @@ void SnazzCraft::Mesh::Initiate()
     glBindVertexArray(0);
 }
 
-SnazzCraft::Mesh* SnazzCraft::Mesh::LoadMeshFromObjectFile(const char* FilePath) // Vibe coded for now
+SnazzCraft::Mesh* SnazzCraft::Mesh::LoadMeshFromObjectFile(const char* FilePath, bool InitiateMesh) // Vibe coded for now
 {
     std::vector<glm::vec3> TempPositions;
     std::vector<glm::vec2> TempUVs;
@@ -156,7 +156,7 @@ SnazzCraft::Mesh* SnazzCraft::Mesh::LoadMeshFromObjectFile(const char* FilePath)
     File.close();
 
     // Instantiate the mesh with the populated vectors
-    return new SnazzCraft::Mesh(OutVertices, OutIndices, false);
+    return new SnazzCraft::Mesh(OutVertices, OutIndices, InitiateMesh);
 }
 
 

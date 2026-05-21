@@ -40,7 +40,6 @@ namespace SnazzCraft
         std::array<int32_t,           Volume> LightValues;
 
         bool ShouldUpdateMesh;
-        bool ShouldUpdateLighting;
 
         Chunk(int32_t X, int32_t Y); // Chunk Coordinates 
 

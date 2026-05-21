@@ -32,7 +32,7 @@ void SnazzCraft::World::UpdateChunkLighting(SnazzCraft::Chunk* Chunk, bool* Upda
         if (ChunkIterator == this->Chunks.end()) continue;
 
         ChunkIterator->second->UpdateLightingOnVertices(this);
-        ChunkIterator->second->ShouldUpdateLighting = false;
+        ChunkIterator->second->ShouldUpdateMesh = true;
     }
 
     auto ChunkIterator = ChunksToUpdate.find(SnazzCraft::IntegerHash<int32_t>(Chunk->Position[0], Chunk->Position[1]));

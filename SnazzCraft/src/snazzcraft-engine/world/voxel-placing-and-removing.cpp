@@ -27,7 +27,6 @@ bool SnazzCraft::World::DestroyVoxel(const glm::vec3& Position, const glm::vec3&
     this->UpdateChunkLighting(ChunkIterator->second, nullptr);
 
     ChunkIterator->second->ShouldUpdateMesh = true;
-    ChunkIterator->second->ShouldUpdateLighting = true;
 
     return true;
 }
@@ -73,7 +72,6 @@ bool SnazzCraft::World::PlaceVoxel(const glm::vec3& Position, const glm::vec3& R
     //this->UpdateChunkLighting(ChunkIterator->second, nullptr);
 
     ChunkIterator->second->ShouldUpdateMesh = true;
-    ChunkIterator->second->ShouldUpdateLighting = true;
     
     return true;
 }

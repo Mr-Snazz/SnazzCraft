@@ -42,7 +42,7 @@ namespace SnazzCraft
         void Initiate();
 
     public:
-        static SnazzCraft::Mesh* LoadMeshFromObjectFile(const char* FilePath);
+        static SnazzCraft::Mesh* LoadMeshFromObjectFile(const char* FilePath, bool InitiateMesh);
 
     };
 
