@@ -94,7 +94,7 @@ void SnazzCraft::Initiate()
         throw std::runtime_error("SNAZZCRAFT| Failed to initialize GLAD\n");
     }
 
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.5f, 1.0f);
 
     const SnazzCraft::VoxelShader& VoxelShaderInstance = SnazzCraft::VoxelShader::GetInstance();
     VoxelShaderInstance.SetProjectionMatrix(SnazzCraft::ProjectionMatrix, true);
@@ -113,11 +113,12 @@ void SnazzCraft::Initiate()
     SnazzCraft::EntityType::Initialize();
     
     SnazzCraft::VoxelMesh = new Mesh(VoxelMeshVertices, VoxelMeshIndices, true);
-
     SnazzCraft::VoxelMesh->ScaleVector = glm::vec3(static_cast<float>(SnazzCraft::Voxel::Size) / 2.0f);
 
     SnazzCraft::MainMenuGUI::Initialize(MainMenuInputCallback);
     SnazzCraft::WorldGUI   ::Initialize(WorldInputCallback   );
+
+    SnazzCraft::FPSTracker::Initialize();
 }
 
 void SnazzCraft::MainLoop()
@@ -126,9 +127,9 @@ void SnazzCraft::MainLoop()
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
-        SnazzCraft::GlobalFPSTracker->UpdateFPS();
+        SnazzCraft::FPSTracker::UpdateFPS();
         //system(CLEAR_COMMAND);
-        //std::cout << "FPS| " << SnazzCraft::GlobalFPSTracker->FPS << "\n";
+        //std::cout << "FPS| " << SnazzCraft::FPSTracker::GetFPS() << "\n";
 
         switch (SnazzCraft::UserMode)
         {
@@ -178,7 +179,6 @@ void SnazzCraft::FreeResources()
     delete SnazzCraft::EngineVoxelTextureApplier;
     delete SnazzCraft::CurrentWorld;
     delete SnazzCraft::VoxelTextureAtlas;
-    delete SnazzCraft::GlobalFPSTracker;
     
     glfwTerminate();
 }

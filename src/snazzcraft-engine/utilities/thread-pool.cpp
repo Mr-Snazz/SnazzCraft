@@ -24,7 +24,7 @@ SnazzCraft::ThreadPool::ThreadPool(size_t ThreadCount)
         }
     };
 
-    for (size_t I = 0u; I < ThreadCount; I++) this->Threads.emplace_back(ThreadFunction);
+    for (size_t I{}; I < ThreadCount; I++) this->Threads.emplace_back(ThreadFunction);
 }
 
 SnazzCraft::ThreadPool::~ThreadPool()

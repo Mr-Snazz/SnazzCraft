@@ -4,26 +4,17 @@
 
 namespace SnazzCraft
 {
-    class FPSTracker
+    namespace FPSTracker
     {
-    public:
-        unsigned int FrameCount = 0;
-        double FPS = 0.0;
-
-        FPSTracker();
+        void Initialize();
 
         void UpdateFPS();
 
-        inline double GetDeltaTime()
-        {
-            return CurrentTime - LastTime;
-        }
+        double GetDeltaTime();
 
-    private:
-        double LastTime = 0.0;
-        double CurrentTime = 0.0;
-
-    };
-
-    extern SnazzCraft::FPSTracker* GlobalFPSTracker;
+        double GetFPS();
+    }
 } // SnazzCraft
+
+
+

@@ -108,7 +108,7 @@ bool SnazzCraft::World::RaycastToVoxel(glm::vec3& Position, const glm::vec3& Rot
 {
     auto UpdateFaceHitAndVoxelHit = [FaceHit, VoxelCollisionInfo](const glm::ivec3& Step, const uint8_t& LastStepAxis, SnazzCraft::World::VoxelCollisionInfo CollidedVoxelCollisionInfo) -> void
     {
-        if (FaceHit == nullptr) goto UpdateHitVoxel; // A goto statement, how exciting!
+        if (FaceHit == nullptr) goto UpdateHitVoxel; 
         switch (LastStepAxis)
         {
             case 0x00:
@@ -173,8 +173,8 @@ bool SnazzCraft::World::RaycastToVoxel(glm::vec3& Position, const glm::vec3& Rot
     // 0 == X
     // 1 == Y
     // 2 == Z
-    uint8_t LastStepAxis = 0x00; 
-    float DistanceTraveled = 0.0f;
+    uint8_t LastStepAxis{};
+    float DistanceTraveled{};
     while (DistanceTraveled < MaxDistance)
     {
         SnazzCraft::World::VoxelCollisionInfo CollidedVoxelCollisionInfo = this->GetCollidingVoxel(glm::vec3(MapPosition) * VoxelSize, false, true); 

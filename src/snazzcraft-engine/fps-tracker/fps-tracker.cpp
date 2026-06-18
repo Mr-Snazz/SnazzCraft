@@ -1,20 +1,35 @@
+#include <stdint.h>
+
 #include "snazzcraft-engine/fps-tracker/fps-tracker.hpp"
 
-SnazzCraft::FPSTracker* SnazzCraft::GlobalFPSTracker = new SnazzCraft::FPSTracker();
+uint32_t FrameCount{};
+double FPS{};
+double LastTime{};
+double CurrentTime{};
 
-SnazzCraft::FPSTracker::FPSTracker()
+void SnazzCraft::FPSTracker::Initialize()
 {
-    this->LastTime = glfwGetTime();
+    LastTime = glfwGetTime();
 }
 
 void SnazzCraft::FPSTracker::UpdateFPS()
 {
-    this->FrameCount++;
-    this->CurrentTime = glfwGetTime();
+    FrameCount++;
+    CurrentTime = glfwGetTime();
     
-    if (this->CurrentTime - this->LastTime >= 1.0) {
-        this->FPS = static_cast<double>(this->FrameCount) / (this->CurrentTime - this->LastTime);
-        this->FrameCount = 0;
-        this->LastTime = this->CurrentTime;
+    if (CurrentTime - LastTime >= 1.0) {
+        FPS = static_cast<double>(FrameCount) / (CurrentTime - LastTime);
+        FrameCount = 0;
+        LastTime = CurrentTime;
     }
+}
+
+double SnazzCraft::FPSTracker::GetDeltaTime()
+{
+    return CurrentTime - LastTime;
+}
+
+double SnazzCraft::FPSTracker::GetFPS()
+{
+    return FPS;
 }
