@@ -1,6 +1,6 @@
-/bin
-/build
-/worlds
+bin/
+build/
+worlds/
 
-/.vscode
+.vscode/
 
