@@ -85,8 +85,6 @@ namespace SnazzCraft
 
         inline bool ChunkWithinWorld(int32_t ChunkX, int32_t ChunkZ) const;
 
-        inline void AddTaskToThreadPool(std::function<void(void*)> Task, void* Argument);
-
     private:
         SnazzCraft::ThreadPool ThreadPool; // 6 threads
 

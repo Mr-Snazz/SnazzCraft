@@ -50,7 +50,7 @@ SnazzCraft::World* SnazzCraft::World::CreateWorld(std::string Name, uint32_t Siz
     
     for (int32_t X = -NewWorld->Size; X <= NewWorld->Size; X++) {
     for (int32_t Z = -NewWorld->Size; Z <= NewWorld->Size; Z++) {
-        NewWorld->AddTaskToThreadPool([NewWorld, X, Z](void* Argument){ NewWorld->GenerateChunk(X, Z); }, nullptr);
+        NewWorld->ThreadPool.Enqueue([NewWorld, X, Z](){ NewWorld->GenerateChunk(X, Z); });
     } 
     }
 

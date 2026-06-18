@@ -67,9 +67,9 @@ bool SnazzCraft::World::PlaceVoxel(const glm::vec3& Position, const glm::vec3& R
 
     ChunkIterator->second->Voxels[LocalPlaceVoxelIndex] = SnazzCraft::Voxel(VoxelID);
 
-    //ChunkIterator->second->CullVoxelFaces();
-    //ChunkIterator->second->UpdateVerticesAndIndices();
-    //this->UpdateChunkLighting(ChunkIterator->second, nullptr);
+    ChunkIterator->second->CullVoxelFaces();
+    ChunkIterator->second->UpdateVerticesAndIndices();
+    this->UpdateChunkLighting(ChunkIterator->second, nullptr);
 
     ChunkIterator->second->ShouldUpdateMesh = true;
     

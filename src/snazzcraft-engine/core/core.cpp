@@ -1,3 +1,5 @@
+#include <exception>
+
 #include "snazzcraft-engine/core/core.hpp"
 #include "snazzcraft-engine/mesh/voxel-vertice.hpp"
 #include "snazzcraft-engine/core/window.hpp"
@@ -70,7 +72,7 @@ void MainMenuInputCallback(SnazzCraft::Event* Event);
 
 void WorldInputCallback(SnazzCraft::Event* Event);
 
-bool SnazzCraft::Initiate()
+void SnazzCraft::Initiate()
 {
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -80,10 +82,8 @@ bool SnazzCraft::Initiate()
     SnazzCraft::Window = glfwCreateWindow(900, 900, "SnazzCraft", NULL, NULL);
     if (SnazzCraft::Window == NULL)
     {
-        std::cout << "Failed to create GLFW window\n";
         glfwTerminate();
-
-        return false;
+        throw std::runtime_error("SNAZZCRAFT| Failed to create GLFW window\n");
     }
 
     glfwMakeContextCurrent(SnazzCraft::Window);
@@ -91,9 +91,7 @@ bool SnazzCraft::Initiate()
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
-        std::cout << "Failed to initialize GLAD" << std::endl;
-
-        return false;
+        throw std::runtime_error("SNAZZCRAFT| Failed to initialize GLAD\n");
     }
 
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -119,11 +117,7 @@ bool SnazzCraft::Initiate()
     SnazzCraft::VoxelMesh->ScaleVector = glm::vec3(static_cast<float>(SnazzCraft::Voxel::Size) / 2.0f);
 
     SnazzCraft::MainMenuGUI::Initialize(MainMenuInputCallback);
-    SnazzCraft::WorldGUI::Initialize(WorldInputCallback);
-
-
-
-    return true;
+    SnazzCraft::WorldGUI   ::Initialize(WorldInputCallback   );
 }
 
 void SnazzCraft::MainLoop()

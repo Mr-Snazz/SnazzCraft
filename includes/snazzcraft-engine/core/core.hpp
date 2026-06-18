@@ -38,7 +38,7 @@ namespace SnazzCraft
 
     extern World* CurrentWorld;
 
-    bool Initiate();
+    void Initiate();
 
     void MainLoop();
 

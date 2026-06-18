@@ -5,13 +5,8 @@
 
 int main(int ArgC, char* ArgV[])
 { 
-    if (!SnazzCraft::Initiate())
-    {
-        throw std::runtime_error("SnazzCraft failed to initiate.\n");
-    }
-
+    SnazzCraft::Initiate();
     SnazzCraft::MainLoop();
-
     SnazzCraft::FreeResources();
 
     return 0;

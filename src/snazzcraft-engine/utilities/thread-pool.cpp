@@ -7,24 +7,20 @@ SnazzCraft::ThreadPool::ThreadPool(size_t ThreadCount)
     {
         while (true)
         {
-            std::function<void(void*)> Task;
-            void* Argument = nullptr;
+            std::function<void()> Task;
 
             {
                 std::unique_lock<std::mutex> Lock(this->QueueMutex);
 
                 // Wait until a task is availuble or the pool is stopping
                 this->Condition.wait(Lock, [this]{ return this->ShouldStop || !this->TaskQueue.empty(); });
-                if (this->ShouldStop && this->TaskQueue.empty() && this->ArgumentQueue.empty()) return;
+                if (this->ShouldStop && this->TaskQueue.empty()) return;
 
                 Task = std::move(this->TaskQueue.front());
                 this->TaskQueue.pop();
-
-                Argument = std::move(this->ArgumentQueue.front());
-                this->ArgumentQueue.pop();
             }
 
-            if (Task) Task(Argument);
+            if (Task) Task();
         }
     };
 
@@ -41,12 +37,11 @@ SnazzCraft::ThreadPool::~ThreadPool()
     this->Condition.notify_all();
 }
 
-void SnazzCraft::ThreadPool::Enqueue(std::function<void(void*)> Task, void* Argument)
+void SnazzCraft::ThreadPool::Enqueue(std::function<void()> Task)
 {
     {
         std::lock_guard<std::mutex> Lock(this->QueueMutex);
         this->TaskQueue.emplace(std::move(Task));
-        this->ArgumentQueue.emplace(Argument);
     }
 
     this->Condition.notify_one();
