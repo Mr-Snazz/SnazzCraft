@@ -1,6 +1,6 @@
-/SnazzCraft/bin
-/SnazzCraft/build
-/SnazzCraft/worlds
+/bin
+/build
+/worlds
 
-/SnazzCraft/.vscode
+/.vscode
 
