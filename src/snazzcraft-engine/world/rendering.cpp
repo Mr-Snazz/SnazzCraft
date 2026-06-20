@@ -81,12 +81,12 @@ void SnazzCraft::World::RenderChunks() const
     int32_t PlayerChunkPosition[2];
     SnazzCraft::Chunk::GetChunkPosition(Player->Position, PlayerChunkPosition);
 
+    std::lock_guard<std::recursive_mutex> ChunksToUpdateMeshesLock(this->ChunksMutex);
     for (int32_t X = PlayerChunkPosition[0] - static_cast<int32_t>(this->RenderDistance); X <= PlayerChunkPosition[0] + static_cast<int32_t>(this->RenderDistance); X++) {
     for (int32_t Z = PlayerChunkPosition[1] - static_cast<int32_t>(this->RenderDistance); Z <= PlayerChunkPosition[1] + static_cast<int32_t>(this->RenderDistance); Z++) {
         if (!this->ChunkWithinWorld(X, Z)) continue;
 
         uint64_t Hash = SnazzCraft::IntegerHash(X, Z);
-        std::lock_guard<std::recursive_mutex> ChunksToUpdateMeshesLock(this->ChunksMutex);
 
         auto ChunkIterator = this->Chunks.find(Hash);
         if (ChunkIterator == this->Chunks.end()) continue;

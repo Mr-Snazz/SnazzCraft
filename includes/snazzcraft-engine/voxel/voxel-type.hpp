@@ -7,8 +7,8 @@ namespace SnazzCraft
     class VoxelType
     {
     public:
-        int32_t LightProducingLevel;
-        int32_t LightPropogationDecrease;
+        int8_t LightProducingLevel;
+        int8_t LightPropogationDecrease;
         uint8_t CullableSides;
         bool CollidableToEntities;
         bool CollidableToVoxels;
@@ -22,6 +22,6 @@ namespace SnazzCraft
         static const VoxelType& GetVoxelType(uint8_t VoxelID);
 
     private:
-        VoxelType(int32_t ILightProducingLevel, int32_t ILightPropogationDecrease, uint8_t ICullableSides, bool ICollidableToEntities, bool ICollidableToVoxels, bool ICullableAgainst);
+        VoxelType(int8_t ILightProducingLevel, int8_t ILightPropogationDecrease, uint8_t ICullableSides, bool ICollidableToEntities, bool ICollidableToVoxels, bool ICullableAgainst);
     };
 } // SnazzCraft

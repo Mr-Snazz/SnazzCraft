@@ -20,7 +20,7 @@
 #include "snazzcraft-engine/entity/entity.hpp"
 #include "snazzcraft-engine/voxel/voxel.hpp"
 #include "snazzcraft-engine/entity/user.hpp"
-#include "snazzcraft-engine/utilities/thread-pool-recursive.hpp"
+#include "snazzcraft-engine/utilities/thread-pool-basic.hpp"
 
 namespace SnazzCraft
 {
@@ -86,7 +86,7 @@ namespace SnazzCraft
         inline bool ChunkWithinWorld(int32_t ChunkX, int32_t ChunkZ) const;
 
     private:
-        SnazzCraft::ThreadPoolRecursive ThreadPool; // 6 threads
+        SnazzCraft::ThreadPoolBasic<void> ThreadPool; // 6 threads
 
         std::unordered_map<uint64_t, SnazzCraft::Chunk*> Chunks; // Uses SnazzCraft::IntegerHash for hashing
         mutable std::recursive_mutex ChunksMutex;
@@ -100,8 +100,6 @@ namespace SnazzCraft
         SnazzCraft::Mesh* VoxelPlacementDisplayMesh{};
         glm::vec3 VoxelPlacementDisplayPosition;
         bool ShouldRenderVoxelPlacementDisplay{};
-
-        //std::atomic<bool> ExitWorkerThreads{};
 
         void GenerateChunk(int32_t X, int32_t Z); 
 
@@ -120,13 +118,13 @@ namespace SnazzCraft
 
         void ApplySunLightingToChunk(SnazzCraft::Chunk* Chunk, std::unordered_set<uint64_t>* ChunksToUpdate);
 
-        void ApplySunLightingToColumn(SnazzCraft::Chunk* Chunk, uint32_t LocalChunkX, uint32_t LocalChunkZ, uint32_t StartY, int32_t StartLightValue, std::unordered_set<uint64_t>* ChunksToUpdate);
+        void ApplySunLightingToColumn(SnazzCraft::Chunk* Chunk, uint32_t LocalChunkX, uint32_t LocalChunkZ, uint32_t StartY, int8_t StartLightValue, std::unordered_set<uint64_t>* ChunksToUpdate);
         
         /*
         Only to be called trough UpdateChunkLighting
         Generates currently ungenerated Chunks when light values would affect them
         */
-        void ApplyLightingVoxel(int32_t LightOrigin[3], int32_t LightProducingLevel, std::unordered_set<uint64_t>* ChunksToUpdate);
+        void ApplyLightingVoxel(int32_t LightOrigin[3], int8_t LightProducingLevel, std::unordered_set<uint64_t>* ChunksToUpdate);
         
     public:
         static SnazzCraft::World* CreateWorld(std::string Name, uint32_t Size, int32_t Seed);
