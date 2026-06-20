@@ -26,17 +26,42 @@ void SnazzCraft::World::UpdateChunkLighting(SnazzCraft::Chunk* Chunk, bool* Upda
         };
         this->ApplyLightingVoxel(Position, LightProducingLevel, &ChunksToUpdate);
     }
-    
+    std::cout << ChunksToUpdate.size() << "|\n";
     for (uint64_t I : ChunksToUpdate) {
         auto ChunkIterator = this->Chunks.find(I);
         if (ChunkIterator == this->Chunks.end()) continue;
 
         ChunkIterator->second->UpdateLightingOnVertices(this);
+        //ChunkIterator->second->UpdateVerticesAndIndices();
         ChunkIterator->second->ShouldUpdateMesh = true;
     }
 
+    // Refresh vertex lighting on neighboring chunks too, because boundary faces read light from adjacent chunks.
+    for (uint64_t I : ChunksToUpdate) {
+        auto ChunkIterator = this->Chunks.find(I);
+        if (ChunkIterator == this->Chunks.end()) continue;
+
+        SnazzCraft::Chunk* UpdatedChunk = ChunkIterator->second;
+        for (int32_t DX = -1; DX <= 1; DX++) {
+            for (int32_t DZ = -1; DZ <= 1; DZ++) {
+                if (DX == 0 && DZ == 0) continue;
+
+                int32_t NeighborChunkX = UpdatedChunk->Position[0] + DX;
+                int32_t NeighborChunkZ = UpdatedChunk->Position[1] + DZ;
+                if (!this->ChunkWithinWorld(NeighborChunkX, NeighborChunkZ)) continue;
+
+                uint64_t NeighborHash = SnazzCraft::IntegerHash<int32_t>(NeighborChunkX, NeighborChunkZ);
+                auto NeighborIterator = this->Chunks.find(NeighborHash);
+                if (NeighborIterator == this->Chunks.end()) continue;
+
+                NeighborIterator->second->UpdateLightingOnVertices(this);
+                NeighborIterator->second->ShouldUpdateMesh = true;
+            }
+        }
+    }
+
     auto ChunkIterator = ChunksToUpdate.find(SnazzCraft::IntegerHash<int32_t>(Chunk->Position[0], Chunk->Position[1]));
-    if (UpdatedInputChunk != nullptr) *UpdatedInputChunk = ChunkIterator != ChunksToUpdate.end();
+    if (UpdatedInputChunk) *UpdatedInputChunk = ChunkIterator != ChunksToUpdate.end();
 }
 
 void SnazzCraft::World::ApplySunLightingToChunk(SnazzCraft::Chunk* Chunk, std::unordered_set<uint64_t>* ChunksToUpdate)
@@ -47,12 +72,12 @@ void SnazzCraft::World::ApplySunLightingToChunk(SnazzCraft::Chunk* Chunk, std::u
     }
     }
 
-    if (ChunksToUpdate != nullptr) ChunksToUpdate->insert(SnazzCraft::IntegerHash<int32_t>(Chunk->Position[0], Chunk->Position[1]));
+    if (ChunksToUpdate) ChunksToUpdate->insert(SnazzCraft::IntegerHash<int32_t>(Chunk->Position[0], Chunk->Position[1]));
 }
 
 void SnazzCraft::World::ApplySunLightingToColumn(SnazzCraft::Chunk* Chunk, uint32_t LocalChunkX, uint32_t LocalChunkZ, uint32_t StartY, int32_t StartLightValue, std::unordered_set<uint64_t>* ChunksToUpdate)
 {
-    if (Chunk == nullptr) return;
+    if (!Chunk) return;
 
     int LightValue = SnazzCraft::Voxel::SunlightLightValue;
     for (uint32_t Y = StartY; Y > 0; Y--) {
@@ -77,6 +102,8 @@ void SnazzCraft::World::ApplySunLightingToColumn(SnazzCraft::Chunk* Chunk, uint3
 
         break;
     }
+
+    ChunksToUpdate->insert(SnazzCraft::IntegerHash(Chunk->Position[0], Chunk->Position[1]));
 }
 
 void SnazzCraft::World::ApplyLightingVoxel(int32_t LightOrigin[3], int32_t LightProducingLevel, std::unordered_set<uint64_t>* ChunksToUpdate)
@@ -112,6 +139,7 @@ void SnazzCraft::World::ApplyLightingVoxel(int32_t LightOrigin[3], int32_t Light
     SnazzCraft::World::LightNode LightOriginNode(LightProducingLevel, LightOrigin);
     Queue.push(LightOriginNode);
 
+    uint64_t H{};
     while (!Queue.empty())
     {
         SnazzCraft::World::LightNode CurrentNode = Queue.front();
@@ -121,8 +149,18 @@ void SnazzCraft::World::ApplyLightingVoxel(int32_t LightOrigin[3], int32_t Light
 
         int32_t ChunkCoordinates[2];
         SnazzCraft::Chunk::GetChunkPosition(CurrentNode.X, CurrentNode.Z, ChunkCoordinates);
-        auto ChunkIterator = this->Chunks.find(SnazzCraft::IntegerHash(ChunkCoordinates[0], ChunkCoordinates[1]));
+        uint64_t ChunkHash = SnazzCraft::IntegerHash(ChunkCoordinates[0], ChunkCoordinates[1]);
+
+        auto ChunkIterator = this->Chunks.find(ChunkHash);
+        if (ChunkIterator == this->Chunks.end()) this->GenerateChunk(ChunkCoordinates[0], ChunkCoordinates[1]);
+
+        ChunkIterator = this->Chunks.find(ChunkHash);
         if (ChunkIterator == this->Chunks.end()) continue;
+
+        if (H != ChunkHash) {
+            std::cout << "MISMATCH| HASH, CHUNK_HASH " << H << ", " << ChunkHash << "\n";
+            H = ChunkHash;
+        }
 
         int32_t Local[3];
         SnazzCraft::Chunk::GetLocalVoxelPosition(CurrentNode.X, CurrentNode.Y, CurrentNode.Z, Local);
@@ -133,6 +171,7 @@ void SnazzCraft::World::ApplyLightingVoxel(int32_t LightOrigin[3], int32_t Light
         if (CurrentNode.LightValue > ExistingLightValue) {
             ChunkIterator->second->LightValues[LightIndex] = CurrentNode.LightValue;
 
+            //if (ChunksToUpdate) std::cout << ChunksToUpdate->insert(SnazzCraft::IntegerHash<int32_t>(ChunkCoordinates[0], ChunkCoordinates[1])).second << "|\n";
             if (ChunksToUpdate) ChunksToUpdate->insert(SnazzCraft::IntegerHash<int32_t>(ChunkCoordinates[0], ChunkCoordinates[1]));
             
             int32_t LocalVoxelPosition[3];

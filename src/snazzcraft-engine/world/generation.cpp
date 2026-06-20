@@ -10,7 +10,7 @@ void SnazzCraft::World::GenerateChunk(int32_t X, int32_t Z)
     uint64_t ChunkHash = SnazzCraft::IntegerHash(X, Z);
 
     {
-        std::lock_guard<std::mutex> ChunksLock(this->ChunksMutex);
+        std::lock_guard<std::recursive_mutex> ChunksLock(this->ChunksMutex);
     
         auto Iterator = this->Chunks.find(ChunkHash);
         if (Iterator != this->Chunks.end()) return;
@@ -19,7 +19,7 @@ void SnazzCraft::World::GenerateChunk(int32_t X, int32_t Z)
     SnazzCraft::Chunk* NewChunk = new SnazzCraft::Chunk(X, Z);
 
     {
-        std::lock_guard<std::mutex> HeightMapLock(this->HeightMapMutex);
+        std::lock_guard<std::recursive_mutex> HeightMapLock(this->HeightMapMutex);
         NewChunk->Generate(this->HeightMap, static_cast<uint32_t>(this->Size * SnazzCraft::Chunk::Width));
     }
     
@@ -27,7 +27,7 @@ void SnazzCraft::World::GenerateChunk(int32_t X, int32_t Z)
     NewChunk->UpdateVerticesAndIndices();   
 
     {
-        std::lock_guard<std::mutex> ChunksLock(this->ChunksMutex);
+        std::lock_guard<std::recursive_mutex> ChunksLock(this->ChunksMutex);
 
         this->Chunks[ChunkHash] = NewChunk;
 

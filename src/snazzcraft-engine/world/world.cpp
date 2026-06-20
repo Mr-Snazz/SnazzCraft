@@ -29,14 +29,6 @@ SnazzCraft::World::World(std::string IName, uint32_t ISize, int32_t ISeed)
 
     this->VoxelPlacementDisplayMesh = new SnazzCraft::Mesh(SnazzCraft::EngineVoxelTextureApplier->GetTexturedVertices(SnazzCraft::Voxel(ID_VOXEL_BARRIER)), SnazzCraft::VoxelMesh->Indices, true);
     this->VoxelPlacementDisplayMesh->ScaleVector = glm::vec3(1.005f);
-
-    std::thread
-    (
-        [this]()
-        {
-
-        }
-    ).detach();
 }
 
 bool SnazzCraft::World::ChunkWithinWorld(SnazzCraft::Chunk* Chunk) const

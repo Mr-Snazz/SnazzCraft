@@ -10,7 +10,7 @@
 void SnazzCraft::World::Render() const
 {   
     if (SnazzCraft::Overworld->Entities.size() == 0) {
-        std::lock_guard<std::mutex> EntitieLock(this->EntitiesMutex);
+        std::lock_guard<std::recursive_mutex> EntitieLock(this->EntitiesMutex);
         SnazzCraft::Overworld->Entities.push_back(new SnazzCraft::Entity(glm::vec3(0.0f, static_cast<float>(SnazzCraft::Chunk::OceanLevel * 2 + 40), 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), ID_ENTITY_TEST));
     } else {
         //SnazzCraft::Overworld->MoveEntity(SnazzCraft::Overworld->Entities[0], glm::vec3(0.0f), 0.01f);
@@ -70,7 +70,7 @@ void SnazzCraft::World::RenderAllEntities() const
         EntityType.EntityMesh->Draw();
     };
 
-    std::lock_guard<std::mutex> EntitiesLock(this->EntitiesMutex);
+    std::lock_guard<std::recursive_mutex> EntitiesLock(this->EntitiesMutex);
 
     RenderEntity(SnazzCraft::Player);
     for (SnazzCraft::Entity* Entity : this->Entities) RenderEntity(Entity);
@@ -86,7 +86,7 @@ void SnazzCraft::World::RenderChunks() const
         if (!this->ChunkWithinWorld(X, Z)) continue;
 
         uint64_t Hash = SnazzCraft::IntegerHash(X, Z);
-        std::lock_guard<std::mutex> ChunksToUpdateMeshesLock(this->ChunksMutex);
+        std::lock_guard<std::recursive_mutex> ChunksToUpdateMeshesLock(this->ChunksMutex);
 
         auto ChunkIterator = this->Chunks.find(Hash);
         if (ChunkIterator == this->Chunks.end()) continue;

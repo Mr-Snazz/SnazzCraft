@@ -89,13 +89,13 @@ namespace SnazzCraft
         SnazzCraft::ThreadPoolRecursive ThreadPool; // 6 threads
 
         std::unordered_map<uint64_t, SnazzCraft::Chunk*> Chunks; // Uses SnazzCraft::IntegerHash for hashing
-        mutable std::mutex ChunksMutex;
+        mutable std::recursive_mutex ChunksMutex;
 
         std::vector<SnazzCraft::Entity*> Entities;
-        mutable std::mutex EntitiesMutex;
+        mutable std::recursive_mutex EntitiesMutex;
 
         SnazzCraft::HeightMap* HeightMap{};
-        mutable std::mutex HeightMapMutex;
+        mutable std::recursive_mutex HeightMapMutex;
 
         SnazzCraft::Mesh* VoxelPlacementDisplayMesh{};
         glm::vec3 VoxelPlacementDisplayPosition;

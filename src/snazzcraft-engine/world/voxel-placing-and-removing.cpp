@@ -48,7 +48,7 @@ bool SnazzCraft::World::PlaceVoxel(const glm::vec3& Position, const glm::vec3& R
     };
 
     glm::vec3 EndPosition = Position;
-    uint8_t FaceHit = 0x00;
+    uint8_t FaceHit{};
     SnazzCraft::World::VoxelCollisionInfo VoxelCollisionInfo;
     this->RaycastToVoxel(EndPosition, Rotation, this->PlayerReach, &FaceHit, &VoxelCollisionInfo);
 
