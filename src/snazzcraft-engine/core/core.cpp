@@ -135,16 +135,16 @@ void SnazzCraft::MainLoop()
         {
             case SNAZZCRAFT_USER_MODE_WORLD:
             {
-                if (SnazzCraft::CurrentWorld == nullptr) break;
+                if (SnazzCraft::Overworld == nullptr) break;
 
                 SnazzCraft::WorldGUI& WorldGUIInstance = SnazzCraft::WorldGUI::GetInstance();
 
                 WorldGUIInstance.PollEvents();
                 WorldGUIInstance.HandleEvents();
 
-                SnazzCraft::CurrentWorld->ApplyGravityToAllEntities();
+                SnazzCraft::Overworld->ApplyGravityToAllEntities();
 
-                SnazzCraft::CurrentWorld->Render();
+                SnazzCraft::Overworld->Render();
                 WorldGUIInstance.Draw();
 
                 break;
@@ -177,7 +177,7 @@ void SnazzCraft::FreeResources()
     delete SnazzCraft::Player;
     delete SnazzCraft::VoxelMesh;
     delete SnazzCraft::EngineVoxelTextureApplier;
-    delete SnazzCraft::CurrentWorld;
+    delete SnazzCraft::Overworld;
     delete SnazzCraft::VoxelTextureAtlas;
     
     glfwTerminate();
@@ -189,7 +189,7 @@ void WorldInputCallback(SnazzCraft::Event* Event)
 
     SnazzCraft::WorldGUI& WorldGUIInstance = SnazzCraft::WorldGUI::GetInstance();
 
-    if (SnazzCraft::CurrentWorld == nullptr) return;
+    if (SnazzCraft::Overworld == nullptr) return;
     
     if (!WorldGUIInstance.InInventory) { // Not in inventory
         switch (Event->Type)
@@ -250,27 +250,27 @@ void WorldInputCallback(SnazzCraft::Event* Event)
                         break;
 
                     case SNAZZCRAFT_KEY_W:
-                        SnazzCraft::CurrentWorld->MoveEntity(SnazzCraft::Player, glm::vec3(0.0f), 1.0f);
+                        SnazzCraft::Overworld->MoveEntity(SnazzCraft::Player, glm::vec3(0.0f), 1.0f);
                         break;
 
                     case SNAZZCRAFT_KEY_A:
-                        SnazzCraft::CurrentWorld->MoveEntity(SnazzCraft::Player, glm::vec3(0.0f, -90.0f, 0.0f), 1.0f);
+                        SnazzCraft::Overworld->MoveEntity(SnazzCraft::Player, glm::vec3(0.0f, -90.0f, 0.0f), 1.0f);
                         break;
 
                     case SNAZZCRAFT_KEY_S:
-                        SnazzCraft::CurrentWorld->MoveEntity(SnazzCraft::Player, glm::vec3(0.0f, 180.0f, 0.0f), 1.0f);
+                        SnazzCraft::Overworld->MoveEntity(SnazzCraft::Player, glm::vec3(0.0f, 180.0f, 0.0f), 1.0f);
                         break;
 
                     case SNAZZCRAFT_KEY_D:
-                        SnazzCraft::CurrentWorld->MoveEntity(SnazzCraft::Player, glm::vec3(0.0f, 90.0f, 0.0f), 1.0f);
+                        SnazzCraft::Overworld->MoveEntity(SnazzCraft::Player, glm::vec3(0.0f, 90.0f, 0.0f), 1.0f);
                         break;
 
                     case SNAZZCRAFT_KEY_SPACE:
-                        SnazzCraft::CurrentWorld->MoveEntity(glm::vec3(0.0f, 1.0f, 0.0f), SnazzCraft::Player);
+                        SnazzCraft::Overworld->MoveEntity(glm::vec3(0.0f, 1.0f, 0.0f), SnazzCraft::Player);
                         break;
 
                     case SNAZZCRAFT_KEY_LEFT_SHIFT:
-                        SnazzCraft::CurrentWorld->MoveEntity(glm::vec3(0.0f, -1.0f, 0.0f), SnazzCraft::Player);
+                        SnazzCraft::Overworld->MoveEntity(glm::vec3(0.0f, -1.0f, 0.0f), SnazzCraft::Player);
                         break;
 
                     case SNAZZCRAFT_KEY_Q:
@@ -298,9 +298,9 @@ void WorldInputCallback(SnazzCraft::Event* Event)
 
             case SNAZZCRAFT_EVENT_MOUSE_CLICK_RIGHT_PRESS:
             {
-                if (SnazzCraft::CurrentWorld == nullptr) break;
+                if (SnazzCraft::Overworld == nullptr) break;
 
-                SnazzCraft::CurrentWorld->PlaceVoxel(SnazzCraft::Player->Position, SnazzCraft::Player->Rotation, VoxelIDToPlace);
+                SnazzCraft::Overworld->PlaceVoxel(SnazzCraft::Player->Position, SnazzCraft::Player->Rotation, VoxelIDToPlace);
 
                 break;
             }
@@ -309,7 +309,7 @@ void WorldInputCallback(SnazzCraft::Event* Event)
             {
                 if (WorldGUIInstance.SendEventToPanels(Event)) break;
  
-                SnazzCraft::CurrentWorld->DestroyVoxel(SnazzCraft::Player->Position, SnazzCraft::Player->Rotation);
+                SnazzCraft::Overworld->DestroyVoxel(SnazzCraft::Player->Position, SnazzCraft::Player->Rotation);
             
                 break;
             }

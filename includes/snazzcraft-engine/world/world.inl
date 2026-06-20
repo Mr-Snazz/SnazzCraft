@@ -13,7 +13,7 @@ inline void SnazzCraft::World::ApplyGravityToAllEntities() const
 
 inline const glm::vec3& SnazzCraft::World::GetVoxelPlacementDisplayPosition() const
 {
-    static const glm::vec3 DefaultReturnPosition(-100.0f, -100.0f, -100.0f);
+    constexpr glm::vec3 DefaultReturnPosition(-100.0f, -100.0f, -100.0f);
     return this->ShouldRenderVoxelPlacementDisplay ? this->VoxelPlacementDisplayPosition : DefaultReturnPosition;
 }
 

@@ -9,15 +9,15 @@
 
 void SnazzCraft::World::Render() const
 {   
-    if (SnazzCraft::CurrentWorld->Entities.size() == 0) {
+    if (SnazzCraft::Overworld->Entities.size() == 0) {
         std::lock_guard<std::mutex> EntitieLock(this->EntitiesMutex);
-        SnazzCraft::CurrentWorld->Entities.push_back(new SnazzCraft::Entity(glm::vec3(0.0f, static_cast<float>(SnazzCraft::Chunk::OceanLevel * 2 + 40), 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), ID_ENTITY_TEST));
+        SnazzCraft::Overworld->Entities.push_back(new SnazzCraft::Entity(glm::vec3(0.0f, static_cast<float>(SnazzCraft::Chunk::OceanLevel * 2 + 40), 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), ID_ENTITY_TEST));
     } else {
-        //SnazzCraft::CurrentWorld->MoveEntity(SnazzCraft::CurrentWorld->Entities[0], glm::vec3(0.0f), 0.01f);
+        //SnazzCraft::Overworld->MoveEntity(SnazzCraft::Overworld->Entities[0], glm::vec3(0.0f), 0.01f);
 
-        SnazzCraft::CurrentWorld->Entities[0]->Rotation.x += 0.5f;
-        SnazzCraft::CurrentWorld->Entities[0]->Rotation.y += 1.0f;
-        SnazzCraft::CurrentWorld->Entities[0]->Rotation.z += 1.5f;
+        SnazzCraft::Overworld->Entities[0]->Rotation.x += 0.5f;
+        SnazzCraft::Overworld->Entities[0]->Rotation.y += 1.0f;
+        SnazzCraft::Overworld->Entities[0]->Rotation.z += 1.5f;
     }
 
     if (!SnazzCraft::VoxelTextureAtlas->BindTexture()) return;
@@ -34,7 +34,7 @@ void SnazzCraft::World::Render() const
     }
 
     const SnazzCraft::VoxelShader& VoxelShaderInstance = VoxelShader::GetInstance();
-    VoxelShaderInstance.SetLightPosition(SnazzCraft::CurrentWorld->Entities[0]->Position, true);
+    VoxelShaderInstance.SetLightPosition(SnazzCraft::Overworld->Entities[0]->Position, true);
     VoxelShaderInstance.SetViewPosition(SnazzCraft::Player->Position, false);
 
     SnazzCraft::ViewMatrix = glm::lookAt(SnazzCraft::Player->Position, SnazzCraft::Player->Position + SnazzCraft::Player->Front, glm::vec3(0.0, 1.0, 0.0));
@@ -45,7 +45,7 @@ void SnazzCraft::World::Render() const
 
     this->RenderChunks();
 
-    SnazzCraft::CurrentWorld->UpdateVoxelPlacementDisplay();
+    SnazzCraft::Overworld->UpdateVoxelPlacementDisplay();
     this->RenderVoxelPlacementDisplay();
     
     this->RenderAllEntities();

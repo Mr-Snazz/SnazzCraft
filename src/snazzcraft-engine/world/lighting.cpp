@@ -92,7 +92,7 @@ void SnazzCraft::World::ApplyLightingVoxel(int32_t LightOrigin[3], int32_t Light
         int32_t NewLightValue = OriginNode.LightValue - LightPropagationDecrease;
         if (NewLightValue <= 0) return;
 
-        for (uint8_t I = 0x00; I < 0x03; I++) {
+        for (uint8_t I{}; I < 0x03; ++I) {
             int32_t NewPosition[3] = {
                 OriginNode.X,
                 OriginNode.Y,
@@ -133,7 +133,7 @@ void SnazzCraft::World::ApplyLightingVoxel(int32_t LightOrigin[3], int32_t Light
         if (CurrentNode.LightValue > ExistingLightValue) {
             ChunkIterator->second->LightValues[LightIndex] = CurrentNode.LightValue;
 
-            if (ChunksToUpdate != nullptr) ChunksToUpdate->insert(SnazzCraft::IntegerHash<int32_t>(ChunkCoordinates[0], ChunkCoordinates[1]));
+            if (ChunksToUpdate) ChunksToUpdate->insert(SnazzCraft::IntegerHash<int32_t>(ChunkCoordinates[0], ChunkCoordinates[1]));
             
             int32_t LocalVoxelPosition[3];
             SnazzCraft::Chunk::GetLocalVoxelPosition(CurrentNode.X, CurrentNode.Y, CurrentNode.Z, LocalVoxelPosition);

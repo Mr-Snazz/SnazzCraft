@@ -36,7 +36,7 @@ namespace SnazzCraft
 
     extern bool CloseApplication;
 
-    extern World* CurrentWorld;
+    extern World* Overworld;
 
     void Initiate();
 

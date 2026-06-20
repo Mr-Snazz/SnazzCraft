@@ -18,7 +18,7 @@ bool SnazzCraft::World::DestroyVoxel(const glm::vec3& Position, const glm::vec3&
     SnazzCraft::Chunk::GetChunkPosition(VoxelSpacePosition, ChunkCoordinates);
 
     auto ChunkIterator = this->Chunks.find(SnazzCraft::IntegerHash(ChunkCoordinates[0], ChunkCoordinates[1]));
-    if  (ChunkIterator == this->Chunks.end()) return false;
+    if (ChunkIterator == this->Chunks.end()) return false;
 
     ChunkIterator->second->Voxels[VoxelCollisionInfo.CollidingVoxelIndex] = SnazzCraft::Voxel(ID_VOXEL_AIR);
 

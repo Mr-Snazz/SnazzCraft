@@ -5,8 +5,6 @@
 
 #include "external/glm/glm.hpp"
 
-#include "unsigned-int-128.hpp"
-
 namespace SnazzCraft
 {
     glm::vec3 CalculateFrontVector(const glm::vec3& Rotation, bool Normalize);
@@ -16,11 +14,11 @@ namespace SnazzCraft
     inline void MoveVector3DWithFront(glm::vec3& Vector, const glm::vec3& Front, float Distance);
 
     template <typename T>
-    requires std::signed_integral<T> || std::unsigned_integral<T>
+    requires std::integral<T>
     constexpr T Index2D(T X, T Y, T Width);
 
     template <typename T>
-    requires std::signed_integral<T> || std::unsigned_integral<T>
+    requires std::integral<T>
     constexpr T Index3D(T X, T Y, T Z, T Width, T Height);
 
     template <typename T>

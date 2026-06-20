@@ -20,7 +20,7 @@
 #include "snazzcraft-engine/entity/entity.hpp"
 #include "snazzcraft-engine/voxel/voxel.hpp"
 #include "snazzcraft-engine/entity/user.hpp"
-#include "snazzcraft-engine/utilities/thread-pool.hpp"
+#include "snazzcraft-engine/utilities/thread-pool-recursive.hpp"
 
 namespace SnazzCraft
 {
@@ -86,7 +86,7 @@ namespace SnazzCraft
         inline bool ChunkWithinWorld(int32_t ChunkX, int32_t ChunkZ) const;
 
     private:
-        SnazzCraft::ThreadPool ThreadPool; // 6 threads
+        SnazzCraft::ThreadPoolRecursive ThreadPool; // 6 threads
 
         std::unordered_map<uint64_t, SnazzCraft::Chunk*> Chunks; // Uses SnazzCraft::IntegerHash for hashing
         mutable std::mutex ChunksMutex;
@@ -94,12 +94,14 @@ namespace SnazzCraft
         std::vector<SnazzCraft::Entity*> Entities;
         mutable std::mutex EntitiesMutex;
 
-        SnazzCraft::HeightMap* HeightMap = nullptr;
+        SnazzCraft::HeightMap* HeightMap{};
         mutable std::mutex HeightMapMutex;
 
-        SnazzCraft::Mesh* VoxelPlacementDisplayMesh = nullptr;
+        SnazzCraft::Mesh* VoxelPlacementDisplayMesh{};
         glm::vec3 VoxelPlacementDisplayPosition;
-        bool ShouldRenderVoxelPlacementDisplay = false;
+        bool ShouldRenderVoxelPlacementDisplay{};
+
+        //std::atomic<bool> ExitWorkerThreads{};
 
         void GenerateChunk(int32_t X, int32_t Z); 
 
@@ -137,7 +139,7 @@ namespace SnazzCraft
 
     };
     
-    extern SnazzCraft::World* CurrentWorld;
+    extern SnazzCraft::World* Overworld;
 } // SnazzCraft
 
 #include "snazzcraft-engine/world/world.inl"

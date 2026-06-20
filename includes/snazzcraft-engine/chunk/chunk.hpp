@@ -102,11 +102,11 @@ namespace SnazzCraft
 
         // Outputs local voxel coordinates
         template <typename T>
-        requires std::signed_integral<T> || std::unsigned_integral<T>
+        requires std::integral<T>
         static inline void GetVoxelPosition(uint32_t VoxelIndex, T& OutX, T& OutY, T& OutZ);
 
         template <typename T>
-        requires std::signed_integral<T> || std::unsigned_integral<T>
+        requires std::integral<T>
         static inline void GetVoxelPosition(uint32_t VoxelIndex, T OutPosition[3]);
 
     };

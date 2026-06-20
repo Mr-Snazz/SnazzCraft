@@ -3,7 +3,6 @@
 inline void SnazzCraft::Chunk::UpdateMesh()
 {
     this->ChunkMesh.UpdateGPUData(true, true);
-    //this->ChunkMesh = SnazzCraft::Mesh(this->ChunkMesh.Vertices, this->ChunkMesh.Indices);
 }
 
 inline bool SnazzCraft::Chunk::HasValidMesh() const
@@ -19,7 +18,7 @@ inline void SnazzCraft::Chunk::Draw() const
 
 inline void SnazzCraft::Chunk::ClearLightValues()
 {
-    for (uint32_t I = 0u; I < SnazzCraft::Chunk::Volume; I++) this->LightValues[I] = 1;
+    for (uint32_t I{}; I < SnazzCraft::Chunk::Volume; I++) this->LightValues[I] = 1;
 }
 
 inline glm::vec3 SnazzCraft::Chunk::LocalVoxelPositionToWorldPosition(uint32_t X, uint32_t Y, uint32_t Z) const
@@ -91,7 +90,7 @@ constexpr bool SnazzCraft::Chunk::WithinChunkBounds(uint32_t X, uint32_t Y, uint
 }
 
 template <typename T>
-requires std::signed_integral<T> || std::unsigned_integral<T>
+requires std::integral<T>
 inline void SnazzCraft::Chunk::GetVoxelPosition(uint32_t VoxelIndex, T& OutX, T& OutY, T& OutZ)
 {
     OutX =  VoxelIndex %  static_cast<uint32_t>(SnazzCraft::Chunk::Width);
@@ -100,7 +99,7 @@ inline void SnazzCraft::Chunk::GetVoxelPosition(uint32_t VoxelIndex, T& OutX, T&
 }
 
 template <typename T>
-requires std::signed_integral<T> || std::unsigned_integral<T>
+requires std::integral<T>
 inline void SnazzCraft::Chunk::GetVoxelPosition(uint32_t VoxelIndex, T OutPosition[3])
 {
     OutPosition[0] =  VoxelIndex %  static_cast<uint32_t>(SnazzCraft::Chunk::Width);

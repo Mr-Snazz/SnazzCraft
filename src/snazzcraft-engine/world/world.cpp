@@ -4,7 +4,7 @@
 #include "snazzcraft-engine/texture/atlas.hpp"
 #include "snazzcraft-engine/height-map/height-map.hpp"
 
-SnazzCraft::World* SnazzCraft::CurrentWorld = nullptr;
+SnazzCraft::World* SnazzCraft::Overworld = nullptr;
 
 SnazzCraft::World::~World()
 {
@@ -21,7 +21,7 @@ SnazzCraft::World::~World()
 }
 
 SnazzCraft::World::World(std::string IName, uint32_t ISize, int32_t ISeed)
-    : Name(IName), Seed(ISeed), ThreadPool(SnazzCraft::ThreadPool(6u)), Chunks(std::unordered_map<uint64_t, SnazzCraft::Chunk*>()), VoxelPlacementDisplayPosition(glm::vec3(0.0f))
+    : Name(IName), Seed(ISeed), ThreadPool(SnazzCraft::ThreadPoolRecursive(6u)), Chunks(std::unordered_map<uint64_t, SnazzCraft::Chunk*>()), VoxelPlacementDisplayPosition(glm::vec3(0.0f))
 {
     this->Size = static_cast<int32_t>((ISize > SnazzCraft::World::MaxSize || ISize <= 0) ? SnazzCraft::World::MaxSize : ISize);
 
@@ -29,6 +29,14 @@ SnazzCraft::World::World(std::string IName, uint32_t ISize, int32_t ISeed)
 
     this->VoxelPlacementDisplayMesh = new SnazzCraft::Mesh(SnazzCraft::EngineVoxelTextureApplier->GetTexturedVertices(SnazzCraft::Voxel(ID_VOXEL_BARRIER)), SnazzCraft::VoxelMesh->Indices, true);
     this->VoxelPlacementDisplayMesh->ScaleVector = glm::vec3(1.005f);
+
+    std::thread
+    (
+        [this]()
+        {
+
+        }
+    ).detach();
 }
 
 bool SnazzCraft::World::ChunkWithinWorld(SnazzCraft::Chunk* Chunk) const
