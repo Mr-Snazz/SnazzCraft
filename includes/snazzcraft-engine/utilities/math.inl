@@ -12,14 +12,14 @@ inline void SnazzCraft::MoveVector3DWithFront(glm::vec3& Vector, const glm::vec3
 }
 
 template <typename T>
-requires std::signed_integral<T> || std::unsigned_integral<T>
+requires std::integral<T>
 constexpr T SnazzCraft::Index2D(T X, T Y, T Width)
 {
     return Y * Width + X;
 }
 
 template <typename T>
-requires std::signed_integral<T> || std::unsigned_integral<T>
+requires std::integral<T>
 constexpr T SnazzCraft::Index3D(T X, T Y, T Z, T Width, T Height)
 {
     return X + (Y * Width) + (Z * Width * Height);

@@ -2,5 +2,4 @@ DEPENDANCIES:
 
 GLM - GL Mathmatics
 Libnoise
-GLFW
 

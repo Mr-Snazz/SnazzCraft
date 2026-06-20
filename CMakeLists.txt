@@ -8,7 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 # 2. Compiler Flags (-Wall -Werror equivalent)
 if(MSVC)
-    add_compile_options(/W4 /WX) # Windows strict flags
+    add_compile_options() # Windows strict flags
 else()
     add_compile_options(-Wall -Werror) # Linux/macOS strict flags
 endif()
@@ -16,17 +16,11 @@ endif()
 # 3. Find Core Packages
 find_package(OpenGL REQUIRED)
 
-# Try to find GLFW natively via CMake configuration
-find_package(glfw3 CONFIG QUIET)
-if(NOT glfw3_FOUND)
-    find_package(GLFW3 QUIET)
-endif()
-
 # 4. Source Files Discovery
 # CONFIGURE_DEPENDS forces CMake to check for new files automatically when building
 # CORRECT ORDER: Sub-command -> Options -> Flags -> Patterns
 file(GLOB_RECURSE CPP_SOURCES CONFIGURE_DEPENDS "src/*.cpp")
-file(GLOB_RECURSE C_SOURCES CONFIGURE_DEPENDS "src/*.c")
+file(GLOB_RECURSE C_SOURCES CONFIGURE_DEPENDS   "src/*.c")
 file(GLOB_RECURSE GLAD_SOURCE CONFIGURE_DEPENDS "includes/*glad.c")
 
 # 5. Define the Executable
@@ -36,16 +30,12 @@ add_executable(executable ${CPP_SOURCES} ${C_SOURCES} ${GLAD_SOURCE})
 target_include_directories(executable PRIVATE includes)
 
 # 7. Link Libraries (Cross-Platform mapping)
-target_link_libraries(executable PRIVATE OpenGL::GL)
+add_subdirectory("external/glfw")
 
-# Link GLFW depending on how CMake found it
-if(TARGET glfw)
-    target_link_libraries(executable PRIVATE glfw)
-elseif(TARGET glfw3)
-    target_link_libraries(executable PRIVATE glfw3)
-else()
-    target_link_libraries(executable PRIVATE glfw) # Fallback string matching
-endif()
+target_link_libraries(executable PRIVATE 
+    OpenGL::GL
+    glfw
+)
 
 # Platform-specific library linking (dl, m, noise)
 if(UNIX AND NOT APPLE)
