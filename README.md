@@ -3,12 +3,12 @@
 --- All the dependencies are stated in dependancies.txt --- 
 
 
-Building Project:
-    [This may be different on windows]
-    * Navigate to project directory
-    * cmake -B build -DCMAKE_BUILD_TYPE=Release
-    * cmake --build build -j$(nproc)
-    * ./build/bin/executable
+Building Project: \
+    [This may be different on windows] \
+    * Navigate to project directory \
+    * cmake -B build -DCMAKE_BUILD_TYPE=Release \
+    * cmake --build build -j$(nproc) \
+    * ./build/bin/executable 
 
 
 Controls:
