@@ -5,6 +5,7 @@
 
 Building Project: \
     [This may be different on windows] \
+    * Install dependancies: Libnoise \
     * Navigate to project directory \
     * cmake -B build -DCMAKE_BUILD_TYPE=Release \
     * cmake --build build -j$(nproc) \
