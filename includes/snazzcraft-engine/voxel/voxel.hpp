@@ -34,7 +34,7 @@ namespace SnazzCraft
 
     private:
         // Bit order:
-        // false, false, Bottom, Top, Back, Right, Left, Front
+        // Void, Void, Bottom, Top, Back, Right, Left, Front
         uint8_t Sides = 0x3F;
 
     public:
