@@ -74,8 +74,10 @@ void SnazzCraft::World::RenderAllEntities() const
 
 void SnazzCraft::World::RenderChunks() 
 { 
+    constexpr glm::vec3 VoxelSizeVector(SnazzCraft::Voxel::Size);
+
     int32_t PlayerChunkPosition[2];
-    SnazzCraft::Chunk::GetChunkPosition(Player->Position / glm::vec3(SnazzCraft::Voxel::Size), PlayerChunkPosition);
+    SnazzCraft::Chunk::GetChunkPosition(Player->Position / VoxelSizeVector, PlayerChunkPosition);
  
     std::lock_guard<std::recursive_mutex> ChunksToUpdateMeshesLock(this->ChunksMutex);
     for (int32_t X = PlayerChunkPosition[0] - static_cast<int32_t>(this->RenderDistance); X <= PlayerChunkPosition[0] + static_cast<int32_t>(this->RenderDistance); X++) {
