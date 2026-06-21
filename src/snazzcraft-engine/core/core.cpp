@@ -12,6 +12,7 @@
 #include "snazzcraft-engine/world/world.hpp"
 #include "snazzcraft-engine/voxel/voxel-ids.h"
 #include "snazzcraft-engine/shader/voxel-shader.hpp"
+#include "snazzcraft-engine/shader/entity-shader.hpp"
 
 glm::mat4 SnazzCraft::ProjectionMatrix = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 1000.0f);
 glm::mat4 SnazzCraft::ModelMatrix = glm::mat4(1.0f);
@@ -19,7 +20,7 @@ glm::mat4 SnazzCraft::ViewMatrix = glm::mat4(1.0f);
 
 bool SnazzCraft::CloseApplication = false;
 
-const std::vector<SnazzCraft::VoxelVertice> VoxelMeshVertices = {
+const std::vector<SnazzCraft::Vertice> VoxelMeshVertices = {
     //   Position             // Normal              // Texture Coords
 
     // Front
@@ -96,6 +97,11 @@ void SnazzCraft::Initiate()
 
     glClearColor(0.0f, 0.0f, 0.5f, 1.0f);
 
+    const SnazzCraft::EntityShader& EntityShaderInstance = SnazzCraft::EntityShader::GetInstance();
+    EntityShaderInstance.SetProjectionMatrix(SnazzCraft::ProjectionMatrix, true);
+    EntityShaderInstance.SetModelMatrix(SnazzCraft::ModelMatrix, false);
+    EntityShaderInstance.SetViewMatrix(SnazzCraft::ViewMatrix, false);
+
     const SnazzCraft::VoxelShader& VoxelShaderInstance = SnazzCraft::VoxelShader::GetInstance();
     VoxelShaderInstance.SetProjectionMatrix(SnazzCraft::ProjectionMatrix, true);
     VoxelShaderInstance.SetModelMatrix(SnazzCraft::ModelMatrix, false);
@@ -135,7 +141,7 @@ void SnazzCraft::MainLoop()
         {
             case SNAZZCRAFT_USER_MODE_WORLD:
             {
-                if (SnazzCraft::Overworld == nullptr) break;
+                if (!SnazzCraft::Overworld) break;
 
                 SnazzCraft::WorldGUI& WorldGUIInstance = SnazzCraft::WorldGUI::GetInstance();
 

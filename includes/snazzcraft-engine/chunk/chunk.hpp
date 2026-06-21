@@ -9,7 +9,7 @@
 
 #include "snazzcraft-engine/voxel/voxel.hpp"
 #include "snazzcraft-engine/utilities/math.hpp"
-#include "snazzcraft-engine/mesh/mesh.hpp"
+#include "snazzcraft-engine/mesh/chunk-mesh.hpp"
 #include "snazzcraft-engine/world/world.hpp"
 
 namespace SnazzCraft
@@ -71,7 +71,7 @@ namespace SnazzCraft
     private:
         glm::vec3 ChunkWorldOffset;
 
-        SnazzCraft::Mesh ChunkMesh; 
+        SnazzCraft::ChunkMesh ChunkMesh; 
 
         SnazzCraft::Hitbox* VoxelCollisionHitbox;
 

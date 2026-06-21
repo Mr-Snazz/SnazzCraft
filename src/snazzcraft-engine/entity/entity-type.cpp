@@ -6,19 +6,19 @@
 #include "snazzcraft-engine/hitbox/hitbox.hpp"
 
 SnazzCraft::Mesh* SnazzCraft::EntityType::Meshes[256];
-uint8_t SnazzCraft::EntityType::MeshesLoaded = 0x00;
+uint8_t SnazzCraft::EntityType::MeshesLoaded{};
 #define MESH_RECTANGULAR_PRISM (0x00)
 #define MESH_CATTLE            (0x01)
 #define MESH_HUMANOID          (0x02)
 
 SnazzCraft::Texture* SnazzCraft::EntityType::Textures[256];
-uint8_t SnazzCraft::EntityType::TexturesLoaded = 0x00;
+uint8_t SnazzCraft::EntityType::TexturesLoaded{};
 #define TEXTURE_LIGHT_GREEN (0x00)
 #define TEXTURE_DARK_BLUE   (0x01)
 #define TEXTURE_WHITE       (0x02)
 
 SnazzCraft::Hitbox* SnazzCraft::EntityType::Hitboxes[256];
-uint8_t SnazzCraft::EntityType::HitboxesLoaded = 0x00;
+uint8_t SnazzCraft::EntityType::HitboxesLoaded{};
 #define HITBOX_HUMANONOID (0x00)
 #define HITBOX_CATTLE     (0x01)
 
@@ -33,15 +33,15 @@ void SnazzCraft::EntityType::Initialize()
 
 void SnazzCraft::EntityType::FreeResources()
 {
-    for (uint8_t I = 0x00; I < SnazzCraft::EntityType::MeshesLoaded; I++) {
+    for (uint8_t I{}; I < SnazzCraft::EntityType::MeshesLoaded; I++) {
         delete Meshes[I];
     }
 
-    for (uint8_t I = 0x00; I < SnazzCraft::EntityType::TexturesLoaded; I++) {
+    for (uint8_t I{}; I < SnazzCraft::EntityType::TexturesLoaded; I++) {
         delete Textures[I];
     }
 
-    for (uint8_t I = 0x00; I < SnazzCraft::EntityType::HitboxesLoaded; I++) {
+    for (uint8_t I{}; I < SnazzCraft::EntityType::HitboxesLoaded; I++) {
         delete SnazzCraft::EntityType::Hitboxes[I];
     }
 }
@@ -108,8 +108,8 @@ void SnazzCraft::EntityType::LoadHitboxes()
     {
         if (Line.empty()) continue;
 
-        uint32_t LineIndex = 0;
-        for (uint8_t I = 0x00; I < 0x03; I++) {
+        uint32_t LineIndex{};
+        for (uint8_t I{}; I < 0x03; I++) {
             std::string NewValue;
             SnazzCraft::ParseData(NewValue, Line, LineIndex, &Space);
 

@@ -1,13 +1,10 @@
 #include "snazzcraft-engine/mesh/mesh.hpp"
 
-SnazzCraft::Mesh* SnazzCraft::VoxelMesh = nullptr;
+SnazzCraft::Mesh* SnazzCraft::VoxelMesh{};
 
-SnazzCraft::Mesh::Mesh(std::vector<SnazzCraft::VoxelVertice> Vertices, std::vector<uint32_t> Indices, bool Initiate)
-    : ScaleVector(glm::vec3(1.0f)), VAO(0u), VBO(0u), EBO(0u), ShouldInitiate(!Initiate)
+SnazzCraft::Mesh::Mesh(const std::vector<SnazzCraft::Vertice>& IVertices, const std::vector<uint32_t>& IIndices, bool Initiate)
+    : MeshBase(Initiate), Vertices(IVertices), Indices(IIndices), ScaleVector(glm::vec3(1.0f))
 {
-	this->Vertices = Vertices;
-	this->Indices = Indices;
-
     if (Initiate) this->Initiate();
 }
 
@@ -33,7 +30,7 @@ void SnazzCraft::Mesh::UpdateGPUData(bool BindVAO, bool UnbindPostUpdate)
 
     // Update VBO with current vertex data
     glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
-    glBufferData(GL_ARRAY_BUFFER, this->Vertices.size() * sizeof(SnazzCraft::VoxelVertice), this->Vertices.data(), GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, this->Vertices.size() * sizeof(SnazzCraft::Vertice), this->Vertices.data(), GL_DYNAMIC_DRAW);
 
     // Update EBO with current index data
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
@@ -62,20 +59,16 @@ void SnazzCraft::Mesh::Initiate()
     // Set vertex attribute pointers
 
     // layout (location = 0) vec3 position
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(SnazzCraft::VoxelVertice), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(SnazzCraft::Vertice), (void*)0);
     glEnableVertexAttribArray(0);
 
     // layout (location = 1) vec3 normal
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(SnazzCraft::VoxelVertice), (void*)offsetof(SnazzCraft::VoxelVertice, SnazzCraft::VoxelVertice::Normal));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(SnazzCraft::Vertice), (void*)offsetof(SnazzCraft::Vertice, SnazzCraft::Vertice::Normal));
     glEnableVertexAttribArray(1);
 
     // layout (location = 2) vec2 texCoord
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(SnazzCraft::VoxelVertice), (void*)offsetof(SnazzCraft::VoxelVertice, SnazzCraft::VoxelVertice::TextureCoordinate));
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(SnazzCraft::Vertice), (void*)offsetof(SnazzCraft::Vertice, SnazzCraft::Vertice::TextureCoordinate));
     glEnableVertexAttribArray(2);
-
-    // layout (location = 3) float brightness
-    glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(SnazzCraft::VoxelVertice), (void*)offsetof(SnazzCraft::VoxelVertice, SnazzCraft::VoxelVertice::Brightness));
-    glEnableVertexAttribArray(3);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -87,7 +80,7 @@ SnazzCraft::Mesh* SnazzCraft::Mesh::LoadMeshFromObjectFile(const char* FilePath,
     std::vector<glm::vec2> TempUVs;
     std::vector<glm::vec3> TempNormals;
 
-    std::vector<SnazzCraft::VoxelVertice> OutVertices;
+    std::vector<SnazzCraft::Vertice> OutVertices;
     std::vector<uint32_t> OutIndices;
 
     std::ifstream File(FilePath);
@@ -139,7 +132,7 @@ SnazzCraft::Mesh* SnazzCraft::Mesh::LoadMeshFromObjectFile(const char* FilePath,
                 
                 if (SegmentSS >> PIdx >> UIdx >> NIdx)
                 {
-                    SnazzCraft::VoxelVertice Vertex;
+                    SnazzCraft::Vertice Vertex;
                     
                     // Wavefront indices are 1-based, so we subtract 1 for zero-based vectors
                     Vertex.Position  = TempPositions[PIdx - 1];

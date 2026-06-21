@@ -8,12 +8,13 @@
 #include "snazzcraft-engine/hitbox/hitbox.hpp"
 #include "snazzcraft-engine/utilities/math.hpp"
 #include "snazzcraft-engine/voxel/voxel-type.hpp"
+#include "snazzcraft-engine/mesh/mesh.hpp"
 
 SnazzCraft::Chunk::Chunk(int32_t X, int32_t Y)
     : Voxels(std::array<SnazzCraft::Voxel, SnazzCraft::Chunk::Volume>()), 
     LightValues(std::array<int8_t, SnazzCraft::Chunk::Volume>()), 
     ShouldUpdateMesh(false),
-    ChunkMesh(SnazzCraft::Mesh({}, {}, false)), 
+    ChunkMesh(SnazzCraft::ChunkMesh({}, {}, false)), 
     VoxelCollisionHitbox(new SnazzCraft::Hitbox(glm::vec3((float)SnazzCraft::Voxel::Size)))
 {
     this->Position[0] = X;

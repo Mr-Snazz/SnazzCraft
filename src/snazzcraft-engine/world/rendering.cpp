@@ -5,6 +5,7 @@
 #include "snazzcraft-engine/mesh/mesh.hpp"
 #include "snazzcraft-engine/chunk/chunk.hpp"
 #include "snazzcraft-engine/shader/voxel-shader.hpp"
+#include "snazzcraft-engine/shader/entity-shader.hpp"
 #include "snazzcraft-engine/entity/entity-ids.h"
 
 void SnazzCraft::World::Render() 
@@ -29,14 +30,17 @@ void SnazzCraft::World::Render()
     if (SnazzCraft::WireframeModeActive) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     else                                 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    const SnazzCraft::VoxelShader& VoxelShaderInstance = VoxelShader::GetInstance();
+    SnazzCraft::ViewMatrix = glm::lookAt(SnazzCraft::Player->Position, SnazzCraft::Player->Position + SnazzCraft::Player->Front, glm::vec3(0.0, 1.0, 0.0));
+    SnazzCraft::ModelMatrix = glm::mat4(1.0f);
+
+    const SnazzCraft::EntityShader& EntityShaderInstance = SnazzCraft::EntityShader::GetInstance();
+    EntityShaderInstance.SetViewMatrix(SnazzCraft::ViewMatrix, true);
+    EntityShaderInstance.SetModelMatrix(SnazzCraft::ModelMatrix, false);
+
+    const SnazzCraft::VoxelShader& VoxelShaderInstance = SnazzCraft::VoxelShader::GetInstance();
     VoxelShaderInstance.SetLightPosition(SnazzCraft::Overworld->Entities[0]->Position, true);
     VoxelShaderInstance.SetViewPosition(SnazzCraft::Player->Position, false);
-
-    SnazzCraft::ViewMatrix = glm::lookAt(SnazzCraft::Player->Position, SnazzCraft::Player->Position + SnazzCraft::Player->Front, glm::vec3(0.0, 1.0, 0.0));
     VoxelShaderInstance.SetViewMatrix(SnazzCraft::ViewMatrix, false);
-    
-    SnazzCraft::ModelMatrix = glm::mat4(1.0f);
     VoxelShaderInstance.SetModelMatrix(SnazzCraft::ModelMatrix, false);
 
     this->RenderChunks();
@@ -44,6 +48,7 @@ void SnazzCraft::World::Render()
     SnazzCraft::Overworld->UpdateVoxelPlacementDisplay();
     this->RenderVoxelPlacementDisplay();
     
+    EntityShaderInstance.Use();
     this->RenderAllEntities();
 }
 
@@ -60,7 +65,8 @@ void SnazzCraft::World::RenderAllEntities() const
         SnazzCraft::ModelMatrix = glm::rotate(SnazzCraft::ModelMatrix, glm::radians( Entity->Rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
 
         SnazzCraft::ModelMatrix = glm::scale(SnazzCraft::ModelMatrix, EntityType.EntityMesh->ScaleVector);
-        SnazzCraft::VoxelShader::GetInstance().SetModelMatrix(SnazzCraft::ModelMatrix, false);
+        SnazzCraft::EntityShader::GetInstance().SetModelMatrix(SnazzCraft::ModelMatrix, false);
+        //SnazzCraft::VoxelShader::GetInstance().SetModelMatrix(SnazzCraft::ModelMatrix, false);
 
         EntityType.EntityTexture->BindTexture();
         EntityType.EntityMesh->Draw();
