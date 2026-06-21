@@ -4,8 +4,7 @@
 
 namespace SnazzCraft
 {
-    template <typename Return>
-    class ThreadPoolBasic : public SnazzCraft::ThreadPoolBase<Return>
+    class ThreadPoolBasic : public SnazzCraft::ThreadPoolBase
     {
     public:
         ThreadPoolBasic(size_t ThreadCount)
@@ -14,7 +13,7 @@ namespace SnazzCraft
             {
                 while (true)
                 {
-                    std::function<Return()> Task;
+                    std::function<void()> Task;
 
                     {
                         std::unique_lock<std::mutex> Lock(this->QueueMutex);

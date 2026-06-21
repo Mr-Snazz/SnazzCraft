@@ -3,7 +3,7 @@
 SnazzCraft::Mesh* SnazzCraft::VoxelMesh = nullptr;
 
 SnazzCraft::Mesh::Mesh(std::vector<SnazzCraft::VoxelVertice> Vertices, std::vector<uint32_t> Indices, bool Initiate)
-    : VAO(0u), VBO(0u), EBO(0u), ShouldInitiate(!Initiate)
+    : ScaleVector(glm::vec3(1.0f)), VAO(0u), VBO(0u), EBO(0u), ShouldInitiate(!Initiate)
 {
 	this->Vertices = Vertices;
 	this->Indices = Indices;

@@ -8,7 +8,7 @@ in float Brightness;
 in vec3 FragPosition;
 
 // Texture Sampler
-uniform sampler2D texture1;
+uniform sampler2D Sampler;
 uniform vec3 LightPosition = vec3(0.0f);
 uniform vec3 ViewPosition  = vec3(0.0f);
 uniform float AmbientStrength = 0.1f;
@@ -27,7 +27,7 @@ void main()
     vec2 TextureCoordinate = TexCoord;
     TextureCoordinate = AdjustVoxelTextureCoordinate(TextureCoordinate);
 
-	vec4 TextureColor = texture(texture1, TextureCoordinate);
+	vec4 TextureColor = texture(Sampler, TextureCoordinate);
     if (TextureColor.a < 0.1) discard;
     
     if (ComplexLightingEnabled) {

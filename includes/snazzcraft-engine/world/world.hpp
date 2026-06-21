@@ -36,14 +36,14 @@ namespace SnazzCraft
         int32_t Size;
         int32_t Seed;
         
-        uint32_t RenderDistance = 50;
+        uint32_t RenderDistance = 4;
         float PlayerReach = static_cast<float>(SnazzCraft::Voxel::Size * 5);
 
         World(std::string IName, uint32_t ISize, int32_t ISeed);
 
         ~World();
 
-        void Render() const;
+        void Render();
 
     private:
         class VoxelCollisionInfo
@@ -86,7 +86,7 @@ namespace SnazzCraft
         inline bool ChunkWithinWorld(int32_t ChunkX, int32_t ChunkZ) const;
 
     private:
-        SnazzCraft::ThreadPoolBasic<void> ThreadPool; // 6 threads
+        SnazzCraft::ThreadPoolBasic ThreadPool; // 6 threads
 
         std::unordered_map<uint64_t, SnazzCraft::Chunk*> Chunks; // Uses SnazzCraft::IntegerHash for hashing
         mutable std::recursive_mutex ChunksMutex;
@@ -105,7 +105,7 @@ namespace SnazzCraft
 
         void RenderAllEntities() const;
 
-        void RenderChunks() const;
+        void RenderChunks();
 
         void RenderVoxelPlacementDisplay() const;
 

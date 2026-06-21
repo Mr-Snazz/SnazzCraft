@@ -54,9 +54,8 @@ SnazzCraft::World* SnazzCraft::World::CreateWorld(std::string Name, uint32_t Siz
     //} 
     //}
 
-    constexpr int32_t InitialSize = 6;
-    for (int32_t X = -InitialSize; X <= InitialSize; X++) {
-    for (int32_t Z = -InitialSize; Z <= InitialSize; Z++) {
+    for (int32_t X = -static_cast<int32_t>(NewWorld->RenderDistance); X <= static_cast<int32_t>(NewWorld->RenderDistance); X++) {
+    for (int32_t Z = -static_cast<int32_t>(NewWorld->RenderDistance); Z <= static_cast<int32_t>(NewWorld->RenderDistance); Z++) {
         NewWorld->ThreadPool.Enqueue([NewWorld, X, Z](){ NewWorld->GenerateChunk(X, Z); });
     }
     }

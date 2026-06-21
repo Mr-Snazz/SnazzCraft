@@ -20,9 +20,7 @@ namespace SnazzCraft
     public:
         std::vector<SnazzCraft::VoxelVertice> Vertices;
         std::vector<uint32_t> Indices;
-        glm::vec3 ScaleVector = { 1.0f, 1.0f, 1.0f };
-
-        uint32_t VAO;
+        glm::vec3 ScaleVector;
 
         Mesh(std::vector<SnazzCraft::VoxelVertice> Vertices, std::vector<uint32_t> Indices, bool Initiate); // Use shader before constructing
 
@@ -35,6 +33,7 @@ namespace SnazzCraft
         inline bool IsValid() const;
 
     private:
+        uint32_t VAO;
         uint32_t VBO;
         uint32_t EBO;
         bool ShouldInitiate;

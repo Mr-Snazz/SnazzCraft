@@ -29,13 +29,13 @@ namespace SnazzCraft
     class Chunk
     {
     public:
-        static constexpr int16_t  Width  = 16;
-        static constexpr int16_t  Height = 256;
-        static constexpr int16_t  Depth  = 16;
+        static constexpr  int16_t Width  = 16;
+        static constexpr  int16_t Height = 256;
+        static constexpr  int16_t Depth  = 16;
         static constexpr uint32_t Volume = static_cast<uint32_t>(Width * Height * Depth);
 
         std::array<SnazzCraft::Voxel, Volume> Voxels; // Voxel positioning is in local chunk space
-        std::array<int8_t,           Volume> LightValues;
+        std::array<int8_t,            Volume> LightValues;
 
         int32_t Position[2]; // X & Z Chunk Coordinates
         bool ShouldUpdateMesh;

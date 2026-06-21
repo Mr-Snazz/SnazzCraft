@@ -7,7 +7,7 @@
 #include "snazzcraft-engine/shader/voxel-shader.hpp"
 #include "snazzcraft-engine/entity/entity-ids.h"
 
-void SnazzCraft::World::Render() const
+void SnazzCraft::World::Render() 
 {   
     if (SnazzCraft::Overworld->Entities.size() == 0) {
         std::lock_guard<std::recursive_mutex> EntitieLock(this->EntitiesMutex);
@@ -26,12 +26,8 @@ void SnazzCraft::World::Render() const
     glCullFace(GL_FRONT); 
     glFrontFace(GL_CW);  
     glEnable(GL_CULL_FACE);
-    if (SnazzCraft::WireframeModeActive) {
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    }
-    else {
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    }
+    if (SnazzCraft::WireframeModeActive) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    else                                 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     const SnazzCraft::VoxelShader& VoxelShaderInstance = VoxelShader::GetInstance();
     VoxelShaderInstance.SetLightPosition(SnazzCraft::Overworld->Entities[0]->Position, true);
@@ -76,11 +72,11 @@ void SnazzCraft::World::RenderAllEntities() const
     for (SnazzCraft::Entity* Entity : this->Entities) RenderEntity(Entity);
 }
 
-void SnazzCraft::World::RenderChunks() const
+void SnazzCraft::World::RenderChunks() 
 { 
     int32_t PlayerChunkPosition[2];
-    SnazzCraft::Chunk::GetChunkPosition(Player->Position, PlayerChunkPosition);
-
+    SnazzCraft::Chunk::GetChunkPosition(Player->Position / glm::vec3(SnazzCraft::Voxel::Size), PlayerChunkPosition);
+ 
     std::lock_guard<std::recursive_mutex> ChunksToUpdateMeshesLock(this->ChunksMutex);
     for (int32_t X = PlayerChunkPosition[0] - static_cast<int32_t>(this->RenderDistance); X <= PlayerChunkPosition[0] + static_cast<int32_t>(this->RenderDistance); X++) {
     for (int32_t Z = PlayerChunkPosition[1] - static_cast<int32_t>(this->RenderDistance); Z <= PlayerChunkPosition[1] + static_cast<int32_t>(this->RenderDistance); Z++) {
@@ -89,7 +85,10 @@ void SnazzCraft::World::RenderChunks() const
         uint64_t Hash = SnazzCraft::IntegerHash(X, Z);
 
         auto ChunkIterator = this->Chunks.find(Hash);
-        if (ChunkIterator == this->Chunks.end()) continue;
+        if (ChunkIterator == this->Chunks.end()) {
+            this->ThreadPool.Enqueue([this, X, Z](){ this->GenerateChunk(X, Z); });
+            continue;
+        }
 
         if (ChunkIterator->second->ShouldUpdateMesh) { ChunkIterator->second->UpdateMesh(); ChunkIterator->second->ShouldUpdateMesh = false; }
 

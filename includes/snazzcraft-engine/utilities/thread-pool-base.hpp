@@ -11,30 +11,12 @@
 
 namespace SnazzCraft
 {
-    template <typename Return>
     class ThreadPoolBase
     {
     public:
-        virtual ~ThreadPoolBase()
-        {
-            {
-                std::lock_guard<std::mutex> Lock(this->QueueMutex);
-                this->ShouldStop = true;
-            }
-            
-            this->Condition.notify_all();
-            this->Threads.clear();
-        }
+        virtual ~ThreadPoolBase();
 
-        void Enqueue(std::function<Return()> Task)
-        {
-            {
-                std::lock_guard<std::mutex> Lock(this->QueueMutex);
-                this->TaskQueue.emplace(std::move(Task));
-            }
-
-            this->Condition.notify_one();
-        }
+        void Enqueue(std::function<void()> Task);
 
     protected:
         ThreadPoolBase() = default;
@@ -42,8 +24,7 @@ namespace SnazzCraft
         std::vector<std::jthread> Threads;
         std::condition_variable Condition;
         
-
-        std::queue<std::function<Return()>> TaskQueue;
+        std::queue<std::function<void()>> TaskQueue;
         std::mutex QueueMutex;
 
         bool ShouldStop{};
