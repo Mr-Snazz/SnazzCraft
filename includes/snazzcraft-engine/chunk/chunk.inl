@@ -1,3 +1,5 @@
+#include <cstring>
+
 #include "snazzcraft-engine/chunk/chunk.hpp"
 
 inline void SnazzCraft::Chunk::UpdateMesh()
@@ -18,7 +20,7 @@ inline void SnazzCraft::Chunk::Draw() const
 
 inline void SnazzCraft::Chunk::ClearLightValues()
 {
-    for (uint32_t I{}; I < SnazzCraft::Chunk::Volume; I++) this->LightValues[I] = 1;
+    std::memset(this->LightValues.data(), 1, this->LightValues.size());
 }
 
 inline glm::vec3 SnazzCraft::Chunk::LocalVoxelPositionToWorldPosition(uint32_t X, uint32_t Y, uint32_t Z) const

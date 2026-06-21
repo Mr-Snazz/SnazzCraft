@@ -25,8 +25,8 @@ void SnazzCraft::User::Rotate(const glm::vec3& AdditionalRotation)
     this->Rotation[1] += this->Rotation[1] < -180.0f ?  360.0f : 0.0f;
 
     this->Rotation[2] += AdditionalRotation[2];
-    this->Rotation[2] = this->Rotation[2] >  89.999f ?  89.999f : this->Rotation[2];
-    this->Rotation[2] = this->Rotation[2] < -89.999f ? -89.999f : this->Rotation[2];
+    this->Rotation[2] = this->Rotation[2] >  89.0f ?  89.0f : this->Rotation[2];
+    this->Rotation[2] = this->Rotation[2] < -89.0f ? -89.0f : this->Rotation[2];
     
     this->Front = SnazzCraft::CalculateFrontVector(this->Rotation, true);
 }
