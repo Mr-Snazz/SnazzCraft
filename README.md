@@ -5,6 +5,7 @@
 
 Building Project: \
     [This may be different on windows] \
+    * Make sure to clone recursively to download all submodules \
     * Install dependancies: Libnoise \
     * Navigate to project directory \
     * cmake -B build -DCMAKE_BUILD_TYPE=Release \
