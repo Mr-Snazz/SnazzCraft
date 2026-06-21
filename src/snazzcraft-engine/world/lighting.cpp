@@ -6,25 +6,44 @@
 
 void SnazzCraft::World::UpdateChunkLighting(SnazzCraft::Chunk* Chunk, bool* UpdatedInputChunk)
 {
-    Chunk->ClearLightValues();
+    std::vector<SnazzCraft::Chunk*> RegionChunks;
+    RegionChunks.reserve(9);
+    for (int32_t DX = -1; DX <= 1; ++DX) {
+    for (int32_t DZ = -1; DZ <= 1; ++DZ) {
+        int32_t CX = Chunk->Position[0] + DX;
+        int32_t CZ = Chunk->Position[1] + DZ;
+        if (!this->ChunkWithinWorld(CX, CZ)) continue;
+
+        uint64_t Hash = SnazzCraft::IntegerHash<int32_t>(CX, CZ);
+        auto ChunkIterator = this->Chunks.find(Hash);
+        if (ChunkIterator == this->Chunks.end()) continue;
+
+        RegionChunks.push_back(ChunkIterator->second);
+    }
+    }
+
+    for (SnazzCraft::Chunk* Chunk : RegionChunks) Chunk->ClearLightValues();
+
     std::unordered_set<uint64_t> ChunksToUpdate;
 
-    this->ApplySunLightingToChunk(Chunk, &ChunksToUpdate);
+    for (SnazzCraft::Chunk* Chunk : RegionChunks) {
+        this->ApplySunLightingToChunk(Chunk, &ChunksToUpdate);
 
-    for (uint32_t VoxelIndex{}; VoxelIndex < SnazzCraft::Chunk::Volume; VoxelIndex++) {
-        const SnazzCraft::Voxel& Voxel = Chunk->Voxels[VoxelIndex];
+        for (uint32_t VoxelIndex{}; VoxelIndex < SnazzCraft::Chunk::Volume; VoxelIndex++) {
+            const SnazzCraft::Voxel& Voxel = Chunk->Voxels[VoxelIndex];
 
-        int32_t LightProducingLevel = Voxel.GetVoxelType().LightProducingLevel;
-        if (LightProducingLevel <= 0) continue;
+            int32_t LightProducingLevel = Voxel.GetVoxelType().LightProducingLevel;
+            if (LightProducingLevel <= 0) continue;
 
-        int32_t VoxelX, VoxelY, VoxelZ;
-        SnazzCraft::Chunk::GetVoxelPosition(VoxelIndex, VoxelX, VoxelY, VoxelZ);
-        int32_t Position[3] = {
-            VoxelX + Chunk->Position[0] * SnazzCraft::Chunk::Width,
-            VoxelY,
-            VoxelZ + Chunk->Position[1] * SnazzCraft::Chunk::Depth,
-        };
-        this->ApplyLightingVoxel(Position, LightProducingLevel, &ChunksToUpdate);
+            int32_t VoxelX, VoxelY, VoxelZ;
+            SnazzCraft::Chunk::GetVoxelPosition(VoxelIndex, VoxelX, VoxelY, VoxelZ);
+            int32_t Position[3] = {
+                VoxelX + Chunk->Position[0] * SnazzCraft::Chunk::Width,
+                VoxelY,
+                VoxelZ + Chunk->Position[1] * SnazzCraft::Chunk::Depth,
+            };
+            this->ApplyLightingVoxel(Position, LightProducingLevel, &ChunksToUpdate);
+        }
     }
 
     for (uint64_t I : ChunksToUpdate) {
@@ -32,31 +51,24 @@ void SnazzCraft::World::UpdateChunkLighting(SnazzCraft::Chunk* Chunk, bool* Upda
         if (ChunkIterator == this->Chunks.end()) continue;
 
         ChunkIterator->second->UpdateLightingOnVertices(this);
-        //ChunkIterator->second->UpdateVerticesAndIndices();
         ChunkIterator->second->ShouldUpdateMesh = true;
-    }
-
-    // Refresh vertex lighting on neighboring chunks too, because boundary faces read light from adjacent chunks.
-    for (uint64_t I : ChunksToUpdate) {
-        auto ChunkIterator = this->Chunks.find(I);
-        if (ChunkIterator == this->Chunks.end()) continue;
 
         SnazzCraft::Chunk* UpdatedChunk = ChunkIterator->second;
-        for (int32_t DX = -1; DX <= 1; DX++) {
-            for (int32_t DZ = -1; DZ <= 1; DZ++) {
-                if (DX == 0 && DZ == 0) continue;
+        for (int32_t DX = -1; DX <= 1; ++DX) {
+        for (int32_t DZ = -1; DZ <= 1; ++DZ) {
+            if (!DX && !DZ) continue;
 
-                int32_t NeighborChunkX = UpdatedChunk->Position[0] + DX;
-                int32_t NeighborChunkZ = UpdatedChunk->Position[1] + DZ;
-                if (!this->ChunkWithinWorld(NeighborChunkX, NeighborChunkZ)) continue;
+            int32_t NeighborChunkX = UpdatedChunk->Position[0] + DX;
+            int32_t NeighborChunkZ = UpdatedChunk->Position[1] + DZ;
+            if (!this->ChunkWithinWorld(NeighborChunkX, NeighborChunkZ)) continue;
 
-                uint64_t NeighborHash = SnazzCraft::IntegerHash<int32_t>(NeighborChunkX, NeighborChunkZ);
-                auto NeighborIterator = this->Chunks.find(NeighborHash);
-                if (NeighborIterator == this->Chunks.end()) continue;
+            uint64_t NeighborHash = SnazzCraft::IntegerHash<int32_t>(NeighborChunkX, NeighborChunkZ);
+            auto NeighborIterator = this->Chunks.find(NeighborHash);
+            if (NeighborIterator == this->Chunks.end()) continue;
 
-                NeighborIterator->second->UpdateLightingOnVertices(this);
-                NeighborIterator->second->ShouldUpdateMesh = true;
-            }
+            NeighborIterator->second->UpdateLightingOnVertices(this);
+            NeighborIterator->second->ShouldUpdateMesh = true;
+        }
         }
     }
 

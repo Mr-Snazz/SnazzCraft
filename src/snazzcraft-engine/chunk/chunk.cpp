@@ -308,11 +308,11 @@ void SnazzCraft::Chunk::UpdateLightingOnVertices(SnazzCraft::World* World)
 
         if (Voxel.GetSideCount() == 0) continue;
 
-        for (uint8_t L = 0x00; L < 0x06; L++) { // 6 faces per voxel
+        for (uint8_t L{}; L < 0x06; L++) { // 6 faces per voxel
             if (!Voxel.HasSide(L)) continue;
 
             float LightValue = GetLightValue(VoxelIndex, L);
-            for (uint8_t J = 0x00; J < 0x04; J++) { // 4 vertices per face
+            for (uint8_t J{}; J < 0x04; J++) { // 4 vertices per face
                 this->ChunkMesh.Vertices[(VoxelCount * 24) + SnazzCraft::Index2D<uint8_t>(J, L, 4)].Brightness = LightValue; // 24 vertices per voxel
             }
         }

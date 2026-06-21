@@ -30,7 +30,7 @@ add_executable(executable ${CPP_SOURCES} ${C_SOURCES} ${GLAD_SOURCE})
 target_include_directories(executable PRIVATE includes)
 
 # 7. Link Libraries (Cross-Platform mapping)
-add_subdirectory("external/glfw")
+add_subdirectory("dependancies/glfw")
 
 target_link_libraries(executable PRIVATE 
     OpenGL::GL
