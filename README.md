@@ -8,7 +8,7 @@ Building Project: \
     * Install dependancies: Libnoise \
     * Navigate to project directory \
     * cmake -B build -DCMAKE_BUILD_TYPE=Release \
-    * cmake --build build -j$(nproc) \
+    * cmake --build build -j$(nproc) 
 
 Running Project: \
     * Run ./build/bin/executable in the projects root directory
