@@ -9,8 +9,9 @@ Building Project: \
     * Navigate to project directory \
     * cmake -B build -DCMAKE_BUILD_TYPE=Release \
     * cmake --build build -j$(nproc) \
-    * ./build/bin/executable 
 
+Running Project: \
+    * Run ./build/bin/executable in the projects root directory
 
 Controls:
 
