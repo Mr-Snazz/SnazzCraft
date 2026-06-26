@@ -317,7 +317,7 @@ float SnazzCraft::Chunk::GetLightValue(SnazzCraft::World* World, uint32_t VoxelI
 
     uint32_t LocalIndex = SnazzCraft::Chunk::LocalVoxelIndex(CheckX, CheckY, CheckZ);
 
-    int LightValue = ChunkIterator->second->LightValues[LocalIndex];
+    int8_t LightValue = ChunkIterator->second->LightValues[LocalIndex];
     if (LightValue <= 1) return DefaultLightValueFloat;
 
     return static_cast<float>(LightValue) / static_cast<float>(SnazzCraft::Voxel::MaxLightValue);
