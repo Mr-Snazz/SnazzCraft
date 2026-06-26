@@ -33,9 +33,3 @@ inline void SnazzCraft::ToggleWireframeCallback(SnazzCraft::Event* Event)
     SnazzCraft::WireframeModeActive = !SnazzCraft::WireframeModeActive;
 }
 
-inline void SnazzCraft::ToggleComplexLightingCallback(SnazzCraft::Event* Event)
-{
-    const SnazzCraft::VoxelShader& VoxelShaderInstance = SnazzCraft::VoxelShader::GetInstance();
-    VoxelShaderInstance.SetComplexLighting(!VoxelShaderInstance.ComplexLightingIsEnabled(), true);
-}
-

@@ -36,7 +36,7 @@ namespace SnazzCraft
         int32_t Size;
         int32_t Seed;
         
-        uint32_t RenderDistance = 4;
+        uint32_t RenderDistance = 1u;
         float PlayerReach = static_cast<float>(SnazzCraft::Voxel::Size * 5);
 
         World(std::string IName, uint32_t ISize, int32_t ISeed);

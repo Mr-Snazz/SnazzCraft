@@ -38,6 +38,7 @@ namespace SnazzCraft
         std::array<int8_t,            Volume> LightValues;
 
         int32_t Position[2]; // X & Z Chunk Coordinates
+        glm::vec3 WorldOffset;
         bool ShouldUpdateMesh;
 
         Chunk(int32_t X, int32_t Y); // Chunk Coordinates 
@@ -69,13 +70,11 @@ namespace SnazzCraft
         inline void ClearLightValues();
 
     private:
-        glm::vec3 ChunkWorldOffset;
-
         SnazzCraft::ChunkMesh ChunkMesh; 
 
         SnazzCraft::Hitbox* VoxelCollisionHitbox;
 
-        float GetLightValue(SnazzCraft::World* World, uint32_t VoxelIndex, uint8_t Side);
+        float GetLightValue(SnazzCraft::World* World, uint32_t VoxelIndex, uint8_t Side, uint8_t VerticeCount);
 
         inline glm::vec3 LocalVoxelPositionToWorldPosition(uint32_t X, uint32_t Y, uint32_t Z) const;
 

@@ -106,10 +106,6 @@ void SnazzCraft::Initiate()
     VoxelShaderInstance.SetProjectionMatrix(SnazzCraft::ProjectionMatrix, true);
     VoxelShaderInstance.SetModelMatrix(SnazzCraft::ModelMatrix, false);
     VoxelShaderInstance.SetViewMatrix(SnazzCraft::ViewMatrix, false);
-    VoxelShaderInstance.SetLightPosition(glm::vec3(0.0f, 50.0f, 0.0f), false);
-    VoxelShaderInstance.SetViewPosition(SnazzCraft::Player->Position, false);
-    VoxelShaderInstance.SetAmbientStrength(0.6f, false);
-    VoxelShaderInstance.SetComplexLighting(false, false);
     
     SnazzCraft::VoxelTextureAtlas = new SnazzCraft::Texture("textures/voxel/atlas.png");
     stbi_set_flip_vertically_on_load(true);

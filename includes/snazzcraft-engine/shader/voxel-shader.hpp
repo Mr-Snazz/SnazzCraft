@@ -21,23 +21,10 @@ namespace SnazzCraft
 
         inline void SetProjectionMatrix(const glm::mat4& ProjectionMatrix, bool CallUse) const;
 
-        inline void SetLightPosition(const glm::vec3& LightPosition, bool CallUse) const;
-
-        inline void SetViewPosition(const glm::vec3& ViewPosition, bool CallUse) const;
-
-        inline void SetAmbientStrength(float AmbientStrength, bool CallUse) const;
-
-        inline void SetComplexLighting(bool Enabled, bool CallUse) const;
-
-        inline bool ComplexLightingIsEnabled() const;
-
     protected:
 
     private:
-        mutable bool ComplexLightingEnabled;
-
         VoxelShader(const char* vertexPath, const char* fragmentPath);
-
 
     public:
         static inline const VoxelShader& GetInstance();

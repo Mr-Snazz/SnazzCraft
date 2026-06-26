@@ -9,10 +9,6 @@ in vec3 FragPosition;
 
 // Texture Sampler
 uniform sampler2D Sampler;
-uniform vec3 LightPosition = vec3(0.0f);
-uniform vec3 ViewPosition  = vec3(0.0f);
-uniform float AmbientStrength = 0.1f;
-uniform bool ComplexLightingEnabled = false;
 
 vec2 AdjustVoxelTextureCoordinate(in vec2 TextureCoordinate)
 {
@@ -29,23 +25,6 @@ void main()
 
 	vec4 TextureColor = texture(Sampler, TextureCoordinate);
     if (TextureColor.a < 0.1) discard;
-    
-    if (ComplexLightingEnabled) {
-        // Ambient
-        vec3 Ambient = AmbientStrength * TextureColor.rgb;
-
-        // Diffuse
-        vec3 NormalizedNormal = normalize(Normal);
-        vec3 LightDirection = normalize(LightPosition - FragPosition);
-        vec3 Diffuse = max(dot(NormalizedNormal, LightDirection), 0.0) * TextureColor.rgb;
-
-        // Specular
-        vec3 ViewDirection = normalize(ViewPosition - FragPosition);
-        vec3 ReflectDirection = reflect(-LightDirection, NormalizedNormal);
-        vec3 specular = pow(max(dot(ViewDirection, ReflectDirection), 0.0), 32) * TextureColor.rgb;
-
-        TextureColor.rgb = Ambient + Diffuse + specular;
-    }
        
     FragColor = TextureColor * Brightness;
 }

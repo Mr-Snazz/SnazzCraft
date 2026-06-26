@@ -38,9 +38,7 @@ void SnazzCraft::World::Render()
     EntityShaderInstance.SetModelMatrix(SnazzCraft::ModelMatrix, false);
 
     const SnazzCraft::VoxelShader& VoxelShaderInstance = SnazzCraft::VoxelShader::GetInstance();
-    VoxelShaderInstance.SetLightPosition(SnazzCraft::Overworld->Entities[0]->Position, true);
-    VoxelShaderInstance.SetViewPosition(SnazzCraft::Player->Position, false);
-    VoxelShaderInstance.SetViewMatrix(SnazzCraft::ViewMatrix, false);
+    VoxelShaderInstance.SetViewMatrix(SnazzCraft::ViewMatrix, true);
     VoxelShaderInstance.SetModelMatrix(SnazzCraft::ModelMatrix, false);
 
     this->RenderChunks();
@@ -101,6 +99,10 @@ void SnazzCraft::World::RenderChunks()
         if (ChunkIterator->second->ShouldUpdateMesh) { ChunkIterator->second->UpdateMesh(); ChunkIterator->second->ShouldUpdateMesh = false; }
 
         if (!ChunkIterator->second->HasValidMesh()) continue; 
+
+        SnazzCraft::ModelMatrix = glm::translate(glm::mat4(1.0f), ChunkIterator->second->WorldOffset);
+        SnazzCraft::VoxelShader::GetInstance().SetModelMatrix(SnazzCraft::ModelMatrix, false);
+        
         ChunkIterator->second->Draw();
     }
     }

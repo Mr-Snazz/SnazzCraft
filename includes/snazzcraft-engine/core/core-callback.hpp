@@ -13,8 +13,6 @@ namespace SnazzCraft
     inline void CloseWindowCallback(SnazzCraft::Event* Event);
 
     inline void ToggleWireframeCallback(SnazzCraft::Event* Event);
-
-    inline void ToggleComplexLightingCallback(SnazzCraft::Event* Event);
 } // SnazzCraft
 
 #include "snazzcraft-engine/core/core-callback.inl"
