@@ -18,7 +18,7 @@ glm::mat4 SnazzCraft::ProjectionMatrix = glm::perspective(glm::radians(90.0f), 1
 glm::mat4 SnazzCraft::ModelMatrix = glm::mat4(1.0f);
 glm::mat4 SnazzCraft::ViewMatrix = glm::mat4(1.0f);
 
-bool SnazzCraft::CloseApplication = false;
+bool SnazzCraft::CloseApplication{};
 
 const std::vector<SnazzCraft::Vertice> VoxelMeshVertices = {
     //   Position             // Normal              // Texture Coords

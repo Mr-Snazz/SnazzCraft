@@ -75,6 +75,8 @@ namespace SnazzCraft
 
         SnazzCraft::Hitbox* VoxelCollisionHitbox;
 
+        float GetLightValue(SnazzCraft::World* World, uint32_t VoxelIndex, uint8_t Side);
+
         inline glm::vec3 LocalVoxelPositionToWorldPosition(uint32_t X, uint32_t Y, uint32_t Z) const;
 
         inline void WorldSpaceToVoxelSpace(const glm::vec3& WorldPosition, int32_t VoxelPosition[3]) const;
