@@ -1,7 +1,6 @@
 build/
 worlds/
 
-dependencies/glfw/
-dependencies/libnoise/
+
 
 
