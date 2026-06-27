@@ -37,10 +37,6 @@ namespace SnazzCraft
         std::array<SnazzCraft::Voxel, Volume> Voxels; // Voxel positioning is in local chunk space
         std::array<int8_t,            Volume> LightValues;
 
-        int32_t Position[2]; // X & Z Chunk Coordinates
-        glm::vec3 WorldOffset;
-        bool ShouldUpdateMesh;
-
         Chunk(int32_t X, int32_t Y); // Chunk Coordinates 
 
         ~Chunk();
@@ -70,7 +66,14 @@ namespace SnazzCraft
         inline void ClearLightValues();
 
     private:
+        friend class SnazzCraft::World;
+
+        int32_t Position[2]; // X & Z Chunk Coordinates
+        glm::vec3 WorldOffset;
+        bool ShouldUpdateMesh;
+
         SnazzCraft::ChunkMesh ChunkMesh; 
+        std::mutex MeshMutex;
 
         SnazzCraft::Hitbox* VoxelCollisionHitbox;
 
