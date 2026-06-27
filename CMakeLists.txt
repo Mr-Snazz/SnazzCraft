@@ -8,7 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 if(MSVC)
     add_compile_options()
 else()
-    add_compile_options(-Wall -Werror -Ofast)
+    add_compile_options(-Wall -Werror)
 endif()
 
 find_package(OpenGL REQUIRED)
