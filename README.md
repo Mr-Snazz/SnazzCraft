@@ -6,13 +6,12 @@
 Building Project: \
     [This may be different on windows] \
     * Make sure to clone recursively to download all submodules \
-    * Install dependancies: Libnoise \
     * Navigate to project directory \
     * cmake -B build -DCMAKE_BUILD_TYPE=Release \
-    * cmake --build build -j$(nproc) 
+    * cmake --build build --config Release -j$(nproc) 
 
 Running Project: \
-    * Run ./build/bin/executable in the projects root directory
+    * Run ./build/executable in the projects root directory
 
 Controls: \
 WASD              - Movement \

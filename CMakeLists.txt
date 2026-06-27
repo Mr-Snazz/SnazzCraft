@@ -1,57 +1,55 @@
 cmake_minimum_required(VERSION 3.25)
-project(VoxelEngine LANGUAGES C CXX)
+project(SnazzCraft LANGUAGES C CXX)
 
-# 1. Language Standards
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# 2. Compiler Flags (-Wall -Werror equivalent)
 if(MSVC)
-    add_compile_options() # Windows strict flags
+    add_compile_options()
 else()
-    add_compile_options(-Wall -Werror) # Linux/macOS strict flags
+    add_compile_options(-Wall -Werror)
 endif()
 
-# 3. Find Core Packages
 find_package(OpenGL REQUIRED)
 
-# 4. Source Files Discovery
-# CONFIGURE_DEPENDS forces CMake to check for new files automatically when building
-# CORRECT ORDER: Sub-command -> Options -> Flags -> Patterns
 file(GLOB_RECURSE CPP_SOURCES CONFIGURE_DEPENDS "src/*.cpp")
 file(GLOB_RECURSE C_SOURCES CONFIGURE_DEPENDS   "src/*.c")
 file(GLOB_RECURSE GLAD_SOURCE CONFIGURE_DEPENDS "includes/*glad.c")
 
-# 5. Define the Executable
 add_executable(executable ${CPP_SOURCES} ${C_SOURCES} ${GLAD_SOURCE})
 
-# 6. Include Directories
 target_include_directories(executable PRIVATE includes)
 
-# 7. Link Libraries (Cross-Platform mapping)
 add_subdirectory("dependancies/glfw")
 
-target_link_libraries(executable PRIVATE 
-    OpenGL::GL
-    glfw
-)
+cmake_policy(PUSH)
+cmake_policy(SET CMP0048 NEW) # Example policy override if needed, or just push/pop
+add_subdirectory("dependancies/libnoise")
+cmake_policy(POP)
 
-# Platform-specific library linking (dl, m, noise)
-if(UNIX AND NOT APPLE)
-    # Linux specific libraries
-    target_link_libraries(executable PRIVATE dl m noise)
-elseif(WIN32)
-    # Windows doesn't use 'dl' or 'm'. It just needs 'noise'
-    target_link_libraries(executable PRIVATE noise)
+if(TARGET libnoise AND NOT MSVC)
+    get_target_property(LIBNOISE_OPTS libnoise COMPILE_OPTIONS)
+    if(LIBNOISE_OPTS)
+        list(REMOVE_ITEM LIBNOISE_OPTS "-Werror" "-Wall")
+        set_target_properties(libnoise PROPERTIES COMPILE_OPTIONS "${LIBNOISE_OPTS}")
+    endif()
+    # Alternatively, force it to allow warnings:
+    target_compile_options(libnoise PRIVATE -w)
 endif()
 
-# 8. Match your old 'bin/' output layout
-set_target_properties(executable PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+target_link_libraries(executable PRIVATE
+    OpenGL::GL
+    glfw
+    libnoise
 )
 
-# This tells CMake to create the folder as part of building your executable
+target_include_directories(executable SYSTEM PRIVATE "dependancies/libnoise")
+
+set_target_properties(executable PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+)
+
 add_custom_command(TARGET executable POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E make_directory "../worlds"
 )
