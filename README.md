@@ -4,14 +4,14 @@
 
 
 Building Project: \
-    [This may be different on windows] \
     * Make sure to clone recursively to download all submodules \
     * Navigate to project directory \
     * cmake -B build -DCMAKE_BUILD_TYPE=Release \
-    * cmake --build build --config Release -j$(nproc) 
+    * cmake --build build --config Release 
 
 Running Project: \
-    * Run ./build/executable in the projects root directory
+    * For Linux run ./build/executable in the project's root directory \
+    * For Windows run ./build/Release/executable.exe in the project's root directory
 
 Controls: \
 WASD              - Movement \
