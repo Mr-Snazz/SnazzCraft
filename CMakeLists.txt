@@ -21,11 +21,12 @@ add_executable(executable ${CPP_SOURCES} ${C_SOURCES} ${GLAD_SOURCE})
 
 target_include_directories(executable PRIVATE includes)
 
-add_subdirectory("dependancies/glfw")
+add_subdirectory("dependencies/glfw")
 
 cmake_policy(PUSH)
 cmake_policy(SET CMP0048 NEW) # Example policy override if needed, or just push/pop
-add_subdirectory("dependancies/libnoise")
+set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
+add_subdirectory("dependencies/libnoise")
 cmake_policy(POP)
 
 if(TARGET libnoise AND NOT MSVC)
@@ -44,7 +45,7 @@ target_link_libraries(executable PRIVATE
     libnoise
 )
 
-target_include_directories(executable SYSTEM PRIVATE "dependancies/libnoise")
+target_include_directories(executable SYSTEM PRIVATE "dependencies/libnoise")
 
 set_target_properties(executable PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
