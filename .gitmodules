@@ -1,6 +1,6 @@
 [submodule "dependancies/glfw"]
-	path = dependancies/glfw
+	path = dependencies/glfw
 	url = https://github.com/glfw/glfw.git
 [submodule "dependancies/libnoise"]
-	path = dependancies/libnoise
+	path = dependencies/libnoise
 	url = https://github.com/eXpl0it3r/libnoise.git
