@@ -35,7 +35,7 @@ namespace SnazzCraft
     private:
         // Bit order:
         // Void, Void, Bottom, Top, Back, Right, Left, Front
-        uint8_t Sides = 0x3F;
+        uint8_t Sides = 0x3Fu;
 
     public:
         static constexpr uint32_t Size = 2;

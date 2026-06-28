@@ -19,18 +19,18 @@ inline void SnazzCraft::Voxel::ChangeSideValue(uint8_t SideIndex, bool Value)
 
 inline void SnazzCraft::Voxel::SetAllSides()
 {
-    this->Sides = 0x3F;
+    this->Sides = 0x3Fu;
 }
 
 inline void SnazzCraft::Voxel::ClearAllSides()
 {
-    this->Sides = 0x00;
+    this->Sides = 0x00u;
 }
 
 inline uint8_t SnazzCraft::Voxel::GetSideCount() const
 {
-    uint8_t Count = 0;
-    for (uint8_t I = 0; I < 6; I++) {
+    uint8_t Count{};
+    for (uint8_t I{}; I < 6u; ++I) {
         if (this->HasSide(I)) Count++;
     }
 
