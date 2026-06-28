@@ -73,7 +73,6 @@ namespace SnazzCraft
         bool ShouldUpdateMesh;
 
         SnazzCraft::ChunkMesh ChunkMesh; 
-        std::mutex MeshMutex;
 
         SnazzCraft::Hitbox* VoxelCollisionHitbox;
 

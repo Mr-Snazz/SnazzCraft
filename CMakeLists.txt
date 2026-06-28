@@ -8,7 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 if(MSVC)
     add_compile_options()
 else()
-    add_compile_options(-Wall -Werror)
+    add_compile_options( -Werror -Wall)
 endif()
 
 find_package(OpenGL REQUIRED)
@@ -21,8 +21,15 @@ add_executable(executable ${CPP_SOURCES} ${C_SOURCES} ${GLAD_SOURCE})
 
 target_include_directories(executable PRIVATE includes)
 
+# -> GLFW
 add_subdirectory("dependencies/glfw")
 
+if (TARGET glfw AND NOT MSVC)
+    target_compile_options(glfw PRIVATE -w)
+endif()
+# -> GLFW
+
+# -> Libnoise
 cmake_policy(PUSH)
 cmake_policy(SET CMP0048 NEW) # Example policy override if needed, or just push/pop
 set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
@@ -30,12 +37,6 @@ add_subdirectory("dependencies/libnoise")
 cmake_policy(POP)
 
 if(TARGET libnoise AND NOT MSVC)
-    get_target_property(LIBNOISE_OPTS libnoise COMPILE_OPTIONS)
-    if(LIBNOISE_OPTS)
-        list(REMOVE_ITEM LIBNOISE_OPTS "-Werror" "-Wall")
-        set_target_properties(libnoise PROPERTIES COMPILE_OPTIONS "${LIBNOISE_OPTS}")
-    endif()
-    # Alternatively, force it to allow warnings:
     target_compile_options(libnoise PRIVATE -w)
 endif()
 
@@ -46,6 +47,7 @@ target_link_libraries(executable PRIVATE
 )
 
 target_include_directories(executable SYSTEM PRIVATE "dependencies/libnoise")
+# <- Libnoise
 
 set_target_properties(executable PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
