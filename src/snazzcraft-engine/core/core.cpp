@@ -18,8 +18,6 @@ glm::mat4 SnazzCraft::ProjectionMatrix = glm::perspective(glm::radians(90.0f), 1
 glm::mat4 SnazzCraft::ModelMatrix = glm::mat4(1.0f);
 glm::mat4 SnazzCraft::ViewMatrix = glm::mat4(1.0f);
 
-bool SnazzCraft::CloseApplication{};
-
 const std::vector<SnazzCraft::Vertice> VoxelMeshVertices = {
     //   Position             // Normal              // Texture Coords
 
@@ -127,7 +125,7 @@ void SnazzCraft::Initiate()
 
 void SnazzCraft::MainLoop()
 {
-    while (!glfwWindowShouldClose(SnazzCraft::Window) && !SnazzCraft::CloseApplication)
+    while (!glfwWindowShouldClose(SnazzCraft::Window) && !SnazzCraft::ShouldCloseApplication())
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
@@ -174,7 +172,7 @@ void SnazzCraft::MainLoop()
         glfwPollEvents(); 
     }
 
-    SnazzCraft::CloseApplication = true;
+    SnazzCraft::SetShouldCloseApplication(true);
 }
 
 void SnazzCraft::FreeResources()
@@ -253,7 +251,7 @@ void WorldInputCallback(SnazzCraft::Event* Event)
                         break;
 
                     case SNAZZCRAFT_KEY_ESCAPE:
-                        SnazzCraft::CloseApplication = true;
+                        SnazzCraft::SetShouldCloseApplication(true);
                         break;
 
                     case SNAZZCRAFT_KEY_W:

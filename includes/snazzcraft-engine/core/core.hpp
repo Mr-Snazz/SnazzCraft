@@ -34,8 +34,6 @@ namespace SnazzCraft
     extern glm::mat4 ModelMatrix;
     extern glm::mat4 ViewMatrix;
 
-    extern bool CloseApplication;
-
     extern World* Overworld;
 
     void Initiate();
