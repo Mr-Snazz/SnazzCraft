@@ -39,6 +39,8 @@ namespace SnazzCraft
         const bool CollidableToEntities;
         const bool CollidableToVoxels;
         const bool CullableAgainst;
+        const bool IsLiquid;
+        const bool StopsLiquid;
 
         /*
         Bit order of CullableSides:
@@ -48,6 +50,6 @@ namespace SnazzCraft
         static const VoxelType& GetVoxelType(VoxelTypeID VoxelID);
 
     private:
-        VoxelType(int8_t ILightProducingLevel, int8_t ILightPropogationDecrease, uint8_t ICullableSides, bool ICollidableToEntities, bool ICollidableToVoxels, bool ICullableAgainst);
+        VoxelType(int8_t ILightProducingLevel, int8_t ILightPropogationDecrease, uint8_t ICullableSides, bool ICollidableToEntities, bool ICollidableToVoxels, bool ICullableAgainst, bool IIsLiquid, bool IStopsLiquid);
     };
 } // SnazzCraft

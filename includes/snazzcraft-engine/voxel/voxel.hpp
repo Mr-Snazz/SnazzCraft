@@ -42,7 +42,7 @@ namespace SnazzCraft
     public:
         static constexpr uint32_t Size = 2u;
         static constexpr int8_t MaxLightValue = 20;
-        static constexpr int8_t SunlightLightValue = 12;
+        static constexpr int8_t SunlightLightValue = 8;
         static constexpr int8_t DefaultLightValue = 1;
 
     private:

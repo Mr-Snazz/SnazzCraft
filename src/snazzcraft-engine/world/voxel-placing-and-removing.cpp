@@ -1,6 +1,8 @@
 #include "snazzcraft-engine/world/world.hpp"
 #include "snazzcraft-engine/chunk/chunk.hpp"
 #include "snazzcraft-engine/utilities/math.hpp"
+#include "snazzcraft-engine/tick-system/tick-system.hpp"
+#include "snazzcraft-engine/tick-system/notification/voxel-edit-next-to-liquid.hpp"
 
 bool GetNewPlacePosition(const glm::vec3& EndPosition, uint8_t FaceHit, uint32_t VoxelHitIndex, int8_t OutNewPlacePosition[3], int32_t OutChunkCoordinates[2]);
 
@@ -26,6 +28,49 @@ bool SnazzCraft::World::DestroyVoxel(const glm::vec3& Position, const glm::vec3&
     this->UpdateChunkLighting(ChunkIterator->second, nullptr);
 
     ChunkIterator->second->ShouldUpdateMesh = true;
+
+    int32_t VoxelSpace[3];
+    SnazzCraft::Chunk::GetVoxelPosition(VoxelCollisionInfo.CollidingVoxelIndex, VoxelSpace);
+
+    VoxelSpace[0] += ChunkIterator->second->Position[0] * SnazzCraft::Chunk::Width;
+    VoxelSpace[2] += ChunkIterator->second->Position[1] * SnazzCraft::Chunk::Depth;
+
+    bool FoundLiquids[6];
+    uint8_t FoundLiquidsIndex{};
+    uint32_t LiquidIndexes[6];
+    uint8_t LiquidIndex{};
+
+    for (uint8_t I{}; I < 6u; ++I) {
+        int32_t VoxelCheckPosition[3] = {
+            VoxelSpace[0] + SnazzCraft::VoxelCheckPositions[I][0],
+            VoxelSpace[1] + SnazzCraft::VoxelCheckPositions[I][1],
+            VoxelSpace[2] + SnazzCraft::VoxelCheckPositions[I][2]
+        };
+
+        int32_t CheckChunkPosition[2];
+        SnazzCraft::Chunk::GetChunkPosition(VoxelCheckPosition[0], VoxelCheckPosition[2], CheckChunkPosition);
+        if (!this->ChunkWithinWorld(CheckChunkPosition[0], CheckChunkPosition[1])) continue;
+
+        std::lock_guard<std::recursive_mutex> ChunksLock(this->ChunksMutex);
+        auto CheckChunkIterator = this->Chunks.find(SnazzCraft::IntegerHash(CheckChunkPosition[0], CheckChunkPosition[1]));
+        if (CheckChunkIterator == this->Chunks.end()) continue;
+
+        int32_t LocalPosition[3];
+        SnazzCraft::Chunk::GetLocalVoxelPosition(VoxelCheckPosition[0], VoxelCheckPosition[1], VoxelCheckPosition[2], LocalPosition);
+
+        uint32_t LocalIndex = SnazzCraft::Chunk::LocalVoxelIndex(LocalPosition[0], LocalPosition[1], LocalPosition[2]);
+
+        if (!CheckChunkIterator->second->Voxels[LocalIndex].GetVoxelType().IsLiquid) continue;
+
+        LiquidIndexes[LiquidIndex++] = LocalIndex;
+        FoundLiquids[FoundLiquidsIndex++] = true;
+    }
+
+    for (uint8_t I{}; I < 6u; ++I) {
+        if (!FoundLiquids[I]) break;
+
+        SnazzCraft::TickSystem::AddNotification(new SnazzCraft::TickSystem::VoxelEditNextToLiquid(ChunkCoordinates[0], ChunkCoordinates[1], LiquidIndexes[I]));
+    }
 
     return true;
 }
@@ -71,6 +116,8 @@ bool SnazzCraft::World::PlaceVoxel(const glm::vec3& Position, const glm::vec3& R
     this->UpdateChunkLighting(ChunkIterator->second, nullptr);
 
     ChunkIterator->second->ShouldUpdateMesh = true;
+
+    if (SnazzCraft::VoxelType::GetVoxelType(VoxelID).IsLiquid) SnazzCraft::TickSystem::AddNotification(new SnazzCraft::TickSystem::VoxelEditNextToLiquid(ChunkCoordinates[0], ChunkCoordinates[1], LocalPlaceVoxelIndex));
     
     return true;
 }

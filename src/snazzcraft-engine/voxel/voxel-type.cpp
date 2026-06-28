@@ -5,13 +5,13 @@ const SnazzCraft::VoxelType& SnazzCraft::VoxelType::GetVoxelType(VoxelTypeID Vox
 {
     //                                                 LightProducingLevel, LightPropogationDecrease, CullableSides, CollidableToEntities, CollidableToVoxels. CullableAgainst
     // NOTE: The two most significant bits of CullableSides are never set, and will never be used even if they are 
-    static const SnazzCraft::VoxelType Leaves         (0,  2,                                0b00000000, true,  true,  true );
-    static const SnazzCraft::VoxelType VoxelCollidable(0,  0,                                0b00000000, false, true,  true );
-    static const SnazzCraft::VoxelType Torch          (18, 0,                                0b00000000, false, true,  true );
-    static const SnazzCraft::VoxelType Water          (0,  2,                                0b00111111, true,  false, true );
-    static const SnazzCraft::VoxelType Lava           (9,  4,                                0b00111111, true,  false, true );
-    static const SnazzCraft::VoxelType FullSolid      (0,  SnazzCraft::Voxel::MaxLightValue, 0b00111111, true,  true,  true );
-    static const SnazzCraft::VoxelType Phantom        (0,  0,                                0b00111111, false, false, false);
+    static const SnazzCraft::VoxelType Leaves         (0,  2,                                0b00000000, true,  true,  true,  false, true );
+    static const SnazzCraft::VoxelType VoxelCollidable(0,  0,                                0b00000000, false, true,  true,  false, true );
+    static const SnazzCraft::VoxelType Torch          (18, 0,                                0b00000000, false, true,  true,  false, false);
+    static const SnazzCraft::VoxelType Water          (0,  2,                                0b00111111, true,  false, true,  true , false);
+    static const SnazzCraft::VoxelType Lava           (17, 4,                                0b00111111, true,  false, true,  true , false);
+    static const SnazzCraft::VoxelType FullSolid      (0,  SnazzCraft::Voxel::MaxLightValue, 0b00111111, true,  true,  true,  false, true );
+    static const SnazzCraft::VoxelType Phantom        (0,  0,                                0b00111111, false, false, false, false, false);
 
     switch (VoxelID)
     {
@@ -38,10 +38,11 @@ const SnazzCraft::VoxelType& SnazzCraft::VoxelType::GetVoxelType(VoxelTypeID Vox
     }
 }
 
-SnazzCraft::VoxelType::VoxelType(int8_t ILightProducingLevel, int8_t ILightPropogationDecrease, uint8_t ICullableSides, bool ICollidableToEntities, bool ICollidableToVoxels, bool ICullableAgainst)
+SnazzCraft::VoxelType::VoxelType(int8_t ILightProducingLevel, int8_t ILightPropogationDecrease, uint8_t ICullableSides, bool ICollidableToEntities, bool ICollidableToVoxels, bool ICullableAgainst, bool IIsLiquid, bool IStopsLiquid)
     : LightProducingLevel(ILightProducingLevel), LightPropogationDecrease(ILightPropogationDecrease), 
       CullableSides      (ICullableSides),       CollidableToEntities    (ICollidableToEntities), 
-      CollidableToVoxels (ICollidableToVoxels),  CullableAgainst         (ICullableAgainst)
+      CollidableToVoxels (ICollidableToVoxels),  CullableAgainst         (ICullableAgainst),
+      IsLiquid           (IIsLiquid),            StopsLiquid(IStopsLiquid)
 {
 
 }
