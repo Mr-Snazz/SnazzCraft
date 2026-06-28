@@ -1,9 +1,12 @@
 #include <thread>
+#include <queue>
 
 #include "external/glfw3.h"
 
 #include "snazzcraft-engine/tick-system/tick-system.hpp"
 #include "snazzcraft-engine/core/mode.hpp"
+
+std::queue<SnazzCraft::TickSystem::Notification*> Notifications;
 
 void MainLoop();
 
@@ -11,6 +14,11 @@ void SnazzCraft::TickSystem::Initialize()
 {
     std::thread MainLoopThread(MainLoop);
     MainLoopThread.detach();
+}
+
+void SnazzCraft::TickSystem::AddNotification(SnazzCraft::TickSystem::Notification* Notification)
+{
+    Notifications.push(Notification);
 }
 
 void MainLoop()
@@ -22,7 +30,7 @@ void MainLoop()
     while (!SnazzCraft::ShouldCloseApplication())
     {
         while (SnazzCraft::GetUserMode() == SnazzCraft::UserMode::MainMenu) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+            std::this_thread::sleep_for(std::chrono::milliseconds(10u));
             if (SnazzCraft::ShouldCloseApplication()) return;
         }
 

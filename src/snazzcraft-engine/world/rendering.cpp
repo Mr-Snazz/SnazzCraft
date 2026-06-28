@@ -10,7 +10,7 @@
 
 void SnazzCraft::World::Render() 
 {   
-    if (SnazzCraft::Overworld->Entities.size() == 0) {
+    if (!SnazzCraft::Overworld->Entities.size()) {
         std::lock_guard<std::recursive_mutex> EntitieLock(this->EntitiesMutex);
         SnazzCraft::Overworld->Entities.push_back(new SnazzCraft::Entity(glm::vec3(0.0f, static_cast<float>(SnazzCraft::Chunk::OceanLevel * 2 + 40), 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), ID_ENTITY_TEST));
     } else {
@@ -23,12 +23,12 @@ void SnazzCraft::World::Render()
 
     if (!SnazzCraft::VoxelTextureAtlas->BindTexture()) return;
 
-    glEnable(GL_DEPTH_TEST);
-    glCullFace(GL_FRONT); 
-    glFrontFace(GL_CW);  
-    glEnable(GL_CULL_FACE);
+    glEnable   (GL_DEPTH_TEST);
+    glCullFace (GL_FRONT     ); 
+    glFrontFace(GL_CW        );  
+    glEnable   (GL_CULL_FACE );
     if (SnazzCraft::WireframeModeActive()) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    else                                 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    else                                   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     const glm::mat4 ViewMatrix = glm::lookAt(SnazzCraft::Player->Position, SnazzCraft::Player->Position + SnazzCraft::Player->Front, glm::vec3(0.0, 1.0, 0.0));
 
@@ -55,9 +55,9 @@ void SnazzCraft::World::RenderAllEntities() const
 
         glm::mat4 ModelMatrix = glm::translate(glm::mat4(1.0f), Entity->Position);
         
-        ModelMatrix = glm::rotate(ModelMatrix, glm::radians( Entity->Rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
-        ModelMatrix = glm::rotate(ModelMatrix, glm::radians(-Entity->Rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
-        ModelMatrix = glm::rotate(ModelMatrix, glm::radians( Entity->Rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+        ModelMatrix = glm::rotate(ModelMatrix, glm::radians(Entity->Rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+        ModelMatrix = glm::rotate(ModelMatrix, glm::radians(Entity->Rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+        ModelMatrix = glm::rotate(ModelMatrix, glm::radians(Entity->Rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
 
         ModelMatrix = glm::scale(ModelMatrix, EntityType.EntityMesh->ScaleVector);
         SnazzCraft::EntityShader::GetInstance().SetModelMatrix(ModelMatrix);
@@ -84,9 +84,7 @@ void SnazzCraft::World::RenderChunks()
     for (int32_t Z = PlayerChunkPosition[1] - static_cast<int32_t>(this->RenderDistance); Z <= PlayerChunkPosition[1] + static_cast<int32_t>(this->RenderDistance); Z++) {
         if (!this->ChunkWithinWorld(X, Z)) continue;
 
-        uint64_t Hash = SnazzCraft::IntegerHash(X, Z);
-
-        auto ChunkIterator = this->Chunks.find(Hash);
+        auto ChunkIterator = this->Chunks.find(SnazzCraft::IntegerHash(X, Z));
         if (ChunkIterator == this->Chunks.end()) {
             this->ThreadPool.Enqueue([this, X, Z](){ this->GenerateChunk(X, Z); });
             continue;

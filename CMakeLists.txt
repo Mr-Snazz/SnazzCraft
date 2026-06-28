@@ -8,7 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 if(MSVC)
     add_compile_options()
 else()
-    add_compile_options( -Werror -Wall)
+    add_compile_options(-Werror -Wall)
 endif()
 
 find_package(OpenGL REQUIRED)
@@ -31,9 +31,9 @@ endif()
 
 # -> Libnoise
 cmake_policy(PUSH)
-cmake_policy(SET CMP0048 NEW) # Example policy override if needed, or just push/pop
-set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
-add_subdirectory("dependencies/libnoise")
+    cmake_policy(SET CMP0048 NEW) 
+    set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
+    add_subdirectory("dependencies/libnoise")
 cmake_policy(POP)
 
 if(TARGET libnoise AND NOT MSVC)
