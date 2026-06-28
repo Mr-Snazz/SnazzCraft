@@ -16,7 +16,7 @@ namespace SnazzCraft
 
         /*
         Bit order of CullableSides:
-            false, false, Bottom, Top, Back, Right, Left, Front
+            Void, Void, Bottom, Top, Back, Right, Left, Front
         */
 
         static const VoxelType& GetVoxelType(uint8_t VoxelID);

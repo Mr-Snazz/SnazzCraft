@@ -37,8 +37,8 @@ const SnazzCraft::VoxelType& SnazzCraft::VoxelType::GetVoxelType(uint8_t VoxelID
 
 SnazzCraft::VoxelType::VoxelType(int8_t ILightProducingLevel, int8_t ILightPropogationDecrease, uint8_t ICullableSides, bool ICollidableToEntities, bool ICollidableToVoxels, bool ICullableAgainst)
     : LightProducingLevel(ILightProducingLevel), LightPropogationDecrease(ILightPropogationDecrease), 
-      CullableSides(ICullableSides),             CollidableToEntities(ICollidableToEntities), 
-      CollidableToVoxels(ICollidableToVoxels),   CullableAgainst(ICullableAgainst)
+      CullableSides      (ICullableSides),       CollidableToEntities    (ICollidableToEntities), 
+      CollidableToVoxels (ICollidableToVoxels),  CullableAgainst         (ICullableAgainst)
 {
 
 }

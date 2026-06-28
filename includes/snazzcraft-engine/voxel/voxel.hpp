@@ -38,7 +38,7 @@ namespace SnazzCraft
         uint8_t Sides = 0x3Fu;
 
     public:
-        static constexpr uint32_t Size = 2;
+        static constexpr uint32_t Size = 2u;
         static constexpr int8_t MaxLightValue = 20;
         static constexpr int8_t SunlightLightValue = 12;
         static constexpr int8_t DefaultLightValue = 1;
