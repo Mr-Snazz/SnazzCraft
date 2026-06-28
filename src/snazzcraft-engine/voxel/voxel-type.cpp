@@ -9,6 +9,7 @@ const SnazzCraft::VoxelType& SnazzCraft::VoxelType::GetVoxelType(VoxelTypeID Vox
     static const SnazzCraft::VoxelType VoxelCollidable(0,  0,                                0b00000000, false, true,  true );
     static const SnazzCraft::VoxelType Torch          (18, 0,                                0b00000000, false, true,  true );
     static const SnazzCraft::VoxelType Water          (0,  2,                                0b00111111, true,  false, true );
+    static const SnazzCraft::VoxelType Lava           (9,  4,                                0b00111111, true,  false, true );
     static const SnazzCraft::VoxelType FullSolid      (0,  SnazzCraft::Voxel::MaxLightValue, 0b00111111, true,  true,  true );
     static const SnazzCraft::VoxelType Phantom        (0,  0,                                0b00111111, false, false, false);
 
@@ -19,6 +20,9 @@ const SnazzCraft::VoxelType& SnazzCraft::VoxelType::GetVoxelType(VoxelTypeID Vox
 
         case SnazzCraft::VoxelType::VoxelTypeID::Water:
             return Water;
+
+        case SnazzCraft::VoxelType::VoxelTypeID::Lava:
+            return Lava;
 
         case SnazzCraft::VoxelType::VoxelTypeID::AboveGrass:
             return VoxelCollidable;

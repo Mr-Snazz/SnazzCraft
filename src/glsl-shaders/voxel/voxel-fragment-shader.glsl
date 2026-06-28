@@ -10,20 +10,9 @@ in vec3 FragPosition;
 // Texture Sampler
 uniform sampler2D Sampler;
 
-vec2 AdjustVoxelTextureCoordinate(in vec2 TextureCoordinate)
-{
-    TextureCoordinate.x -= TextureCoordinate.x > 1.0 ? int(TextureCoordinate.x) : 0.0;
-    TextureCoordinate.y -= TextureCoordinate.y > 1.0 ? int(TextureCoordinate.y) : 0.0;
-
-    return TextureCoordinate;
-}
-
 void main()
 {
-    vec2 TextureCoordinate = TexCoord;
-    TextureCoordinate = AdjustVoxelTextureCoordinate(TextureCoordinate);
-
-	vec4 TextureColor = texture(Sampler, TextureCoordinate);
+	vec4 TextureColor = texture(Sampler, TexCoord);
     if (TextureColor.a < 0.1) discard;
        
     FragColor = TextureColor * Brightness;

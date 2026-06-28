@@ -107,18 +107,18 @@ bool SnazzCraft::World::RaycastToVoxel(glm::vec3& Position, const glm::vec3& Rot
 {
     auto UpdateFaceHitAndVoxelHit = [FaceHit, VoxelCollisionInfo](const glm::ivec3& Step, const uint8_t& LastStepAxis, SnazzCraft::World::VoxelCollisionInfo CollidedVoxelCollisionInfo) -> void
     {
-        if (FaceHit == nullptr) goto UpdateHitVoxel; 
+        if (!FaceHit) goto UpdateHitVoxel; 
         switch (LastStepAxis)
         {
-            case 0x00:
+            case 0u:
                 *FaceHit = Step.x == -1 ? 2 : 1;
                 break;
 
-            case 0x01:
+            case 1u:
                 *FaceHit = Step.y == -1 ? 4 : 5;
                 break;
             
-            case 0x02:
+            case 2u:
                 *FaceHit = Step.z == -1 ? 3 : 0;
                 break;
         }

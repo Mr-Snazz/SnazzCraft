@@ -28,7 +28,8 @@ namespace SnazzCraft
             Water,
             RedstoneWireStraight,
             Sand,
-            Air
+            Lava,
+            Air // Air is always last
         };
 
     public:

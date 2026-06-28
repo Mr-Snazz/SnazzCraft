@@ -235,11 +235,11 @@ void WorldInputCallback(SnazzCraft::Event* Event)
                         break;
 
                     case SNAZZCRAFT_KEY_8:
-                        VoxelIDToPlace = SnazzCraft::VoxelType::VoxelTypeID::CoalOre;
+                        VoxelIDToPlace = SnazzCraft::VoxelType::VoxelTypeID::Water;
                         break;
                     
                     case SNAZZCRAFT_KEY_9:
-                        VoxelIDToPlace = SnazzCraft::VoxelType::VoxelTypeID::IronOre;
+                        VoxelIDToPlace = SnazzCraft::VoxelType::VoxelTypeID::Lava;
                         break;
 
                     case SNAZZCRAFT_KEY_T:

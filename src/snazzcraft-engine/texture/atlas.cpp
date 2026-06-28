@@ -18,7 +18,7 @@ std::vector<SnazzCraft::VoxelVertice> SnazzCraft::VoxelTextureApplier::GetTextur
         this->TextureCoordinates[static_cast<uint8_t>(Voxel.ID)][1]
     };
 
-    AtlasCoordinates /= (float)ATLAS_SIZE; 
+    AtlasCoordinates /= static_cast<float>(ATLAS_SIZE);
 
     std::vector<SnazzCraft::VoxelVertice> Vertices;
     for (const SnazzCraft::Vertice& Vertice : SnazzCraft::VoxelMesh->Vertices) { // Currently vertices are in mesh space
@@ -44,18 +44,18 @@ std::vector<SnazzCraft::VoxelVertice> SnazzCraft::VoxelTextureApplier::GetTextur
 
         case SnazzCraft::VoxelType::VoxelTypeID::Torch:
         {
-            for (uint32_t I = 0; I < 6; I++) {
-                uint32_t Index = I * 4;
+            for (uint32_t I{}; I < 6u; ++I) {
+                uint32_t Index = I * 4u;
 
                 Vertices[Index]    .TextureCoordinate.x += TEXTURE_COORDINATE_TORCH_OFFSET_X * ATLAS_TILE_SIZE;
 
-                Vertices[Index + 1].TextureCoordinate.x += TEXTURE_COORDINATE_TORCH_OFFSET_X * ATLAS_TILE_SIZE;
-                Vertices[Index + 1].TextureCoordinate.y += TEXTURE_COORDINATE_TORCH_OFFSET_Y * ATLAS_TILE_SIZE;
+                Vertices[Index + 1u].TextureCoordinate.x += TEXTURE_COORDINATE_TORCH_OFFSET_X * ATLAS_TILE_SIZE;
+                Vertices[Index + 1u].TextureCoordinate.y += TEXTURE_COORDINATE_TORCH_OFFSET_Y * ATLAS_TILE_SIZE;
 
-                Vertices[Index + 2].TextureCoordinate.x -= TEXTURE_COORDINATE_TORCH_OFFSET_X * ATLAS_TILE_SIZE;
-                Vertices[Index + 2].TextureCoordinate.y += TEXTURE_COORDINATE_TORCH_OFFSET_Y * ATLAS_TILE_SIZE;
+                Vertices[Index + 2u].TextureCoordinate.x -= TEXTURE_COORDINATE_TORCH_OFFSET_X * ATLAS_TILE_SIZE;
+                Vertices[Index + 2u].TextureCoordinate.y += TEXTURE_COORDINATE_TORCH_OFFSET_Y * ATLAS_TILE_SIZE;
 
-                Vertices[Index + 3].TextureCoordinate.x -= TEXTURE_COORDINATE_TORCH_OFFSET_X * ATLAS_TILE_SIZE;
+                Vertices[Index + 3u].TextureCoordinate.x -= TEXTURE_COORDINATE_TORCH_OFFSET_X * ATLAS_TILE_SIZE;
             }
 
             Vertices[16].TextureCoordinate.y -= ATLAS_TILE_SIZE * 0.5f;
@@ -64,7 +64,7 @@ std::vector<SnazzCraft::VoxelVertice> SnazzCraft::VoxelTextureApplier::GetTextur
             Vertices[21].TextureCoordinate.y += ATLAS_TILE_SIZE * 0.5f;
             Vertices[22].TextureCoordinate.y += ATLAS_TILE_SIZE * 0.5f;
             
-            for (uint32_t I = 0; I < 24; I++) { 
+            for (uint32_t I{}; I < 24u; ++I) { 
                 Vertices[I].Position.x = Vertices[I].Position.x < 0.0f ? -0.125f * HalfVoxelSize : 0.125f * HalfVoxelSize;
                 Vertices[I].Position.y = Vertices[I].Position.y > 0.0f ?  0.75f  * HalfVoxelSize : Vertices[I].Position.y; 
                 Vertices[I].Position.z = Vertices[I].Position.z < 0.0f ? -0.125f * HalfVoxelSize : 0.125f * HalfVoxelSize;
@@ -100,8 +100,8 @@ void SnazzCraft::VoxelTextureApplier::LoadAtlasCoordinates(const char* AtlasFile
     std::ifstream File(AtlasFilePath);
     std::string Line;
 
-    this->TextureCoordinatesCount = 0;
-    while (std::getline(File, Line) && this->TextureCoordinatesCount < ATLAS_SIZE * ATLAS_SIZE) 
+    this->TextureCoordinatesCount = 0u;
+    while (std::getline(File, Line) && this->TextureCoordinatesCount < (ATLAS_SIZE * ATLAS_SIZE)) 
     {
         if (Line.empty()) continue;
 
