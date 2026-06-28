@@ -13,6 +13,7 @@
 #include "snazzcraft-engine/voxel/voxel-ids.h"
 #include "snazzcraft-engine/shader/voxel-shader.hpp"
 #include "snazzcraft-engine/shader/entity-shader.hpp"
+#include "snazzcraft-engine/tick-system/tick-system.hpp"
 
 glm::mat4 SnazzCraft::ProjectionMatrix = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 1000.0f);
 glm::mat4 SnazzCraft::ModelMatrix = glm::mat4(1.0f);
@@ -110,17 +111,20 @@ void SnazzCraft::Initiate()
 
     glfwSetMouseButtonCallback(SnazzCraft::Window, MouseButtonCallback);
 
-    SnazzCraft::EntityType::Initialize();
-    
     SnazzCraft::VoxelMesh = new Mesh(VoxelMeshVertices, VoxelMeshIndices, true);
     SnazzCraft::VoxelMesh->ScaleVector = glm::vec3(static_cast<float>(SnazzCraft::Voxel::Size) / 2.0f);
+
+    SnazzCraft::SetUserMode(SnazzCraft::UserMode::MainMenu);
+
+    SnazzCraft::EntityType::Initialize();
 
     SnazzCraft::MainMenuGUI::Initialize(MainMenuInputCallback);
     SnazzCraft::WorldGUI   ::Initialize(WorldInputCallback   );
 
     SnazzCraft::FPSTracker::Initialize();
+    SnazzCraft::TickSystem::Initialize();
 
-    SnazzCraft::SetUserMode(SnazzCraft::UserMode::MainMenu);
+    
 }
 
 void SnazzCraft::MainLoop()
