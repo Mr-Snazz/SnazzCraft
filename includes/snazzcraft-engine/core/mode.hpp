@@ -1,12 +1,29 @@
 #pragma once
 
-#define SNAZZCRAFT_USER_MODE_WORLD      (0x00)
-#define SNAZZCRAFT_USER_MODE_MAIN_MENU  (0x01)
+#include <stdint.h>
 
 namespace SnazzCraft
 {
-    extern unsigned char UserMode;
+    enum class UserMode : uint8_t
+    {
+        Overworld,
+        Nether,
+        End,
+        MainMenu
+    };
 
-    extern bool WireframeModeActive;
+    // Modes are designed to be thread safe to read and write to concurrently
+
+    SnazzCraft::UserMode GetUserMode();
+
+    void SetUserMode(SnazzCraft::UserMode UserMode);
+
+    bool ShouldCloseApplication();
+
+    void SetShouldCloseApplication(bool Value);
+
+    bool WireframeModeActive();
+
+    void SetWireframeModeActive(bool Value);
 } // SnazzCraft
 

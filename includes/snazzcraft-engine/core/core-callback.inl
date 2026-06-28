@@ -10,26 +10,23 @@
 
 inline void SnazzCraft::CreateWorldAndChangeModeToWorld(SnazzCraft::Event* Event)
 {
-    if (SnazzCraft::Overworld != nullptr) goto SwitchMode;
+    if (!SnazzCraft::Overworld) SnazzCraft::Overworld = SnazzCraft::World::CreateWorld("TEST WORLD", 30, 80085);
 
-    SnazzCraft::Overworld = SnazzCraft::World::CreateWorld("TEST WORLD", 30, 80085);
-
-    SwitchMode:
-    SnazzCraft::UserMode = SNAZZCRAFT_USER_MODE_WORLD;
+    SnazzCraft::SetUserMode(SnazzCraft::UserMode::Overworld);
 }
 
 inline void SnazzCraft::ChangeModeToWorldCallback(SnazzCraft::Event* Event)
 {
-    SnazzCraft::UserMode = SNAZZCRAFT_USER_MODE_WORLD;
+    SnazzCraft::SetUserMode(SnazzCraft::UserMode::Overworld);
 }
 
 inline void SnazzCraft::ChangeModeToMainMenuCallback(SnazzCraft::Event* Event)
 {
-    SnazzCraft::UserMode = SNAZZCRAFT_USER_MODE_MAIN_MENU;
+    SnazzCraft::SetUserMode(SnazzCraft::UserMode::MainMenu);
 }
 
 inline void SnazzCraft::ToggleWireframeCallback(SnazzCraft::Event* Event)
 {
-    SnazzCraft::WireframeModeActive = !SnazzCraft::WireframeModeActive;
+    SnazzCraft::SetWireframeModeActive(!SnazzCraft::WireframeModeActive());
 }
 

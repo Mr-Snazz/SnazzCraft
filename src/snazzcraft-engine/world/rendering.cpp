@@ -27,7 +27,7 @@ void SnazzCraft::World::Render()
     glCullFace(GL_FRONT); 
     glFrontFace(GL_CW);  
     glEnable(GL_CULL_FACE);
-    if (SnazzCraft::WireframeModeActive) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    if (SnazzCraft::WireframeModeActive()) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     else                                 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     SnazzCraft::ViewMatrix = glm::lookAt(SnazzCraft::Player->Position, SnazzCraft::Player->Position + SnazzCraft::Player->Front, glm::vec3(0.0, 1.0, 0.0));
@@ -64,7 +64,6 @@ void SnazzCraft::World::RenderAllEntities() const
 
         SnazzCraft::ModelMatrix = glm::scale(SnazzCraft::ModelMatrix, EntityType.EntityMesh->ScaleVector);
         SnazzCraft::EntityShader::GetInstance().SetModelMatrix(SnazzCraft::ModelMatrix, false);
-        //SnazzCraft::VoxelShader::GetInstance().SetModelMatrix(SnazzCraft::ModelMatrix, false);
 
         EntityType.EntityTexture->BindTexture();
         EntityType.EntityMesh->Draw();

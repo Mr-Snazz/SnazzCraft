@@ -18,8 +18,8 @@ inline void MouseButtonCallback(GLFWwindow* Window, int Button, int Action, int 
     NewEvent->EventData->Items.push_back(static_cast<void*>(new glm::dvec2(MouseX, MouseY)));
     NewEvent->EventData->Types.push_back(SNAZZCRAFT_DATA_TYPE_DVEC2);
 
-    switch (SnazzCraft::UserMode) {
-        case SNAZZCRAFT_USER_MODE_WORLD:
+    switch (SnazzCraft::GetUserMode()) {
+        case SnazzCraft::UserMode::Overworld:
         {
             SnazzCraft::WorldGUI& Instance = SnazzCraft::WorldGUI::GetInstance();
 
@@ -28,7 +28,9 @@ inline void MouseButtonCallback(GLFWwindow* Window, int Button, int Action, int 
             break;
         }
 
-        case SNAZZCRAFT_USER_MODE_MAIN_MENU:
+
+
+        case SnazzCraft::UserMode::MainMenu:
         {
             SnazzCraft::MainMenuGUI& Instance = SnazzCraft::MainMenuGUI::GetInstance();
 
@@ -36,6 +38,8 @@ inline void MouseButtonCallback(GLFWwindow* Window, int Button, int Action, int 
 
             break;
         }
-            
+        
+        default:
+            break;
     }
 }

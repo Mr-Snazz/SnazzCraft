@@ -121,6 +121,8 @@ void SnazzCraft::Initiate()
     SnazzCraft::WorldGUI   ::Initialize(WorldInputCallback   );
 
     SnazzCraft::FPSTracker::Initialize();
+
+    SnazzCraft::SetUserMode(SnazzCraft::UserMode::MainMenu);
 }
 
 void SnazzCraft::MainLoop()
@@ -133,9 +135,9 @@ void SnazzCraft::MainLoop()
         //system(CLEAR_COMMAND);
         //std::cout << "FPS| " << SnazzCraft::FPSTracker::GetFPS() << "\n";
 
-        switch (SnazzCraft::UserMode)
+        switch (SnazzCraft::GetUserMode())
         {
-            case SNAZZCRAFT_USER_MODE_WORLD:
+            case SnazzCraft::UserMode::Overworld:
             {
                 if (!SnazzCraft::Overworld) break;
 
@@ -152,7 +154,7 @@ void SnazzCraft::MainLoop()
                 break;
             }
                 
-            case SNAZZCRAFT_USER_MODE_MAIN_MENU:
+            case SnazzCraft::UserMode::MainMenu:
             {
                 SnazzCraft::MainMenuGUI& MainMenuGUIInstance = SnazzCraft::MainMenuGUI::GetInstance();
 
@@ -163,6 +165,9 @@ void SnazzCraft::MainLoop()
 
                 break;
             }
+
+            default:
+                break;
         }
       
         glfwSwapBuffers(SnazzCraft::Window);
@@ -187,11 +192,11 @@ void SnazzCraft::FreeResources()
 
 void WorldInputCallback(SnazzCraft::Event* Event)
 {
-    static uint8_t VoxelIDToPlace = 0;
+    static uint8_t VoxelIDToPlace{};
 
     SnazzCraft::WorldGUI& WorldGUIInstance = SnazzCraft::WorldGUI::GetInstance();
 
-    if (SnazzCraft::Overworld == nullptr) return;
+    if (!SnazzCraft::Overworld) return;
     
     if (!WorldGUIInstance.InInventory) { // Not in inventory
         switch (Event->Type)
@@ -204,43 +209,43 @@ void WorldInputCallback(SnazzCraft::Event* Event)
                 switch (*Key)
                 {
                     case SNAZZCRAFT_KEY_0:
-                        VoxelIDToPlace = 0;
+                        VoxelIDToPlace = 0u;
                         break;
                     
                     case SNAZZCRAFT_KEY_1:
-                        VoxelIDToPlace = 1;
+                        VoxelIDToPlace = 1u;
                         break;
                     
                     case SNAZZCRAFT_KEY_2:
-                        VoxelIDToPlace = 2;
+                        VoxelIDToPlace = 2u;
                         break;
                     
                     case SNAZZCRAFT_KEY_3:
-                        VoxelIDToPlace = 3;
+                        VoxelIDToPlace = 3u;
                         break;
 
                     case SNAZZCRAFT_KEY_4:
-                        VoxelIDToPlace = 4;
+                        VoxelIDToPlace = 4u;
                         break;
                     
                     case SNAZZCRAFT_KEY_5:
-                        VoxelIDToPlace = 5;
+                        VoxelIDToPlace = 5u;
                         break;
 
                     case SNAZZCRAFT_KEY_6:
-                        VoxelIDToPlace = 6;
+                        VoxelIDToPlace = 6u;
                         break;
                     
                     case SNAZZCRAFT_KEY_7:
-                        VoxelIDToPlace = 7;
+                        VoxelIDToPlace = 7u;
                         break;
 
                     case SNAZZCRAFT_KEY_8:
-                        VoxelIDToPlace = 8;
+                        VoxelIDToPlace = 8u;
                         break;
                     
                     case SNAZZCRAFT_KEY_9:
-                        VoxelIDToPlace = 9;
+                        VoxelIDToPlace = 9u;
                         break;
 
                     case SNAZZCRAFT_KEY_T:
