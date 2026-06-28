@@ -188,19 +188,19 @@ bool SnazzCraft::World::RaycastToVoxel(glm::vec3& Position, const glm::vec3& Rot
             DistanceTraveled = SideDistance.x;
             SideDistance.x += DeltaDistance.x;
             MapPosition.x += Step.x;
-            LastStepAxis = 0x00;
+            LastStepAxis = 0u;
         } 
         else if (SideDistance.y < SideDistance.z) {
             DistanceTraveled = SideDistance.y;
             SideDistance.y += DeltaDistance.y;
             MapPosition.y += Step.y;
-            LastStepAxis = 0x01;
+            LastStepAxis = 1u;
         } 
         else {
             DistanceTraveled = SideDistance.z;
             SideDistance.z += DeltaDistance.z;
             MapPosition.z += Step.z;
-            LastStepAxis = 0x02;
+            LastStepAxis = 2u;
         }
     }
 
@@ -211,49 +211,52 @@ bool SnazzCraft::World::RaycastToVoxel(glm::vec3& Position, const glm::vec3& Rot
 
 bool GetNewPlacePosition(const glm::vec3& EndPosition, uint8_t FaceHit, uint32_t VoxelHitIndex, int8_t OutNewPlacePosition[3], int32_t OutChunkCoordinates[2])
 {
-    glm::ivec3 VoxelSpacePosition = EndPosition / glm::vec3(static_cast<float>(SnazzCraft::Voxel::Size));
-    SnazzCraft::Chunk::GetChunkPosition(VoxelSpacePosition.x, VoxelSpacePosition.z, OutChunkCoordinates);
-
+    glm::vec3 VoxelSpacePosition = EndPosition / glm::vec3(SnazzCraft::Voxel::Size);
+    int32_t GlobalVoxelX = static_cast<int32_t>(glm::floor(VoxelSpacePosition.x));
+    int32_t GlobalVoxelZ = static_cast<int32_t>(glm::floor(VoxelSpacePosition.z));
+    
+    SnazzCraft::Chunk::GetChunkPosition(GlobalVoxelX, GlobalVoxelZ, OutChunkCoordinates);
     SnazzCraft::Chunk::GetVoxelPosition(VoxelHitIndex, OutNewPlacePosition);
 
     switch (FaceHit) // Front -> Bottom
     {
-        case 0: 
+        case 0u: 
             OutNewPlacePosition[2]--;
             if (OutNewPlacePosition[2] < 0) { 
                 OutNewPlacePosition[2] += SnazzCraft::Chunk::Depth;
                 OutChunkCoordinates[1]--;
             }
             break;
-        case 1:
+        case 1u:
             OutNewPlacePosition[0]--;
             if (OutNewPlacePosition[0] < 0) { 
                 OutNewPlacePosition[0] += SnazzCraft::Chunk::Width;
                 OutChunkCoordinates[0]--;
             }
             break;
-        case 2:
+        case 2u:
             OutNewPlacePosition[0]++;
             if (OutNewPlacePosition[0] >= SnazzCraft::Chunk::Width) { 
                 OutNewPlacePosition[0] -= SnazzCraft::Chunk::Width;
                 OutChunkCoordinates[0]++;
             }
             break;
-        case 3:
+        case 3u:
             OutNewPlacePosition[2]++;
             if (OutNewPlacePosition[2] >= SnazzCraft::Chunk::Depth) { 
                 OutNewPlacePosition[2] -= SnazzCraft::Chunk::Depth;
                 OutChunkCoordinates[1]++;
             }
             break;
-        case 4:
+        case 4u:
             OutNewPlacePosition[1]++;
             if (OutNewPlacePosition[1] >= SnazzCraft::Chunk::Height) return false;
             break;
-        case 5:
+        case 5u:
             OutNewPlacePosition[1]--;
             if (OutNewPlacePosition[1] < 0) return false;
             break;
     }
+
     return true;
 }
