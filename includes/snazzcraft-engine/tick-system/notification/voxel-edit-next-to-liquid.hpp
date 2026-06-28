@@ -4,7 +4,7 @@
 
 namespace SnazzCraft::TickSystem
 {
-    class VoxelEditNextToWater : public SnazzCraft::TickSystem::Notification
+    class VoxelEditNextToLiquid : public SnazzCraft::TickSystem::Notification
     {
     public:
         union 
@@ -18,7 +18,7 @@ namespace SnazzCraft::TickSystem
             
         const uint32_t VoxelIndex;
 
-        VoxelEditNextToWater(int32_t IChunkX, int32_t IChunkZ, uint32_t IVoxelIndex);
+        VoxelEditNextToLiquid(int32_t IChunkX, int32_t IChunkZ, uint32_t IVoxelIndex);
 
     private:
 

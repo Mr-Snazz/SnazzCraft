@@ -9,12 +9,13 @@ namespace SnazzCraft
     public:
         enum class FluidTypeID : uint8_t
         {
-            Water
+            Water,
+            Lava
         };
 
     public:
-        const uint8_t Flow; // In ticks
-        const uint8_t MaximumReach; // In ticks
+        const uint8_t Flow;         // In ticks
+        const uint8_t MaximumReach; // In voxels
 
         static const FluidType& GetFluidType(FluidTypeID ID);
 

@@ -9,7 +9,7 @@ namespace SnazzCraft::TickSystem
     public:
         enum class NotificationID : uint8_t
         {
-            VoxelEditNextToWater
+            VoxelEditNextToLiquid
         };
 
         const NotificationID ID;

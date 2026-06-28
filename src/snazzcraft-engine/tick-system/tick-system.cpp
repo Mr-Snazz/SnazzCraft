@@ -57,7 +57,7 @@ void HandleNotifications()
 
         switch (Notification->ID)
         {
-            case SnazzCraft::TickSystem::Notification::NotificationID::VoxelEditNextToWater:
+            case SnazzCraft::TickSystem::Notification::NotificationID::VoxelEditNextToLiquid:
             {
 
 

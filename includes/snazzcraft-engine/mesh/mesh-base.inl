@@ -2,5 +2,5 @@
 
 inline bool SnazzCraft::MeshBase::IsValid() const
 {
-    return this->VAO && this->VBO && this->EBO;
+    return this->VAO && this->VBO && this->EBO && !this->ShouldInitiate;
 }

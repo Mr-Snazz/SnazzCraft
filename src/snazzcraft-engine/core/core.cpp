@@ -102,7 +102,6 @@ void SnazzCraft::Initiate()
     VoxelShaderInstance.SetProjectionMatrix(SnazzCraft::ProjectionMatrix);
     
     SnazzCraft::VoxelTextureAtlas = new SnazzCraft::Texture("textures/voxel/atlas.png");
-    stbi_set_flip_vertically_on_load(true);
 
     glfwSetMouseButtonCallback(SnazzCraft::Window, MouseButtonCallback);
 
