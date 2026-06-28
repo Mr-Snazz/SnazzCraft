@@ -30,23 +30,20 @@ void SnazzCraft::World::Render()
     if (SnazzCraft::WireframeModeActive()) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     else                                 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    SnazzCraft::ViewMatrix = glm::lookAt(SnazzCraft::Player->Position, SnazzCraft::Player->Position + SnazzCraft::Player->Front, glm::vec3(0.0, 1.0, 0.0));
-    SnazzCraft::ModelMatrix = glm::mat4(1.0f);
-
-    const SnazzCraft::EntityShader& EntityShaderInstance = SnazzCraft::EntityShader::GetInstance();
-    EntityShaderInstance.SetViewMatrix(SnazzCraft::ViewMatrix, true);
-    EntityShaderInstance.SetModelMatrix(SnazzCraft::ModelMatrix, false);
+    const glm::mat4 ViewMatrix = glm::lookAt(SnazzCraft::Player->Position, SnazzCraft::Player->Position + SnazzCraft::Player->Front, glm::vec3(0.0, 1.0, 0.0));
 
     const SnazzCraft::VoxelShader& VoxelShaderInstance = SnazzCraft::VoxelShader::GetInstance();
-    VoxelShaderInstance.SetViewMatrix(SnazzCraft::ViewMatrix, true);
-    VoxelShaderInstance.SetModelMatrix(SnazzCraft::ModelMatrix, false);
+    VoxelShaderInstance.Use();
+    VoxelShaderInstance.SetViewMatrix(ViewMatrix);
 
     this->RenderChunks();
 
     SnazzCraft::Overworld->UpdateVoxelPlacementDisplay();
     this->RenderVoxelPlacementDisplay();
     
+    const SnazzCraft::EntityShader& EntityShaderInstance = SnazzCraft::EntityShader::GetInstance();
     EntityShaderInstance.Use();
+    EntityShaderInstance.SetViewMatrix(ViewMatrix);
     this->RenderAllEntities();
 }
 
@@ -56,14 +53,14 @@ void SnazzCraft::World::RenderAllEntities() const
     {
         const SnazzCraft::EntityType& EntityType = Entity->GetEntityType();
 
-        SnazzCraft::ModelMatrix = glm::translate(glm::mat4(1.0f), Entity->Position);
+        glm::mat4 ModelMatrix = glm::translate(glm::mat4(1.0f), Entity->Position);
         
-        SnazzCraft::ModelMatrix = glm::rotate(SnazzCraft::ModelMatrix, glm::radians( Entity->Rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
-        SnazzCraft::ModelMatrix = glm::rotate(SnazzCraft::ModelMatrix, glm::radians(-Entity->Rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
-        SnazzCraft::ModelMatrix = glm::rotate(SnazzCraft::ModelMatrix, glm::radians( Entity->Rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+        ModelMatrix = glm::rotate(ModelMatrix, glm::radians( Entity->Rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+        ModelMatrix = glm::rotate(ModelMatrix, glm::radians(-Entity->Rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+        ModelMatrix = glm::rotate(ModelMatrix, glm::radians( Entity->Rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
 
-        SnazzCraft::ModelMatrix = glm::scale(SnazzCraft::ModelMatrix, EntityType.EntityMesh->ScaleVector);
-        SnazzCraft::EntityShader::GetInstance().SetModelMatrix(SnazzCraft::ModelMatrix, false);
+        ModelMatrix = glm::scale(ModelMatrix, EntityType.EntityMesh->ScaleVector);
+        SnazzCraft::EntityShader::GetInstance().SetModelMatrix(ModelMatrix);
 
         EntityType.EntityTexture->BindTexture();
         EntityType.EntityMesh->Draw();
@@ -99,8 +96,8 @@ void SnazzCraft::World::RenderChunks()
 
         if (!ChunkIterator->second->HasValidMesh()) continue; 
 
-        SnazzCraft::ModelMatrix = glm::translate(glm::mat4(1.0f), ChunkIterator->second->WorldOffset);
-        SnazzCraft::VoxelShader::GetInstance().SetModelMatrix(SnazzCraft::ModelMatrix, false);
+        glm::mat4 ModelMatrix = glm::translate(glm::mat4(1.0f), ChunkIterator->second->WorldOffset);
+        SnazzCraft::VoxelShader::GetInstance().SetModelMatrix(ModelMatrix);
         
         ChunkIterator->second->Draw();
     }
@@ -112,9 +109,9 @@ void SnazzCraft::World::RenderVoxelPlacementDisplay() const
 {
     if (!this->ShouldRenderVoxelPlacementDisplay) return;
 
-    SnazzCraft::ModelMatrix = glm::translate(glm::mat4(1.0f), this->VoxelPlacementDisplayPosition);
-    SnazzCraft::ModelMatrix = glm::scale(SnazzCraft::ModelMatrix, this->VoxelPlacementDisplayMesh->ScaleVector);
-    SnazzCraft::VoxelShader::GetInstance().SetModelMatrix(SnazzCraft::ModelMatrix, false);
+    glm::mat4 ModelMatrix = glm::translate(glm::mat4(1.0f), this->VoxelPlacementDisplayPosition);
+    ModelMatrix = glm::scale(ModelMatrix, this->VoxelPlacementDisplayMesh->ScaleVector);
+    SnazzCraft::VoxelShader::GetInstance().SetModelMatrix(ModelMatrix);
 
     this->VoxelPlacementDisplayMesh->Draw();
 }

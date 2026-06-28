@@ -15,11 +15,11 @@ namespace SnazzCraft
         virtual ~VoxelShader() = default;
 
         // VoxelShader calls this->Use() before setting any uniform
-        inline void SetModelMatrix(const glm::mat4& ModelMatrix, bool CallUse) const;
+        inline void SetModelMatrix(const glm::mat4& ModelMatrix) const;
 
-        inline void SetViewMatrix(const glm::mat4& ViewMatrix, bool CallUse) const;
+        inline void SetViewMatrix(const glm::mat4& ViewMatrix) const;
 
-        inline void SetProjectionMatrix(const glm::mat4& ProjectionMatrix, bool CallUse) const;
+        inline void SetProjectionMatrix(const glm::mat4& ProjectionMatrix) const;
 
     protected:
 

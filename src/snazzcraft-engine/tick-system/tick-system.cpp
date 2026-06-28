@@ -1,5 +1,5 @@
 #include <thread>
-#include <iostream>
+
 #include "external/glfw3.h"
 
 #include "snazzcraft-engine/tick-system/tick-system.hpp"

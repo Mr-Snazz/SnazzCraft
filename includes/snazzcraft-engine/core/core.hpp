@@ -31,8 +31,6 @@ namespace SnazzCraft
     class World;
 
     extern glm::mat4 ProjectionMatrix;
-    extern glm::mat4 ModelMatrix;
-    extern glm::mat4 ViewMatrix;
 
     void Initiate();
 

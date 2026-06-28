@@ -16,8 +16,6 @@
 #include "snazzcraft-engine/tick-system/tick-system.hpp"
 
 glm::mat4 SnazzCraft::ProjectionMatrix = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 1000.0f);
-glm::mat4 SnazzCraft::ModelMatrix = glm::mat4(1.0f);
-glm::mat4 SnazzCraft::ViewMatrix = glm::mat4(1.0f);
 
 const std::vector<SnazzCraft::Vertice> VoxelMeshVertices = {
     //   Position             // Normal              // Texture Coords
@@ -97,14 +95,12 @@ void SnazzCraft::Initiate()
     glClearColor(0.0f, 0.0f, 0.5f, 1.0f);
 
     const SnazzCraft::EntityShader& EntityShaderInstance = SnazzCraft::EntityShader::GetInstance();
-    EntityShaderInstance.SetProjectionMatrix(SnazzCraft::ProjectionMatrix, true);
-    EntityShaderInstance.SetModelMatrix(SnazzCraft::ModelMatrix, false);
-    EntityShaderInstance.SetViewMatrix(SnazzCraft::ViewMatrix, false);
+    EntityShaderInstance.Use();
+    EntityShaderInstance.SetProjectionMatrix(SnazzCraft::ProjectionMatrix);
 
     const SnazzCraft::VoxelShader& VoxelShaderInstance = SnazzCraft::VoxelShader::GetInstance();
-    VoxelShaderInstance.SetProjectionMatrix(SnazzCraft::ProjectionMatrix, true);
-    VoxelShaderInstance.SetModelMatrix(SnazzCraft::ModelMatrix, false);
-    VoxelShaderInstance.SetViewMatrix(SnazzCraft::ViewMatrix, false);
+    VoxelShaderInstance.Use();
+    VoxelShaderInstance.SetProjectionMatrix(SnazzCraft::ProjectionMatrix);
     
     SnazzCraft::VoxelTextureAtlas = new SnazzCraft::Texture("textures/voxel/atlas.png");
     stbi_set_flip_vertically_on_load(true);
@@ -123,8 +119,6 @@ void SnazzCraft::Initiate()
 
     SnazzCraft::FPSTracker::Initialize();
     SnazzCraft::TickSystem::Initialize();
-
-    
 }
 
 void SnazzCraft::MainLoop()
