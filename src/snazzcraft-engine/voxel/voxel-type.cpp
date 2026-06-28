@@ -1,8 +1,7 @@
 #include "snazzcraft-engine/voxel/voxel-type.hpp"
 #include "snazzcraft-engine/voxel/voxel.hpp"
-#include "snazzcraft-engine/voxel/voxel-ids.h"
 
-const SnazzCraft::VoxelType& SnazzCraft::VoxelType::GetVoxelType(uint8_t VoxelID)
+const SnazzCraft::VoxelType& SnazzCraft::VoxelType::GetVoxelType(VoxelTypeID VoxelID)
 {
     //                                                 LightProducingLevel, LightPropogationDecrease, CullableSides, CollidableToEntities, CollidableToVoxels. CullableAgainst
     // NOTE: The two most significant bits of CullableSides are never set, and will never be used even if they are 
@@ -15,19 +14,19 @@ const SnazzCraft::VoxelType& SnazzCraft::VoxelType::GetVoxelType(uint8_t VoxelID
 
     switch (VoxelID)
     {
-        case ID_VOXEL_OAK_LEAVES:
+        case SnazzCraft::VoxelType::VoxelTypeID::OakLeaves:
             return Leaves;
 
-        case ID_VOXEL_WATER:
+        case SnazzCraft::VoxelType::VoxelTypeID::Water:
             return Water;
 
-        case ID_VOXEL_ABOVE_GRASS:
+        case SnazzCraft::VoxelType::VoxelTypeID::AboveGrass:
             return VoxelCollidable;
 
-        case ID_VOXEL_TORCH:
+        case SnazzCraft::VoxelType::VoxelTypeID::Torch:
             return Torch;
 
-        case ID_VOXEL_AIR:
+        case SnazzCraft::VoxelType::VoxelTypeID::Air:
             return Phantom;
 
         default:

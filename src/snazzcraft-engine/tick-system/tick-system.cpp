@@ -10,6 +10,8 @@ std::queue<SnazzCraft::TickSystem::Notification*> Notifications;
 
 void MainLoop();
 
+void HandleNotifications();
+
 void SnazzCraft::TickSystem::Initialize()
 {
     std::thread MainLoopThread(MainLoop);
@@ -40,12 +42,32 @@ void MainLoop()
         if (Delta < 0.05) continue; // Execute onces every 0.05 seconds
         PreviousTime = CurrentTime;
 
-        if (HandleRedstoneTick) { // Implement redstone
-
-        }
-
-        
+        HandleNotifications();
 
         HandleRedstoneTick = !HandleRedstoneTick;
     }
 }
+
+void HandleNotifications()
+{
+    while (!Notifications.empty())
+    {
+        SnazzCraft::TickSystem::Notification* Notification = std::move(Notifications.front());
+        Notifications.pop();
+
+        switch (Notification->ID)
+        {
+            case SnazzCraft::TickSystem::Notification::NotificationID::VoxelEditNextToWater:
+            {
+
+
+                break;
+            }
+            
+        }
+
+        //EndLoop:
+        delete Notification;
+    }
+}
+

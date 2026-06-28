@@ -3,7 +3,6 @@
 #include "snazzcraft-engine/utilities/math.hpp"
 #include "snazzcraft-engine/texture/atlas.hpp"
 #include "snazzcraft-engine/hitbox/hitbox.hpp"
-#include "snazzcraft-engine/voxel/voxel-ids.h"
 #include "snazzcraft-engine/height-map/height-map.hpp"
 #include "snazzcraft-engine/hitbox/hitbox.hpp"
 #include "snazzcraft-engine/utilities/math.hpp"
@@ -31,7 +30,7 @@ SnazzCraft::Chunk::Chunk(int32_t X, int32_t Y)
     for (uint16_t Z{}; Z < SnazzCraft::Chunk::Depth;  Z++) {
         uint32_t LocalIndex = SnazzCraft::Chunk::LocalVoxelIndex(X, Y, Z);
 
-        this->Voxels     [LocalIndex] = SnazzCraft::Voxel(ID_VOXEL_AIR);
+        this->Voxels     [LocalIndex] = SnazzCraft::Voxel(SnazzCraft::VoxelType::VoxelTypeID::Air);
         this->LightValues[LocalIndex] = SnazzCraft::Voxel::DefaultLightValue;
     }
     }
@@ -59,18 +58,18 @@ void SnazzCraft::Chunk::Generate(SnazzCraft::HeightMap* HeightMap, uint32_t MapW
         int32_t Y{};
         while (true)
         {
-            uint8_t NewVoxelID = ID_VOXEL_STONE;
+            SnazzCraft::VoxelType::VoxelTypeID NewVoxelID = SnazzCraft::VoxelType::VoxelTypeID::Stone;
 
             if (HeightToGenerate && Y == HeightToGenerate - 1) {
                 if (Y >= SnazzCraft::Chunk::OceanLevel - 1 && Y <= SnazzCraft::Chunk::OceanLevel + 2) {
-                    NewVoxelID = ID_VOXEL_SAND;
+                    NewVoxelID = SnazzCraft::VoxelType::VoxelTypeID::Sand;
                 } else if (Y >= SnazzCraft::Chunk::OceanLevel - 1) {
-                    NewVoxelID = ID_VOXEL_DIRT_GRASS_MIX;
+                    NewVoxelID = SnazzCraft::VoxelType::VoxelTypeID::DirtGrassMix;
                 } else {
-                    NewVoxelID = ID_VOXEL_DIRT; 
+                    NewVoxelID = SnazzCraft::VoxelType::VoxelTypeID::Dirt;
                 }
             } else if (HeightToGenerate != 0 && Y >= HeightToGenerate - 4) {
-                NewVoxelID = ID_VOXEL_DIRT;
+                NewVoxelID = SnazzCraft::VoxelType::VoxelTypeID::Dirt;
             }
 
             SnazzCraft::Voxel NewVoxel(NewVoxelID);
@@ -82,7 +81,7 @@ void SnazzCraft::Chunk::Generate(SnazzCraft::HeightMap* HeightMap, uint32_t MapW
                 
                 while (Y < SnazzCraft::Chunk::OceanLevel)
                 {
-                    SnazzCraft::Voxel NewVoxel(ID_VOXEL_WATER);
+                    SnazzCraft::Voxel NewVoxel(SnazzCraft::VoxelType::VoxelTypeID::Water);
                     this->Voxels[SnazzCraft::Chunk::LocalVoxelIndex(X, Y, Z)] = NewVoxel;
                     Y++;
                 }
@@ -94,7 +93,7 @@ void SnazzCraft::Chunk::Generate(SnazzCraft::HeightMap* HeightMap, uint32_t MapW
         // Testing Torches
         if (X != 5 || Z != 5 || HeightToGenerate <= SnazzCraft::Chunk::OceanLevel) continue;
         
-        SnazzCraft::Voxel NewVoxel = SnazzCraft::Voxel(ID_VOXEL_TORCH);
+        SnazzCraft::Voxel NewVoxel = SnazzCraft::Voxel(SnazzCraft::VoxelType::VoxelTypeID::Torch);
         this->Voxels[SnazzCraft::Chunk::LocalVoxelIndex(X, HeightToGenerate, Z)] = NewVoxel;
     }
     }
@@ -141,7 +140,7 @@ void SnazzCraft::Chunk::CullVoxelFaces()
     for (uint32_t VoxelIndex{}; VoxelIndex < SnazzCraft::Chunk::Volume; VoxelIndex++) {
         SnazzCraft::Voxel& Voxel = this->Voxels[VoxelIndex];
 
-        if (Voxel.ID == ID_VOXEL_AIR) {
+        if (Voxel.ID == SnazzCraft::VoxelType::VoxelTypeID::Air) {
             Voxel.ClearAllSides();
             continue;
         }

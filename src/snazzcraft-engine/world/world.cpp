@@ -1,6 +1,5 @@
 #include "snazzcraft-engine/world/world.hpp"
 #include "snazzcraft-engine/chunk/chunk.hpp"
-#include "snazzcraft-engine/voxel/voxel-ids.h"
 #include "snazzcraft-engine/texture/atlas.hpp"
 #include "snazzcraft-engine/height-map/height-map.hpp"
 #include "snazzcraft-engine/mesh/mesh.hpp"
@@ -16,7 +15,7 @@ SnazzCraft::World::World(std::string IName, uint32_t ISize, int32_t ISeed)
 
     this->VoxelPlacementDisplayMesh = new SnazzCraft::Mesh({}, SnazzCraft::VoxelMesh->Indices, false);
     this->VoxelPlacementDisplayMesh->ScaleVector = glm::vec3(1.005f);
-    for (const SnazzCraft::VoxelVertice& Vertice : SnazzCraft::EngineVoxelTextureApplier->GetTexturedVertices(SnazzCraft::Voxel(ID_VOXEL_BARRIER))) {
+    for (const SnazzCraft::VoxelVertice& Vertice : SnazzCraft::EngineVoxelTextureApplier->GetTexturedVertices(SnazzCraft::Voxel(SnazzCraft::VoxelType::VoxelTypeID::Barrier))) {
         this->VoxelPlacementDisplayMesh->Vertices.push_back(SnazzCraft::Vertice(Vertice.Position, Vertice.Normal, Vertice.TextureCoordinate));
     }
     this->VoxelPlacementDisplayMesh->UpdateGPUData(true, true);

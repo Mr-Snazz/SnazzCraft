@@ -5,6 +5,8 @@
 
 #include "external/glm/glm.hpp"
 
+#include "snazzcraft-engine/voxel/voxel-type.hpp"
+
 namespace SnazzCraft
 {
     class VoxelType;
@@ -12,11 +14,11 @@ namespace SnazzCraft
     class Voxel
     {
     public:
-        uint8_t ID;
+        SnazzCraft::VoxelType::VoxelTypeID ID;
 
         Voxel();
 
-        Voxel(uint8_t IID);
+        Voxel(SnazzCraft::VoxelType::VoxelTypeID IID);
 
         ~Voxel() = default;
 

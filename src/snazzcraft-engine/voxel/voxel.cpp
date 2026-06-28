@@ -1,13 +1,12 @@
 #include "snazzcraft-engine/voxel/voxel.hpp"
-#include "snazzcraft-engine/voxel/voxel-ids.h"
 
 SnazzCraft::Voxel::Voxel()
-    : ID(ID_VOXEL_AIR)
+    : ID(SnazzCraft::VoxelType::VoxelTypeID::Air)
 {
 
 }
 
-SnazzCraft::Voxel::Voxel(uint8_t IID)
+SnazzCraft::Voxel::Voxel(SnazzCraft::VoxelType::VoxelTypeID IID)
     : ID(IID)
 {
 

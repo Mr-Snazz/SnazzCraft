@@ -21,6 +21,7 @@
 #include "snazzcraft-engine/voxel/voxel.hpp"
 #include "snazzcraft-engine/entity/user.hpp"
 #include "snazzcraft-engine/utilities/thread-pool-basic.hpp"
+#include "snazzcraft-engine/voxel/voxel-type.hpp"
 
 namespace SnazzCraft
 {
@@ -71,7 +72,7 @@ namespace SnazzCraft
 
         bool DestroyVoxel(const glm::vec3& Position, const glm::vec3& Rotation);
 
-        bool PlaceVoxel(const glm::vec3& Position, const glm::vec3& Rotation, uint8_t VoxelID);
+        bool PlaceVoxel(const glm::vec3& Position, const glm::vec3& Rotation, SnazzCraft::VoxelType::VoxelTypeID VoxelID);
 
         void UpdateVoxelPlacementDisplay();
 

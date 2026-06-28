@@ -1,5 +1,4 @@
 #include "snazzcraft-engine/texture/atlas.hpp"
-#include "snazzcraft-engine/voxel/voxel-ids.h"
 #include "snazzcraft-engine/mesh/mesh.hpp"
 
 SnazzCraft::VoxelTextureApplier* SnazzCraft::EngineVoxelTextureApplier = new SnazzCraft::VoxelTextureApplier("textures/voxel/atlas-coordinates.txt");
@@ -15,8 +14,8 @@ std::vector<SnazzCraft::VoxelVertice> SnazzCraft::VoxelTextureApplier::GetTextur
     constexpr int32_t HalfVoxelSize = static_cast<int32_t>(SnazzCraft::Voxel::Size / 2.0f);
 
     glm::vec2 AtlasCoordinates = { 
-        (float)this->TextureCoordinates[Voxel.ID][0],
-        (float)this->TextureCoordinates[Voxel.ID][1]
+        (float)this->TextureCoordinates[static_cast<uint8_t>(Voxel.ID)][0],
+        (float)this->TextureCoordinates[static_cast<uint8_t>(Voxel.ID)][1]
     };
 
     AtlasCoordinates /= (float)ATLAS_SIZE; 
@@ -28,7 +27,7 @@ std::vector<SnazzCraft::VoxelVertice> SnazzCraft::VoxelTextureApplier::GetTextur
 
     switch (Voxel.ID) // Special cases
     {
-        case ID_VOXEL_DIRT_GRASS_MIX:
+        case SnazzCraft::VoxelType::VoxelTypeID::DirtGrassMix:
         {
             Vertices[16].TextureCoordinate = { (ATLAS_TILE_SIZE * 2), (ATLAS_TILE_SIZE) };
             Vertices[17].TextureCoordinate = { (ATLAS_TILE_SIZE * 2), 0.0f };
@@ -43,7 +42,7 @@ std::vector<SnazzCraft::VoxelVertice> SnazzCraft::VoxelTextureApplier::GetTextur
             break;
         }
 
-        case ID_VOXEL_TORCH:
+        case SnazzCraft::VoxelType::VoxelTypeID::Torch:
         {
             for (uint32_t I = 0; I < 6; I++) {
                 uint32_t Index = I * 4;
@@ -74,7 +73,7 @@ std::vector<SnazzCraft::VoxelVertice> SnazzCraft::VoxelTextureApplier::GetTextur
             break;
         }
 
-        case ID_VOXEL_OAK_LOG:
+        case SnazzCraft::VoxelType::VoxelTypeID::OakLog:
         {
             Vertices[16].TextureCoordinate = { (ATLAS_TILE_SIZE * 2), (ATLAS_TILE_SIZE * 4) };
             Vertices[17].TextureCoordinate = { (ATLAS_TILE_SIZE * 2), (ATLAS_TILE_SIZE * 3) };

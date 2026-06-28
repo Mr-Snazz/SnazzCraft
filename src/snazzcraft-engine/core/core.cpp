@@ -10,7 +10,6 @@
 #include "snazzcraft-engine/fps-tracker/fps-tracker.hpp"
 #include "snazzcraft-engine/entity/user.hpp"
 #include "snazzcraft-engine/world/world.hpp"
-#include "snazzcraft-engine/voxel/voxel-ids.h"
 #include "snazzcraft-engine/shader/voxel-shader.hpp"
 #include "snazzcraft-engine/shader/entity-shader.hpp"
 #include "snazzcraft-engine/tick-system/tick-system.hpp"
@@ -188,7 +187,7 @@ void SnazzCraft::FreeResources()
 
 void WorldInputCallback(SnazzCraft::Event* Event)
 {
-    static uint8_t VoxelIDToPlace{};
+    static SnazzCraft::VoxelType::VoxelTypeID VoxelIDToPlace{};
 
     SnazzCraft::WorldGUI& WorldGUIInstance = SnazzCraft::WorldGUI::GetInstance();
 
@@ -205,47 +204,47 @@ void WorldInputCallback(SnazzCraft::Event* Event)
                 switch (*Key)
                 {
                     case SNAZZCRAFT_KEY_0:
-                        VoxelIDToPlace = 0u;
+                        VoxelIDToPlace = SnazzCraft::VoxelType::VoxelTypeID::Stone;
                         break;
                     
                     case SNAZZCRAFT_KEY_1:
-                        VoxelIDToPlace = 1u;
+                        VoxelIDToPlace = SnazzCraft::VoxelType::VoxelTypeID::OakWood;
                         break;
                     
                     case SNAZZCRAFT_KEY_2:
-                        VoxelIDToPlace = 2u;
+                        VoxelIDToPlace = SnazzCraft::VoxelType::VoxelTypeID::OakLog;
                         break;
                     
                     case SNAZZCRAFT_KEY_3:
-                        VoxelIDToPlace = 3u;
+                        VoxelIDToPlace = SnazzCraft::VoxelType::VoxelTypeID::Sand;
                         break;
 
                     case SNAZZCRAFT_KEY_4:
-                        VoxelIDToPlace = 4u;
+                        VoxelIDToPlace = SnazzCraft::VoxelType::VoxelTypeID::RedstoneWireStraight;
                         break;
                     
                     case SNAZZCRAFT_KEY_5:
-                        VoxelIDToPlace = 5u;
+                        VoxelIDToPlace = SnazzCraft::VoxelType::VoxelTypeID::Grass;
                         break;
 
                     case SNAZZCRAFT_KEY_6:
-                        VoxelIDToPlace = 6u;
+                        VoxelIDToPlace = SnazzCraft::VoxelType::VoxelTypeID::Dirt;
                         break;
                     
                     case SNAZZCRAFT_KEY_7:
-                        VoxelIDToPlace = 7u;
+                        VoxelIDToPlace = SnazzCraft::VoxelType::VoxelTypeID::DirtGrassMix;
                         break;
 
                     case SNAZZCRAFT_KEY_8:
-                        VoxelIDToPlace = 8u;
+                        VoxelIDToPlace = SnazzCraft::VoxelType::VoxelTypeID::CoalOre;
                         break;
                     
                     case SNAZZCRAFT_KEY_9:
-                        VoxelIDToPlace = 9u;
+                        VoxelIDToPlace = SnazzCraft::VoxelType::VoxelTypeID::IronOre;
                         break;
 
                     case SNAZZCRAFT_KEY_T:
-                        VoxelIDToPlace = ID_VOXEL_TORCH;
+                        VoxelIDToPlace = SnazzCraft::VoxelType::VoxelTypeID::Torch;
                         break;
 
                     case SNAZZCRAFT_KEY_ESCAPE:
