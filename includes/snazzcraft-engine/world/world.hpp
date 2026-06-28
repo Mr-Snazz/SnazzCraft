@@ -22,6 +22,7 @@
 #include "snazzcraft-engine/entity/user.hpp"
 #include "snazzcraft-engine/utilities/thread-pool-basic.hpp"
 #include "snazzcraft-engine/voxel/voxel-type.hpp"
+#include "snazzcraft-engine/tick-system/tick-system.hpp"
 
 namespace SnazzCraft
 {
@@ -135,7 +136,7 @@ namespace SnazzCraft
         class LightNode;
 
         friend class SnazzCraft::Chunk;
-
+        friend void SnazzCraft::TickSystem::HandleNotifications();
     };
     
     extern SnazzCraft::World* Overworld;

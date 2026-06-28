@@ -8,7 +8,7 @@ void SnazzCraft::World::MoveEntity(SnazzCraft::Entity* Entity, const glm::vec3& 
     glm::vec3 NewPosition = Entity->Position;
     Entity->Position = OldPosition;
 
-    for (uint8_t I = 0x00; I < 0x03; I++) {
+    for (uint8_t I{}; I < 3u; ++I) {
         float OldCoordinate = Entity->Position[I];
 
         Entity->Position[I] = NewPosition[I];
@@ -20,7 +20,7 @@ void SnazzCraft::World::MoveEntity(SnazzCraft::Entity* Entity, const glm::vec3& 
 
 void SnazzCraft::World::MoveEntity(glm::vec3 Translation, SnazzCraft::Entity* Entity) const
 {
-    for (uint8_t I = 0x00; I < 0x03; I++) {
+    for (uint8_t I{}; I < 3u; ++I) {
         float OldCoordinate = Entity->Position[I];
 
         Entity->Position[I] += Translation[I];

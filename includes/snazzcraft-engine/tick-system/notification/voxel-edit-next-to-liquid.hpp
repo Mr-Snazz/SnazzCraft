@@ -16,9 +16,9 @@ namespace SnazzCraft::TickSystem
             const int32_t ChunkPosition[2];
         };
             
-        const uint32_t VoxelIndex;
+        const uint32_t LiquidVoxelIndex;
 
-        VoxelEditNextToLiquid(int32_t IChunkX, int32_t IChunkZ, uint32_t IVoxelIndex);
+        VoxelEditNextToLiquid(int32_t IChunkX, int32_t IChunkZ, uint32_t ILiquidVoxelIndex);
 
     private:
 

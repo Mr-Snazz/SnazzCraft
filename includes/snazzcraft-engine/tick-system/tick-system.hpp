@@ -9,5 +9,7 @@ namespace SnazzCraft::TickSystem
 
     void Initialize();
 
+    void HandleNotifications(); // Do not call
+
     void AddNotification(SnazzCraft::TickSystem::Notification* Notification);
 }
