@@ -198,8 +198,8 @@ void WorldInputCallback(SnazzCraft::Event* Event)
         {
             case SNAZZCRAFT_EVENT_KEY_DOWN:
             {
-                unsigned char* Key = static_cast<unsigned char*>(Event->EventData->AccessDataType(SNAZZCRAFT_DATA_TYPE_KEY));
-                if (Key == nullptr) return;
+                uint8_t* Key = static_cast<uint8_t*>(Event->EventData->AccessDataType(SNAZZCRAFT_DATA_TYPE_KEY));
+                if (!Key) return;
                 
                 switch (*Key)
                 {

@@ -14,8 +14,8 @@ std::vector<SnazzCraft::VoxelVertice> SnazzCraft::VoxelTextureApplier::GetTextur
     constexpr int32_t HalfVoxelSize = static_cast<int32_t>(SnazzCraft::Voxel::Size / 2.0f);
 
     glm::vec2 AtlasCoordinates = { 
-        (float)this->TextureCoordinates[static_cast<uint8_t>(Voxel.ID)][0],
-        (float)this->TextureCoordinates[static_cast<uint8_t>(Voxel.ID)][1]
+        this->TextureCoordinates[static_cast<uint8_t>(Voxel.ID)][0],
+        this->TextureCoordinates[static_cast<uint8_t>(Voxel.ID)][1]
     };
 
     AtlasCoordinates /= (float)ATLAS_SIZE; 

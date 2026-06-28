@@ -3,7 +3,7 @@
 
 SnazzCraft::Data::~Data()
 {
-    for (uint32_t I = 0; I < this->Items.size(); I++) { 
+    for (uint32_t I{}; I < this->Items.size(); ++I) { 
         switch (this->Types[I]) {
             case SNAZZCRAFT_DATA_TYPE_STD_STRING:
                 delete static_cast<std::string*>(this->Items[I]);
@@ -22,7 +22,7 @@ SnazzCraft::Data::~Data()
                 break;
 
             case SNAZZCRAFT_DATA_TYPE_INT:
-                delete static_cast<int*>(this->Items[I]);
+                delete static_cast<int32_t*>(this->Items[I]);
                 break;
 
             case SNAZZCRAFT_DATA_TYPE_BOOL:
@@ -37,7 +37,7 @@ SnazzCraft::Data::~Data()
 
 void* SnazzCraft::Data::AccessDataType(uint8_t Type)
 {
-    for (uint32_t I = 0; I < this->Types.size(); I++) {
+    for (uint32_t I{}; I < this->Types.size(); ++I) {
         if (this->Types[I] == Type) return this->Items[I];
     }
 
