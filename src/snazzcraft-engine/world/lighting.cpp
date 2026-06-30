@@ -78,8 +78,8 @@ void SnazzCraft::World::UpdateChunkLighting(SnazzCraft::Chunk* Chunk, bool* Upda
 
 void SnazzCraft::World::ApplySunLightingToChunk(SnazzCraft::Chunk* Chunk, std::unordered_set<uint64_t>* ChunksToUpdate)
 {
-    for (uint32_t Z = 0; Z < SnazzCraft::Chunk::Depth; Z++) {
-    for (uint32_t X = 0; X < SnazzCraft::Chunk::Width; X++) {
+    for (uint32_t Z{}; Z < SnazzCraft::Chunk::Depth; ++Z) {
+    for (uint32_t X{}; X < SnazzCraft::Chunk::Width; ++X) {
         this->ApplySunLightingToColumn(Chunk, X, Z, SnazzCraft::Chunk::Height, SnazzCraft::Voxel::SunlightLightValue, ChunksToUpdate);
     }
     }
@@ -97,7 +97,7 @@ void SnazzCraft::World::ApplySunLightingToColumn(SnazzCraft::Chunk* Chunk, uint3
         uint32_t LightY = Y - 1;
         uint32_t LocalIndex = SnazzCraft::Chunk::LocalVoxelIndex(LocalChunkX, LightY, LocalChunkZ);
 
-        int ChunkLightValue = Chunk->LightValues[LocalIndex];
+        int32_t ChunkLightValue = Chunk->LightValues[LocalIndex];
         Chunk->LightValues[LocalIndex] = LightValue > ChunkLightValue ? LightValue : ChunkLightValue;
 
         const SnazzCraft::Voxel& Voxel = Chunk->Voxels[LocalIndex];
@@ -131,7 +131,7 @@ void SnazzCraft::World::ApplyLightingVoxel(int32_t LightOrigin[3], int8_t LightP
         int32_t NewLightValue = OriginNode.LightValue - LightPropagationDecrease;
         if (NewLightValue <= 0) return;
 
-        for (uint8_t I{}; I < 0x03; ++I) {
+        for (uint8_t I{}; I < 3u; ++I) {
             int32_t NewPosition[3] = {
                 OriginNode.X,
                 OriginNode.Y,

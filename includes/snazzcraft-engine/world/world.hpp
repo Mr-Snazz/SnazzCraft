@@ -136,7 +136,6 @@ namespace SnazzCraft
         class LightNode;
 
         friend class SnazzCraft::Chunk;
-        friend void SnazzCraft::TickSystem::HandleNotifications();
     };
     
     extern SnazzCraft::World* Overworld;
