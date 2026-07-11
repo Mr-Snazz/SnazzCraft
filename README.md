@@ -1,8 +1,5 @@
 # SnazzCraft
 
---- All the dependencies are stated in dependancies.txt --- 
-
-
 Building Project: \
     * Make sure to clone recursively to download all submodules \
     * Navigate to project directory \
